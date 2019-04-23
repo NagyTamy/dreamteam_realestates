@@ -11,19 +11,15 @@ SET default_with_oids = false;
 
 SET TIME ZONE 'GMT+2';
 
-DROP TABLE IF EXISTS favourites;
-DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS reservations;
-DROP TABLE IF EXISTS real_estates;
-DROP TABLE IF EXISTS logger;
-DROP TABLE IF EXISTS admins;
-DROP TABLE IF EXISTS users;
-
-
-
-
-
-
+DROP TABLE IF EXISTS favourites CASCADE;
+DROP TABLE IF EXISTS messages_receivers CASCADE;
+DROP TABLE IF EXISTS messages_realestates CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS reservations CASCADE;
+DROP TABLE IF EXISTS real_estates CASCADE;
+DROP TABLE IF EXISTS logger CASCADE;
+DROP TABLE IF EXISTS admins CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 
 CREATE TABLE users(
@@ -105,6 +101,39 @@ CREATE TABLE favourites(
    FOREIGN KEY (user_name) REFERENCES users(user_name),
    FOREIGN KEY (real_estate_id) REFERENCES real_estates(real_estate_id)
 );
+
+
+
+CREATE OR REPLACE FUNCTION logger_for_users_table(text text)
+RETURNS trigger AS $A$
+    BEGIN
+        IF (SELECT user_name FROM users AS current_admin WHERE user_name = (SELECT current_setting('session.osuser')) != OLD.user_name) THEN
+            INSERT INTO logger(date, admin_id, action)
+            VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), text);
+        END IF;
+        RETURN NEW;
+    END; $A$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER logger_for_users_table
+    AFTER INSERT
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE logger_for_users_table('New user added');
+
+CREATE TRIGGER logger_for_users_table
+    AFTER UPDATE
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE logger_for_users_table('User data updated');
+
+CREATE TRIGGER logger_for_users_table
+    AFTER DELETE
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE logger_for_users_table('User removed');
+
 
 
 INSERT INTO users VALUES ('test', 'test@test', 'password', 'renter', '2019/01/01 00:00', 'pic', 'theme');
