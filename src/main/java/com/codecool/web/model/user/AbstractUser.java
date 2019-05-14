@@ -1,6 +1,6 @@
 package com.codecool.web.model.user;
 
-import com.codecool.web.model.Comment;
+import com.codecool.web.model.comment.Comment;
 import com.codecool.web.model.Reservation;
 import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.RealEstate;

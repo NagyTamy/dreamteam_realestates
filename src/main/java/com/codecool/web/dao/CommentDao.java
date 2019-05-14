@@ -1,26 +1,32 @@
 package com.codecool.web.dao;
 
-import com.codecool.web.model.Comment;
+import com.codecool.web.model.comment.Comment;
+import com.codecool.web.service.exception.NoInstanceException;
+import com.codecool.web.service.exception.NoSuchCommentException;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommentDao {
 
-    Comment getCommentById(int id);
+    Comment getCommentById(int id) throws SQLException, NoSuchCommentException, NoInstanceException;
 
-    List<Comment> getAllByWriter(String userName);
+    List<Comment> getAllByWriter(String userName) throws SQLException, NoInstanceException;
 
-    List<Comment> getAllAboutUser(String userName);
+    List<Comment> getAllAboutUser(String userName) throws SQLException, NoInstanceException;
 
-    List<Comment> getAllAboutRealEstate(int realEstateId);
+    List<Comment> getAllAboutRealEstate(int realEstateId) throws SQLException, NoInstanceException;
 
-    int avgUserRating(String userName);
+    int avgUserRating(String userName) throws SQLException;
 
-    int avgRealEstateRating(int realEstateId);
+    int avgRealEstateRating(int realEstateId) throws SQLException;
 
-    List<Comment> getAllFlagged();
+    List<Comment> getAllFlagged() throws SQLException, NoInstanceException;
 
-    void addComment(Comment newComment);
+    void addUserComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException;
+
+    void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException;
 
     void editComment(Comment editedComment);
 

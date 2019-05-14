@@ -1,5 +1,7 @@
 package com.codecool.web.model;
 
+import com.codecool.web.model.comment.Comment;
+
 import java.util.List;
 
 public class RealEstate extends AbstractModel {
