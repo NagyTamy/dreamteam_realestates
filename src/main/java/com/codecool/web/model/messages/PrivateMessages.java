@@ -8,6 +8,7 @@ public class PrivateMessages extends AbstractMessage {
 
     private AbstractUser receiver;
     private int realEstateId;
+    private int previousMessageId;
 
     public PrivateMessages(int id, AbstractUser sender, String title, String message, LocalDateTime time, AbstractUser receiver) {
         super(id, sender, title, message, time);
@@ -24,5 +25,12 @@ public class PrivateMessages extends AbstractMessage {
 
     public void setRealEstateId(int realEstateId) {
         this.realEstateId = realEstateId;
+    }
+    public void setPreviousMessageId(int previousMessage) {
+        this.previousMessageId = previousMessage;
+    }
+
+    public int getPreviousMessageId() {
+        return previousMessageId;
     }
 }

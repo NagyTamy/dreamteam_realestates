@@ -16,6 +16,7 @@ SET default_with_oids = false;
 
 SET TIME ZONE 'Europe/Budapest';
 
+DROP TABLE IF EXISTS searches CASCADE;
 DROP TABLE IF EXISTS favourites CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS reservations CASCADE;
@@ -26,6 +27,11 @@ DROP TABLE IF EXISTS real_estates CASCADE;
 DROP TABLE IF EXISTS logger CASCADE;
 DROP TABLE IF EXISTS admins CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS blacklist CASCADE;
+
+CREATE TABLE blacklist(
+    bad_word text
+);
 
 
 CREATE TABLE users(
@@ -47,7 +53,7 @@ CREATE TABLE admins(
 CREATE TABLE logger(
     date TIMESTAMP WITH TIME ZONE NOT NULL,
     admin_id int,
-    action text NOT NULL,
+    action_content text NOT NULL,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
 
@@ -97,7 +103,8 @@ CREATE TABLE messages(
     history int DEFAULT null,
     date TIMESTAMP WITH TIME ZONE DEFAULT now(),
     title varchar(60) NOT NULL,
-    message text NOT NULL,
+    content text NOT NULL,
+    is_answered boolean,
     FOREIGN KEY (sender_name) REFERENCES users(user_name),
     FOREIGN KEY (history) REFERENCES messages(message_id),
     FOREIGN KEY (receiver_name) REFERENCES users(user_name),
@@ -121,12 +128,15 @@ CREATE TABLE reviews(
    reservation_id int NOT NULL,
    reviewer_name varchar(40) NOT NULL,
    review text DEFAULT NULL,
-   rating int,
+   rating_user int,
+   rating_real_estate int,
+   is_flagged boolean DEFAULT false,
    FOREIGN KEY (reviewer_name) REFERENCES users(user_name),
    FOREIGN KEY (real_estate_id) REFERENCES real_estates(real_estate_id),
    FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id),
    FOREIGN KEY (user_name) REFERENCES users(user_name),
-   CONSTRAINT rating_limit CHECK ( rating BETWEEN 1 AND 5),
+   CONSTRAINT rating_limit CHECK ( rating_user BETWEEN 1 AND 5),
+   CONSTRAINT rating_limit2 CHECK ( rating_real_estate BETWEEN 1 AND 5),
    CONSTRAINT foreign_key_check CHECK ( real_estate_id IS NOT NULL OR user_name IS NOT NULL ),
    CONSTRAINT reviewer_not_null CHECK ( reviewer_name <> '' )
 );
@@ -136,6 +146,7 @@ CREATE TABLE pictures(
     user_name varchar(40),
     real_estate int,
     picture bytea NOT NULL,
+    description text DEFAULT NULL,
     FOREIGN KEY (user_name) REFERENCES users(user_name),
     FOREIGN KEY (real_estate) REFERENCES real_estates(real_estate_id),
     CONSTRAINT check_user_or_real_estate CHECK ( user_name IS NOT NULL OR real_estate IS NOT NULL ),
@@ -152,6 +163,25 @@ CREATE TABLE main_pictures(
     CONSTRAINT check_nulls CHECK ( user_name IS NOT NULL OR real_estate_id IS NOT NULL )
 );
 
+CREATE TABLE searches(
+    search_id SERIAL PRIMARY KEY,
+    date TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    user_name varchar(40),
+    free_search_keys text,
+    real_estate_name varchar(40) UNIQUE,
+    country varchar(74),
+    city varchar(85),
+    bed_count int,
+    price_min int,
+    price_max int,
+    extras text,
+    is_saved boolean DEFAULT false,
+    FOREIGN KEY (user_name) REFERENCES users(user_name)
+);
+
+
+
+
 
 
 CREATE OR REPLACE FUNCTION logger_for_users_table()
@@ -162,10 +192,10 @@ RETURNS trigger AS $A$
         this_name := NEW.user_name;
         IF (SELECT user_name FROM users AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != NEW.user_name THEN
             IF (TG_OP = 'INSERT') THEN
-                INSERT INTO logger(date, admin_id, action)
+                INSERT INTO logger(date, admin_id, action_content)
                 VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), 'New user '|| this_name ||' with role '|| NEW.role_name || ' has been added to the system.');
             ELSEIF (TG_OP = 'UPDATE') THEN
-                INSERT INTO logger(date, admin_id, action)
+                INSERT INTO logger(date, admin_id, action_content)
                 VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), this_name ||' user''s role now: '|| NEW.role_name);
             END IF;
         END IF;
@@ -181,7 +211,7 @@ DECLARE
 BEGIN
     this_name := OLD.user_name;
     IF (SELECT user_name FROM users AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != OLD.user_name THEN
-        INSERT INTO logger(date, admin_id, action)
+        INSERT INTO logger(date, admin_id, action_content)
         VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), this_name ||' user''s data deleted from users.');
     END IF;
     RETURN NEW;
@@ -213,12 +243,12 @@ DECLARE
     this_house text;
 BEGIN
     this_house := NEW.real_estate_name;
-    IF (SELECT user_name FROM real_estates AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != NEW.user_name THEN
+    IF (SELECT DISTINCT user_name FROM real_estates AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != NEW.user_name THEN
         IF (TG_OP = 'INSERT') THEN
-            INSERT INTO logger(date, admin_id, action)
+            INSERT INTO logger(date, admin_id, action_content)
             VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), this_house ||' on the id: ' || NEW.real_estate_id || ' has been added with a public status: '|| NEW.is_public);
         ELSEIF (TG_OP='UPDATE') THEN
-            INSERT INTO logger(date, admin_id, action)
+            INSERT INTO logger(date, admin_id, action_content)
             VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), this_house ||' real estate''s public status now: ' || NEW.is_public);
         END IF;
     END IF;
@@ -232,8 +262,8 @@ DECLARE
     this_house text;
 BEGIN
     this_house := OLD.real_estate_name;
-    IF (SELECT user_name FROM real_estates AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != OLD.user_name THEN
-        INSERT INTO logger(date, admin_id, action)
+    IF (SELECT DISTINCT user_name FROM real_estates AS current_admin WHERE user_name = (SELECT current_setting('session.osuser'))) != OLD.user_name THEN
+        INSERT INTO logger(date, admin_id, action_content)
         VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), this_house ||' real estate''s data deleted.');
     END IF;
     RETURN NEW;
@@ -265,7 +295,7 @@ CREATE OR REPLACE FUNCTION logger_for_user_requests()
     RETURNS trigger AS $A$
 BEGIN
     IF NEW.history IS NOT NULL AND NEW.history NOT IN (SELECT messages.message_id FROM messages RIGHT JOIN messages_receivers ON messages.message_id = messages_receivers.message_id) THEN
-        INSERT INTO logger(date, admin_id, action)
+        INSERT INTO logger(date, admin_id, action_content)
         VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), (SELECT current_setting('session.osuser'))|| ' answered ' ||(SELECT  user_name FROM messages WHERE message_id = NEW.history)|| '''s message nr.: ' || NEW.history );
     END IF;
     RETURN NEW;
@@ -351,7 +381,7 @@ BEGIN
 end; $comment$
     LANGUAGE plpgsql;
 
-CREATE TRIGGER check_comment
+CREATE TRIGGER validate_comment
     BEFORE INSERT
     ON reviews
     FOR EACH ROW
@@ -366,6 +396,104 @@ BEGIN
 end; $comment$
     LANGUAGE plpgsql;
 
+CREATE TRIGGER check_comment
+    BEFORE INSERT
+    ON reviews
+    FOR EACH ROW
+EXECUTE PROCEDURE check_if_comment_allowed();
+
+CREATE OR REPLACE FUNCTION switch_message_to_answered() RETURNS TRIGGER AS $comment$
+BEGIN
+    UPDATE messages SET is_answered = 'true' WHERE message_id = NEW.history;
+    RETURN NEW;
+end; $comment$
+    LANGUAGE plpgsql;
+
+CREATE TRIGGER setAnswered
+    AFTER INSERT
+    ON messages
+    FOR EACH ROW
+EXECUTE PROCEDURE switch_message_to_answered();
+
+
+CREATE OR REPLACE FUNCTION profanity_filter() RETURNS TRIGGER AS $filter$
+BEGIN
+    IF EXISTS (SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.user_name)) OR bad_word SIMILAR TO lower('%'||NEW.user_name) OR bad_word SIMILAR TO lower('%'||NEW.user_name||'%') OR bad_word SIMILAR TO lower(NEW.user_name||'%')) THEN
+        RAISE EXCEPTION 'You can not use vulgar names on this website!';
+    end if;
+    RETURN NEW;
+end; $filter$
+    LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION profanity_filter2() RETURNS TRIGGER AS $filter$
+BEGIN
+    IF EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.real_estate_name)) OR bad_word SIMILAR TO lower('%'||NEW.real_estate_name) OR bad_word SIMILAR TO lower('%'||NEW.real_estate_name||'%') OR bad_word SIMILAR TO lower(NEW.real_estate_name||'%'))
+        OR EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.description)) OR bad_word SIMILAR TO lower('%'||NEW.description) OR bad_word SIMILAR TO lower('%'||NEW.description||'%') OR bad_word SIMILAR TO lower(NEW.description||'%'))
+        OR EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.extras)) OR bad_word SIMILAR TO lower('%'||NEW.extras) OR bad_word SIMILAR TO lower('%'||NEW.extras||'%') OR bad_word SIMILAR TO lower(NEW.extras||'%')) THEN
+        RAISE EXCEPTION 'You can not use vulgar names and expressions on this website!';
+    end if;
+    RETURN NEW;
+end; $filter$
+    LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION profanity_filter3() RETURNS TRIGGER AS $filter$
+BEGIN
+    IF EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.title)) OR bad_word SIMILAR TO lower('%'||NEW.title) OR bad_word SIMILAR TO lower('%'||NEW.title||'%') OR bad_word SIMILAR TO lower(NEW.title||'%'))
+        OR EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.content)) OR bad_word SIMILAR TO lower('%'||NEW.content) OR bad_word SIMILAR TO lower('%'||NEW.content||'%') OR bad_word SIMILAR TO lower(NEW.content||'%')) THEN
+        RAISE EXCEPTION 'You can not use vulgar expressions in private messsages on this website!';
+    end if;
+    RETURN NEW;
+end; $filter$
+    LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION profanity_filter4() RETURNS TRIGGER AS $filter$
+BEGIN
+    IF EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.review)) OR bad_word SIMILAR TO lower('%'||NEW.review) OR bad_word SIMILAR TO lower('%'||NEW.review||'%') OR bad_word SIMILAR TO lower(NEW.review||'%')) THEN
+        RAISE EXCEPTION 'You can not use vulgar expressions in reviewa on this website!';
+    end if;
+    RETURN NEW;
+end; $filter$
+    LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION profanity_filter5() RETURNS TRIGGER AS $filter$
+BEGIN
+    IF EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.description)) OR bad_word SIMILAR TO lower('%'||NEW.description) OR bad_word SIMILAR TO lower('%'||NEW.description||'%') OR bad_word SIMILAR TO lower(NEW.description||'%')) THEN
+        RAISE EXCEPTION 'Picture description can not contain vulgar expressions';
+    end if;
+    RETURN NEW;
+end; $filter$
+    LANGUAGE plpgsql;
+
+CREATE TRIGGER profanity_filter1
+    BEFORE INSERT
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE profanity_filter();
+
+CREATE TRIGGER profanity_filter2
+    BEFORE INSERT
+    ON real_estates
+    FOR EACH ROW
+EXECUTE PROCEDURE profanity_filter2();
+
+CREATE TRIGGER profanity_filter3
+    BEFORE INSERT
+    ON messages
+    FOR EACH ROW
+EXECUTE PROCEDURE profanity_filter3();
+
+CREATE TRIGGER profanity_filter4
+    BEFORE INSERT
+    ON reviews
+    FOR EACH ROW
+EXECUTE PROCEDURE profanity_filter4();
+
+CREATE TRIGGER profanity_filter5
+    BEFORE INSERT
+    ON pictures
+    FOR EACH ROW
+EXECUTE PROCEDURE profanity_filter5();
 
 
 INSERT INTO users VALUES ('system', 'basicmail@mail.hu', 'systemuser', 'admin', now(), 'theme');
@@ -387,6 +515,83 @@ INSERT INTO messages(sender_name, receiver_name, date, title, message) VALUES ('
 INSERT INTO messages(sender_name, real_estate, date, title, message) VALUES ('test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
 INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, message) VALUES ('test2', 'test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
 INSERT INTO messages(sender_name, date, title, message) VALUES ('test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
+
+INSERT INTO blacklist(bad_word) VALUES
+                ('anal'),
+                ('anus'),
+                ('arse'),
+                ('ass'),
+                ('ass fuck'),
+                ('ass hole'),
+                ('assfucker'),
+                ('asshole'),
+                ('assshole'),
+                ('bastard'),
+                ('bitch'),
+                ('black cock'),
+                ('bloody hell'),
+                ('boong'),
+                ('cock'),
+                ('cockfucker'),
+                ('cocksuck'),
+                ('cocksucker'),
+                ('coon'),
+                ('coonnass'),
+                ('crap'),
+                ('cunt'),
+                ('cyberfuck'),
+                ('damn'),
+                ('darn'),
+                ('dick'),
+                ('dirty'),
+                ('douche'),
+                ('dummy'),
+                ('erect'),
+                ('erection'),
+                ('erotic'),
+                ('escort'),
+                ('fag'),
+                ('faggot'),
+                ('fuck'),
+                ('fuck off'),
+                ('fuck you'),
+                ('fuckass'),
+                ('fuckhole'),
+                ('god damn'),
+                ('gook'),
+                ('hard core'),
+                ('hardcore'),
+                ('homoerotic'),
+                ('hore'),
+                ('lesbian'),
+                ('lesbians'),
+                ('mother fucker'),
+                ('motherfuck'),
+                ('motherfucker'),
+                ('negro'),
+                ('nigger'),
+                ('penis'),
+                ('penisfucker'),
+                ('piss'),
+                ('piss off'),
+                ('porn'),
+                ('porno'),
+                ('pornography'),
+                ('pussy'),
+                ('retard'),
+                ('sadist'),
+                ('sex'),
+                ('sexy'),
+                ('shit'),
+                ('slut'),
+                ('son of a bitch'),
+                ('suck'),
+                ('tits'),
+                ('viagra'),
+                ('whore'),
+                ('xxx');
+
+
 
 
 END $$

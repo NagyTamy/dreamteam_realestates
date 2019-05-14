@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 
 public class SystemMessages extends AbstractMessage {
 
-    int previousMessageId;
-    private final String receiver = "system";
+    private int previousMessageId;
 
     public SystemMessages(int id, AbstractUser sender, String title, String message, LocalDateTime time) {
         super(id, sender, title, message, time);
+        final String receiver = "system";
     }
 
     public void setPreviousMessageId(int previousMessage) {
@@ -20,4 +20,5 @@ public class SystemMessages extends AbstractMessage {
     public int getPreviousMessageId() {
         return previousMessageId;
     }
+
 }

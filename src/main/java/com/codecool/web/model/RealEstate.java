@@ -18,6 +18,7 @@ public class RealEstate extends AbstractModel {
     private List<Comment> reviews;
     private List<byte[]> pictures;
     private byte[] mainPicture;
+    private int avgRating;
 
     RealEstate(int id, String name, String country, String city, String address, int bedCount, int price) {
         super(id);
@@ -123,5 +124,13 @@ public class RealEstate extends AbstractModel {
 
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
+    }
+
+    public int getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(int avgRating) {
+        this.avgRating = avgRating;
     }
 }
