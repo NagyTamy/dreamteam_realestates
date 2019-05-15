@@ -99,12 +99,12 @@ CREATE TABLE messages(
     message_id SERIAL PRIMARY KEY,
     sender_name varchar(40), /*Sender's user name*/
     receiver_name varchar(40) DEFAULT 'system', /*system is a default superuser used for requests with no direct receivers of messages, e.g. role change requests*/
-    real_estate int DEFAULT NULL, /* in case if the message is assigned to a user but not related to a real estate*/
-    history int DEFAULT null,
+    real_estate int DEFAULT 0, /* in case if the message is assigned to a user but not related to a real estate*/
+    history int DEFAULT 0,
     date TIMESTAMP WITH TIME ZONE DEFAULT now(),
     title varchar(60) NOT NULL,
     content text NOT NULL,
-    is_answered boolean,
+    is_answered boolean DEFAULT false,
     FOREIGN KEY (sender_name) REFERENCES users(user_name),
     FOREIGN KEY (history) REFERENCES messages(message_id),
     FOREIGN KEY (receiver_name) REFERENCES users(user_name),

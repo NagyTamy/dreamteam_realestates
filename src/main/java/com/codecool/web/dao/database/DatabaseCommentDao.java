@@ -123,23 +123,53 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
 
     @Override
     public void addUserComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException {
-
+        String sql ="INSERT INTO reviews(user_name, reservation_id, reviewer_name, review, rating_user) VALUES(?, ?, ?, ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            statement.setString(1, reviewedUser);
+            statement.setInt(2, reservationId);
+            statement.setString(3, reviewerName);
+            statement.setString(4, review);
+            statement.setInt(5, userRating);
+            executeInsert(statement);
+            int id = fetchGeneratedId(statement);
+            Comment comment = new UserComment(id, reservationId, reviewerName, review, timestamp, userRating, reviewedUser);
+        }
     }
 
     @Override
     public void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException {
-
+        String sql ="INSERT INTO reviews(real_estate_id, reservation_id, reviewer_name, review, rating_real_estate) VALUES(?, ?, ?, ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            statement.setInt(1, reviewedRealEstate);
+            statement.setInt(2, reservationId);
+            statement.setString(3, reviewerName);
+            statement.setString(4, review);
+            statement.setInt(5, realEstateRating);
+            executeInsert(statement);
+            int id = fetchGeneratedId(statement);
+            Comment comment = new RealEstateComment(id, reservationId, reviewerName, review, timestamp, realEstateRating, reviewedRealEstate);
+        }
     }
 
 
     @Override
-    public void editComment(Comment editedComment) {
-
+    public void editComment(Comment editedComment) throws SQLException{
+        String sql ="UPDATE reviews SET review=?, is_flagged=? WHERE id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, editedComment.getReview());
+            statement.setBoolean(2, editedComment.getFlagged());
+            statement.setInt(3, editedComment.getId());
+            executeInsert(statement);
+        }
     }
 
     @Override
-    public void removeComment(int commentId) {
-
+    public void removeComment(int commentId) throws SQLException {
+        String sql="DELETE FROM reviews WHERE id =?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, commentId);
+            statement.executeQuery();
+        }
     }
 
     private Comment fetchComment(ResultSet resultSet) throws SQLException, NoInstanceException {

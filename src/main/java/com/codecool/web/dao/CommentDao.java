@@ -28,8 +28,8 @@ public interface CommentDao {
 
     void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException;
 
-    void editComment(Comment editedComment);
+    void editComment(Comment editedComment) throws SQLException;
 
-    void removeComment(int commentId);
+    void removeComment(int commentId) throws SQLException;
 
 }

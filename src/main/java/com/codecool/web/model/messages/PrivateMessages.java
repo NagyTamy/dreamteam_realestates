@@ -1,21 +1,19 @@
 package com.codecool.web.model.messages;
 
-import com.codecool.web.model.user.AbstractUser;
-
 import java.time.LocalDateTime;
 
 public class PrivateMessages extends AbstractMessage {
 
-    private AbstractUser receiver;
-    private int realEstateId;
-    private int previousMessageId;
+    private String receiver;
+    private int realEstateId = 0;
 
-    public PrivateMessages(int id, AbstractUser sender, String title, String message, LocalDateTime time, AbstractUser receiver) {
-        super(id, sender, title, message, time);
+
+    public PrivateMessages(int id, String sender, String title, String message, LocalDateTime time, String receiver, int previousMessageId, int realEstateId) {
+        super(id, sender, title, message, time, previousMessageId, realEstateId);
         this.receiver = receiver;
     }
 
-    public AbstractUser getReceiver() {
+    public String getReceiver() {
         return receiver;
     }
 
@@ -26,11 +24,5 @@ public class PrivateMessages extends AbstractMessage {
     public void setRealEstateId(int realEstateId) {
         this.realEstateId = realEstateId;
     }
-    public void setPreviousMessageId(int previousMessage) {
-        this.previousMessageId = previousMessage;
-    }
 
-    public int getPreviousMessageId() {
-        return previousMessageId;
-    }
 }

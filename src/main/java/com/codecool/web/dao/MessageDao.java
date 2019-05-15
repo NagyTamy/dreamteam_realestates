@@ -1,34 +1,35 @@
 package com.codecool.web.dao;
 
 import com.codecool.web.model.messages.AbstractMessage;
-import org.springframework.cglib.core.Local;
+import com.codecool.web.model.messages.SystemMessages;
+import com.codecool.web.service.exception.NoSuchMessageException;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public interface MessageDao {
 
     /*lists all messages by user, regardless if user is sender or receiver of the message*/
-    List<AbstractMessage> getAllByUserName(String userName);
+    List<AbstractMessage> getAllByUserName(String userName) throws SQLException;
 
-    AbstractMessage findByMessageId(int messageId);
+    AbstractMessage findByMessageId(int messageId) throws SQLException, NoSuchMessageException, NoSuchMessageException;
 
-    List<AbstractMessage> getAllByRealEstate(int realEstateId);
+    List<AbstractMessage> getAllByRealEstate(int realEstateId) throws SQLException;
 
-    List<AbstractMessage> getAllUnansweredForUser(String userName);
+    List<SystemMessages> getAllSystemRequests() throws SQLException;
 
-    List<AbstractMessage> getAllSystemRequests();
+    List<SystemMessages> getAllPendingSystemRequest() throws SQLException;
 
-    List<AbstractMessage> getAllPendingSystemRequest();
+    List<SystemMessages> filterSystemRequestsBySender(String userName) throws SQLException;
 
-    List<AbstractMessage> filterSystemRequestsBySender(String userName);
+    List<SystemMessages> filterSystemRequestByTime(LocalDateTime begins, LocalDateTime ends) throws SQLException;
 
-    List<AbstractMessage> filterSystemRequestByTime(LocalDateTime begins, LocalDateTime ends);
+    List<SystemMessages> filterSystemRequestByType(String messageTitle) throws SQLException;
 
-    List<AbstractMessage> filterSystemRequestByType(String messageTitle);
+    void addNewPrivateMessage(String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException;
 
-    AbstractMessage addNewMessage(AbstractMessage newMessage);
+    void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException;
 
-    AbstractMessage removeMessage(int messageId);
+    void removeMessage(int messageId) throws SQLException;
 }

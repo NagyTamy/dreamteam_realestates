@@ -1,24 +1,16 @@
 package com.codecool.web.model.messages;
 
-import com.codecool.web.model.user.AbstractUser;
-
 import java.time.LocalDateTime;
 
 public class SystemMessages extends AbstractMessage {
 
-    private int previousMessageId;
+    private final String receiver = "system";
 
-    public SystemMessages(int id, AbstractUser sender, String title, String message, LocalDateTime time) {
-        super(id, sender, title, message, time);
-        final String receiver = "system";
+    public SystemMessages(int id, String sender, String title, String message, LocalDateTime time, int previousMessageId, int realEstateId) {
+        super(id, sender, title, message, time, previousMessageId, realEstateId);
     }
 
-    public void setPreviousMessageId(int previousMessage) {
-        this.previousMessageId = previousMessage;
+    public String getReceiver() {
+        return receiver;
     }
-
-    public int getPreviousMessageId() {
-        return previousMessageId;
-    }
-
 }

@@ -7,24 +7,30 @@ import java.time.LocalDateTime;
 public abstract class AbstractMessage {
 
     private int id;
-    private AbstractUser sender;
+    private String sender;
     private String title;
     private String message;
     private LocalDateTime time;
+    private int previousMessageId;
+    private int realEstateId;
 
-    public AbstractMessage(int id, AbstractUser sender, String title, String message, LocalDateTime time){
+    private boolean isAnswered;
+
+    public AbstractMessage(int id, String sender, String title, String message, LocalDateTime time, int previousMessageId, int realEstateId){
         this.id = id;
         this.sender = sender;
         this.title = title;
         this.message = message;
         this.time = time;
+        this.previousMessageId = previousMessageId;
+        this.realEstateId = realEstateId;
     }
 
     public int getId() {
         return id;
     }
 
-    public AbstractUser getSender() {
+    public String getSender() {
         return sender;
     }
 
@@ -38,5 +44,17 @@ public abstract class AbstractMessage {
 
     public LocalDateTime getTime() {
         return time;
+    }
+
+    public void setAnswered(boolean isAnswered) {
+        isAnswered = isAnswered;
+    }
+
+    public boolean getIsAnswered(){
+        return isAnswered;
+    }
+
+    public int getPreviousMessageId() {
+        return previousMessageId;
     }
 }
