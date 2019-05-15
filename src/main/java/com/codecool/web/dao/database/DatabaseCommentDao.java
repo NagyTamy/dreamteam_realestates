@@ -168,7 +168,25 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
         String sql="DELETE FROM reviews WHERE id =?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, commentId);
-            statement.executeQuery();
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void flagComment(int commentId) throws SQLException, NoSuchCommentException, NoInstanceException {
+        boolean isFlagged;
+        Comment comment = getCommentById(commentId);
+        if(comment.getFlagged()){
+            isFlagged = false;
+        } else {
+            isFlagged = true;
+        }
+
+        String sql = "UPDATE reviews SET is_flagged=? WHERE id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setBoolean(1, isFlagged);
+            statement.setInt(2, commentId);
+            executeInsert(statement);
         }
     }
 

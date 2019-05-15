@@ -137,7 +137,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
             statement.setInt(4, previousMessageId);
             statement.setString(5, title);
             statement.setString(6, content);
-            statement.executeQuery();
+            executeInsert(statement);
         }
     }
 
@@ -150,7 +150,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
             statement.setString(3, title);
             statement.setString(4, content);
             statement.setInt(5, realEstate);
-            statement.executeQuery();
+            executeInsert(statement);
         }
     }
 
@@ -160,7 +160,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
         String sql = "DELETE FROM messages WHERE message_id=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, messageId);
-            statement.executeQuery();
+            executeInsert(statement);
         }
     }
 
@@ -186,5 +186,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
         }
         return newMessage;
     }
-    
+
+
+
 }

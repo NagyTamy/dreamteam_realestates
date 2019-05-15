@@ -1,28 +1,28 @@
 package com.codecool.web.model;
 
-import com.codecool.web.model.user.AbstractUser;
-
 import java.time.LocalDateTime;
-
-import static java.time.LocalDateTime.now;
 
 public class Reservation extends AbstractModel {
 
-    private LocalDateTime requestDate = now();
+    private LocalDateTime requestDate;
     private int realEstateId;
-    private AbstractUser renter;
+    private String renter;
     private LocalDateTime begins;
     private LocalDateTime ends;
 
     private boolean isConfirmed;
     private LocalDateTime confirmationDate;
 
-    Reservation(int id, int realEstateId, AbstractUser renter, LocalDateTime begins, LocalDateTime ends) {
+    public Reservation(int id, int realEstateId, String renter, LocalDateTime begins, LocalDateTime ends) {
         super(id);
         this.realEstateId = realEstateId;
         this.renter = renter;
         this.begins = begins;
         this.ends = ends;
+    }
+
+    public void setRequestDate(LocalDateTime requestDate) {
+        this.requestDate = requestDate;
     }
 
     public LocalDateTime getRequestDate() {
@@ -33,7 +33,7 @@ public class Reservation extends AbstractModel {
         return realEstateId;
     }
 
-    public AbstractUser getRenter() {
+    public String getRenter() {
         return renter;
     }
 

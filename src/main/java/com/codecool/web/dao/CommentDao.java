@@ -32,4 +32,6 @@ public interface CommentDao {
 
     void removeComment(int commentId) throws SQLException;
 
+    void flagComment(int commentId) throws SQLException, NoSuchCommentException, NoInstanceException;
+
 }

@@ -99,8 +99,8 @@ CREATE TABLE messages(
     message_id SERIAL PRIMARY KEY,
     sender_name varchar(40), /*Sender's user name*/
     receiver_name varchar(40) DEFAULT 'system', /*system is a default superuser used for requests with no direct receivers of messages, e.g. role change requests*/
-    real_estate int DEFAULT 0, /* in case if the message is assigned to a user but not related to a real estate*/
-    history int DEFAULT 0,
+    real_estate int DEFAULT null, /* in case if the message is assigned to a user but not related to a real estate*/
+    history int DEFAULT null,
     date TIMESTAMP WITH TIME ZONE DEFAULT now(),
     title varchar(60) NOT NULL,
     content text NOT NULL,
@@ -296,7 +296,7 @@ CREATE OR REPLACE FUNCTION logger_for_user_requests()
 BEGIN
     IF NEW.history IS NOT NULL AND NEW.history NOT IN (SELECT messages.message_id FROM messages RIGHT JOIN messages_receivers ON messages.message_id = messages_receivers.message_id) THEN
         INSERT INTO logger(date, admin_id, action_content)
-        VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), (SELECT current_setting('session.osuser'))|| ' answered ' ||(SELECT  user_name FROM messages WHERE message_id = NEW.history)|| '''s message nr.: ' || NEW.history );
+        VALUES(now(),(SELECT admin_id FROM admins WHERE user_name = (SELECT current_setting('session.osuser'))), (SELECT current_setting('session.osuser'))|| ' answered ' ||(SELECT  sender_name FROM messages WHERE message_id = NEW.history)|| '''s message nr.: ' || NEW.history );
     END IF;
     RETURN NEW;
 END; $A$
@@ -360,6 +360,8 @@ CREATE OR REPLACE FUNCTION create_date_for_reservation_confirmation() RETURNS TR
 BEGIN
     IF NEW.is_confirmed = 'true' AND OLD.reservation_conformation_date IS NULL THEN
         UPDATE reservations SET reservation_conformation_date = now() WHERE reservation_id = NEW.reservation_id;
+    ELSEIF NEW.is_confirmed = 'false' AND OLD.reservation_conformation_date IS NOT NULL THEN
+        UPDATE reservations SET reservation_conformation_date = null WHERE reservation_id = NEW.reservation_id;
     end if;
     RETURN NEW;
 end; $conf$
@@ -495,6 +497,21 @@ CREATE TRIGGER profanity_filter5
     FOR EACH ROW
 EXECUTE PROCEDURE profanity_filter5();
 
+CREATE OR REPLACE FUNCTION message_answered() RETURNS TRIGGER AS $message$
+BEGIN
+    IF NEW.history IS NOT NULL THEN
+        UPDATE messages SET is_answered='true' WHERE message_id = NEW.history;
+    end if;
+    RETURN NEW;
+end; $message$
+    LANGUAGE plpgsql;
+
+CREATE TRIGGER set_message_answered
+    AFTER INSERT
+    ON messages
+    FOR EACH ROW
+EXECUTE PROCEDURE message_answered();
+
 
 INSERT INTO users VALUES ('system', 'basicmail@mail.hu', 'systemuser', 'admin', now(), 'theme');
 INSERT INTO users VALUES ('test', 'test@test', 'password', 'renter', '2019/01/01 00:00', 'theme');
@@ -511,10 +528,12 @@ INSERT INTO real_estates(user_name, real_estate_name, country, city, address, be
 
 INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES ('1', 'test', '2019/01/01', '2019/01/06');
 
-INSERT INTO messages(sender_name, receiver_name, date, title, message) VALUES ('test', 'test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, real_estate, date, title, message) VALUES ('test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, message) VALUES ('test2', 'test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, date, title, message) VALUES ('test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, real_estate, date, title, content) VALUES ('test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, content) VALUES ('test2', 'test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, date, title, content) VALUES ('test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
+
+INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test', 'test1', '2019/01/06 02:33', 'Bla', 'Blablabla', 1);
 
 INSERT INTO blacklist(bad_word) VALUES
                 ('anal'),
