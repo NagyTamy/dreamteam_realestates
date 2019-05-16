@@ -6,8 +6,6 @@ import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.service.exception.NoSuchMessageException;
 
-import javax.script.ScriptContext;
-import java.io.PipedReader;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

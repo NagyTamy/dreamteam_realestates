@@ -1,7 +1,5 @@
 package com.codecool.web.model.search;
 
-import com.codecool.web.model.AbstractModel;
-
 import java.time.LocalDateTime;
 
 public class FilteredSearch extends Search {

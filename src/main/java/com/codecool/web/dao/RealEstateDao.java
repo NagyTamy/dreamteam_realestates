@@ -1,28 +1,27 @@
 package com.codecool.web.dao;
 
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.service.exception.NoSuchRealEstateException;
 
-import java.time.LocalDateTime;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface RealEstateDao {
 
-    RealEstate findRealEstateById(int realEstateId);
+    RealEstate findRealEstateById(int realEstateId) throws SQLException, NoSuchRealEstateException;
 
-    List<RealEstate> findRealEstatesByUser(String user);
+    List<RealEstate> findRealEstatesByUser(String user) throws SQLException;
 
-    List<RealEstate> getAllRealEstate();
+    List<RealEstate> getAllRealEstate() throws SQLException;
 
-    List<RealEstate> simpleSearchResul(String searchKey);
+    RealEstate findByReservationId(int reservationId) throws SQLException, NoSuchRealEstateException;
 
-    List<RealEstate> filteredSearchResult(String name, String country, String city, String address, int bedCount, int price, String extras, LocalDateTime begins, LocalDateTime ends);
+    void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException;
 
-    RealEstate findByReservationId(int reservationId);
+    void updateRealEstate(int bedCount, int price, String description, String extras, int realEstateId) throws SQLException;
 
-    void addRealEstate(RealEstate realEstate);
+    void removeRealEstate(int realEstateId) throws SQLException;
 
-    void updateRealEstate(RealEstate realEstate);
-
-    void removeRealEstate(int realestateId);
+    void changeRealEstateState(int realEstateId) throws SQLException, NoSuchRealEstateException;
 
 }

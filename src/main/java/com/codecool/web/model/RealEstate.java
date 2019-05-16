@@ -1,7 +1,6 @@
 package com.codecool.web.model;
 
-import com.codecool.web.model.comment.Comment;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class RealEstate extends AbstractModel {
@@ -15,14 +14,10 @@ public class RealEstate extends AbstractModel {
 
     private String description;
     private List<String> extras;
-    private boolean isPublic;
-    private List<Reservation> reservations;
-    private List<Comment> reviews;
-    private List<byte[]> pictures;
-    private byte[] mainPicture;
-    private int avgRating;
+    private boolean isPublic = false;
+    private LocalDateTime uploadDate;
 
-    RealEstate(int id, String name, String country, String city, String address, int bedCount, int price) {
+    public RealEstate(int id, String name, String country, String city, String address, int bedCount, int price) {
         super(id);
         this.name = name;
         this.country = country;
@@ -68,50 +63,6 @@ public class RealEstate extends AbstractModel {
         this.extras = extras;
     }
 
-    public byte[] getMainPicture() {
-        return mainPicture;
-    }
-
-    public void setMainPicture(byte[] mainPicture) {
-        this.mainPicture = mainPicture;
-    }
-
-    public List<byte[]> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(byte[] picture) {
-        pictures.add(picture);
-    }
-
-    public void setPictures(List<byte[]> pictures) {
-        this.pictures = pictures;
-    }
-
-    public List<Comment> getReviews() {
-        return reviews;
-    }
-
-    public void setReviewa(Comment review) {
-        reviews.add(review);
-    }
-
-    public void setReviews(List<Comment> reviews) {
-        this.reviews = reviews;
-    }
-
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(Reservation reservation) {
-        reservations.add(reservation);
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -127,12 +78,13 @@ public class RealEstate extends AbstractModel {
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
+    
 
-    public int getAvgRating() {
-        return avgRating;
+    public void setUpldoadDate(LocalDateTime upldoadDate) {
+        this.uploadDate = upldoadDate;
     }
 
-    public void setAvgRating(int avgRating) {
-        this.avgRating = avgRating;
+    public LocalDateTime getUpldoadDate() {
+        return uploadDate;
     }
 }
