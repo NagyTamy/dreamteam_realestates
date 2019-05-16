@@ -11,7 +11,6 @@ import java.util.Objects;
 
 public abstract class AbstractUser {
 
-    private int id;
     private String name;
     private String eMail;
     private String password;
@@ -25,16 +24,11 @@ public abstract class AbstractUser {
     private int avgRating;
 
 
-    AbstractUser(int id, String name, String eMail, String password) {
-        this.id = id;
+    AbstractUser(String name, String eMail) {
         this.name = name;
         this.eMail = eMail;
-        this.password = password;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -42,6 +36,10 @@ public abstract class AbstractUser {
 
     public String geteMail() {
         return eMail;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPassword() {
@@ -128,16 +126,4 @@ public abstract class AbstractUser {
         this.avgRating = avgRating;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AbstractUser that = (AbstractUser) o;
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

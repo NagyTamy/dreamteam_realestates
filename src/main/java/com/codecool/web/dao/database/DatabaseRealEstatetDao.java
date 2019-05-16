@@ -146,5 +146,5 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         realEstate.setUpldoadDate(resultSet.getTimestamp("upload_date").toLocalDateTime());
         return realEstate;
     }
-    
+
 }

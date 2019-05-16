@@ -10,8 +10,8 @@ public class Landlord extends AbstractUser {
     private List<RealEstate> ownedRealEstate;
     private List<Reservation> incomingReservations;
 
-    public Landlord(int id, String name, String eMail, String password) {
-        super(id, name, eMail, password);
+    public Landlord(String name, String eMail) {
+        super(name, eMail);
     }
 
     public List<RealEstate> getOwnedRealEstate() {

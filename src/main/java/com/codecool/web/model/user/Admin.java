@@ -12,9 +12,11 @@ public class Admin extends AbstractUser {
     private List<Reservation> incomingReservations;
     private List<SystemMessages> systemMessages;
     private List<RealEstate> systemRealEstates;
+    int id;
 
-    public Admin(int id, String name, String eMail, String password) {
-        super(id, name, eMail, password);
+    public Admin(int id, String name, String eMail) {
+        super(name, eMail);
+        this.id = id;
     }
 
     public List<RealEstate> getOwnedRealEstate() {
@@ -63,5 +65,9 @@ public class Admin extends AbstractUser {
 
     public void setSystemRealEstates(List<RealEstate> systemRealEstates) {
         this.systemRealEstates = systemRealEstates;
+    }
+
+    public int getId() {
+        return id;
     }
 }
