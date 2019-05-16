@@ -168,7 +168,7 @@ CREATE TABLE searches(
     date TIMESTAMP WITH TIME ZONE DEFAULT now(),
     user_name varchar(40),
     free_search_keys text,
-    real_estate_name varchar(40) UNIQUE,
+    real_estate_name varchar(40),
     country varchar(74),
     city varchar(85),
     bed_count int,

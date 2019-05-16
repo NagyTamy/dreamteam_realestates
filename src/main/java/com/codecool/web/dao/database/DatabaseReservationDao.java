@@ -25,7 +25,6 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
                     return fetchReservation(resultSet);
                 }
             }
-
         } throw new NoSuchReservationException();
     }
 
@@ -93,7 +92,6 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
             statement.setTimestamp(2, Timestamp.valueOf(ends));
             statement.setInt(3, reservationID);
             executeInsert(statement);
-
         }
     }
 
@@ -117,7 +115,7 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
         }
     }
 
-    protected Reservation fetchReservation(ResultSet resultSet) throws SQLException{
+    private Reservation fetchReservation(ResultSet resultSet) throws SQLException{
         int id = resultSet.getInt("reservation_id");
         int realEstateId = resultSet.getInt("real_estate_id");
         String renter = resultSet.getString("tenant_name");

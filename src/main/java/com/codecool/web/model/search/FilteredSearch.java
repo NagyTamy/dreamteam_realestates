@@ -17,7 +17,7 @@ public class FilteredSearch extends Search {
     private String extras;
 
 
-    FilteredSearch(int id, LocalDateTime date, String realEstateName, String country, String city, int bedCount, int priceMax, int priceMin, String extras) {
+    public FilteredSearch(int id, LocalDateTime date, String realEstateName, String country, String city, int bedCount, int priceMax, int priceMin, String extras) {
         super(id, date);
         if(!realEstateName.isEmpty()) {
             this.realEstateName = realEstateName;

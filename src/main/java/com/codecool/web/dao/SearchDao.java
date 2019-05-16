@@ -1,27 +1,28 @@
 package com.codecool.web.dao;
 
 import com.codecool.web.model.search.FilteredSearch;
-import com.codecool.web.model.search.Search;
 import com.codecool.web.model.search.SimpleSearch;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SearchDao {
 
-    List<SimpleSearch> getAllSimpleSearch();
+    List<SimpleSearch> getAllSimpleSearch() throws SQLException;
 
-    List<SimpleSearch> getAllSimppleSearchBetween(LocalDateTime begins, LocalDateTime ends);
+    List<SimpleSearch> getAllSimpleSearchBetween(LocalDateTime begins, LocalDateTime ends) throws SQLException;
 
-    List<SimpleSearch> getSimpleSearchForUser(String userName);
 
-    List<FilteredSearch> gezSavedSearchByUser(String userName);
+    List<FilteredSearch> getSavedSearchByUser(String userName) throws SQLException;
 
-    FilteredSearch getLastNotSavedSearchByUser(String userName);
+    FilteredSearch getLastNotSavedSearchByUser(String userName) throws SQLException;
 
-    void addNewSearch(Search search);
+    void addNewSimpleSearch(String freeWordSearchKey) throws SQLException;
 
-    void updateSearch(Search search);
+    void addNewFilteredSearch(String realEstateName, String country, String city, int bedCount, int priceMax, int priceMin, String extras) throws SQLException;
 
-    void removeSearch(int searchId);
+    void updateSavedSearch(FilteredSearch search) throws SQLException;
+
+    void removeSearch(int searchId) throws SQLException;
 }

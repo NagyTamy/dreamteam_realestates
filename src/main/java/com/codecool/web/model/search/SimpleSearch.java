@@ -10,7 +10,7 @@ public class SimpleSearch extends Search {
     private String[] searchwords;
     private String freeWordSearchKey;
 
-    SimpleSearch(int id, LocalDateTime date, String freeWordSearchKey){
+    public SimpleSearch(int id, LocalDateTime date, String freeWordSearchKey){
         super(id, date);
         this.freeWordSearchKey = freeWordSearchKey;
         freeWordSearchKey = freeWordSearchKey.replaceAll(",\\s", ",");
