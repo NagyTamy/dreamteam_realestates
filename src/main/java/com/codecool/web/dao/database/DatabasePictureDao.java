@@ -4,7 +4,6 @@ import com.codecool.web.dao.PictureDao;
 import com.codecool.web.model.Picture;
 import com.codecool.web.service.exception.NoSuchPictureException;
 
-import javax.servlet.annotation.WebServlet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -94,7 +93,7 @@ public class DatabasePictureDao extends AbstractDao implements PictureDao {
         }
     }
 
-    public void deleteicture(int imgId) throws SQLException{
+    public void deletePicture(int imgId) throws SQLException{
         String sql = "DELETE FROM pictures WHERE id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, imgId);
@@ -108,5 +107,5 @@ public class DatabasePictureDao extends AbstractDao implements PictureDao {
         String description = resultSet.getString("description");
         return new Picture(id, image, description);
     }
-    
+
 }

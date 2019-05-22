@@ -4,6 +4,7 @@ import com.codecool.web.dao.PictureDao;
 import com.codecool.web.model.Picture;
 import com.codecool.web.service.exception.NoSuchPictureException;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,6 +26,18 @@ public class PictureService {
 
     public List<Picture> getAllPictureForRealEstate(int realEstateId) throws SQLException{
         return pictureDao.getAllPictureForRealEstate(realEstateId);
+    }
+
+    public void insertPicture(String imgName, String userName, int realEstateId, String description) throws SQLException, FileNotFoundException{
+        pictureDao.insertPicture(imgName, userName, realEstateId, description);
+    }
+
+    public void updatePicture(int imgId, String description) throws SQLException{
+        pictureDao.updatePicture(imgId, description);
+    }
+
+    public void deletePicture(int imgId) throws SQLException{
+        pictureDao.deletePicture(imgId);
     }
 
 }
