@@ -104,12 +104,18 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
         String name = resultSet.getString("user_name");
         String eMail = resultSet.getString("email");
         if(role.equals("renter")){
-            return new Renter(name, eMail);
+            AbstractUser renter = new Renter(name, eMail);
+            renter.setAvgRating(resultSet.getFloat("avg_rating"));
+            return renter;
         } else if(role.equals("landlord")){
-            return new Landlord(name, eMail);
+            AbstractUser landlord = new Landlord(name, eMail);
+            landlord.setAvgRating(resultSet.getFloat("avg_rating"));
+            return landlord;
         } else if (role.equals("admin")){
             int id = resultSet.getInt("admin_id");
-            return new Admin(id, name, eMail);
+            AbstractUser admin = new Admin(id, name, eMail);
+            admin.setAvgRating(resultSet.getFloat("avg_rating"));
+            return admin;
         } else {
             throw new NoInstanceException();
         }

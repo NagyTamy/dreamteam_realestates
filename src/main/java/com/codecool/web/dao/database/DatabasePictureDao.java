@@ -4,6 +4,10 @@ import com.codecool.web.dao.PictureDao;
 import com.codecool.web.model.Picture;
 import com.codecool.web.service.exception.NoSuchPictureException;
 
+import javax.servlet.annotation.WebServlet;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -58,17 +62,51 @@ public class DatabasePictureDao extends AbstractDao implements PictureDao {
         } return getAllPictureForRealEstate;
     }
 
+    public void insertPicture(String imgName, String userName, int realEstateId, String description) throws SQLException, FileNotFoundException {
+        File file = new File(imgName);
+        FileInputStream fis = new FileInputStream(file);
+        if (realEstateId == 0) {
+            String sql = "INSERT INTO pictures(user_name, picture, description) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, userName);
+                statement.setBinaryStream(2, fis);
+                statement.setString(3, description);
+                executeInsert(statement);
+            }
+        } else {
+            String sql = "INSERT INTO pictures(user_name, real_estate, picture, description) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, userName);
+                statement.setInt(2, realEstateId);
+                statement.setBinaryStream(3, fis);
+                statement.setString(4, description);
+                executeInsert(statement);
+            }
+        }
+    }
+
+    public void updatePicture(int imgId, String description) throws SQLException{
+        String sql = "UPDATE pictures SET description=? WHERE id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, description);
+            statement.setInt(2, imgId);
+            executeInsert(statement);
+        }
+    }
+
+    public void deleteicture(int imgId) throws SQLException{
+        String sql = "DELETE FROM pictures WHERE id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, imgId);
+            executeInsert(statement);
+        }
+    }
+
     private Picture fetchPicture(ResultSet resultSet) throws SQLException{
         int id = resultSet.getInt("id");
         byte[] image = resultSet.getBytes("picture");
         String description = resultSet.getString("description");
         return new Picture(id, image, description);
     }
-
-    /*pictures(
-    id SERIAL PRIMARY KEY,
-    user_name varchar(40),
-    real_estate int,
-    picture bytea NOT NULL,
-    description text DEFAULT NULL,*/
+    
 }

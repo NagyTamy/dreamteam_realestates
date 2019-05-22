@@ -7,7 +7,7 @@ import com.codecool.web.model.RealEstate;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+
 
 public abstract class AbstractUser {
 
@@ -21,7 +21,7 @@ public abstract class AbstractUser {
     private List<PrivateMessages> messages;
     private List<Reservation> reservations;
     private List<Comment> comments;
-    private int avgRating;
+    private float avgRating;
 
 
     AbstractUser(String name, String eMail) {
@@ -118,11 +118,11 @@ public abstract class AbstractUser {
         this.comments = comments;
     }
 
-    public int getAvgRating() {
+    public float getAvgRating() {
         return avgRating;
     }
 
-    public void setAvgRating(int avgRating) {
+    public void setAvgRating(float avgRating) {
         this.avgRating = avgRating;
     }
 

@@ -24,4 +24,9 @@ public interface RealEstateDao {
 
     void changeRealEstateState(int realEstateId) throws SQLException, NoSuchRealEstateException;
 
+    List<RealEstate> getBestRated() throws SQLException;
+
+    List<RealEstate> getNewest() throws SQLException;
+
+    List<RealEstate> getLastReserved() throws SQLException, NoSuchRealEstateException;
 }

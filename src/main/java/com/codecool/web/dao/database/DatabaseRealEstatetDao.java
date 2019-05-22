@@ -2,15 +2,17 @@ package com.codecool.web.dao.database;
 
 import com.codecool.web.dao.RealEstateDao;
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.Reservation;
 import com.codecool.web.service.exception.NoSuchRealEstateException;
 
+import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao {
 
-    DatabaseRealEstatetDao(Connection connection) {
+    public DatabaseRealEstatetDao(Connection connection) {
         super(connection);
     }
 
@@ -122,6 +124,42 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         }
     }
 
+    @Override
+    public List<RealEstate> getBestRated() throws SQLException {
+        List<RealEstate> getBestRated = new ArrayList<>();
+        String sql = "SELECT * FROM real_estates ORDER BY avg_rating LIMIT 4";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)){
+            while (resultSet.next()){
+                getBestRated.add(fetchRealEstate(resultSet));
+            }
+        } return getBestRated;
+    }
+
+    @Override
+    public List<RealEstate> getNewest() throws SQLException {
+        List<RealEstate> getNewest = new ArrayList<>();
+        String sql = "SELECT * FROM real_estates ORDER BY upload_date DESC LIMIT 4";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)){
+            while (resultSet.next()){
+                getNewest.add(fetchRealEstate(resultSet));
+            }
+        } return getNewest;
+    }
+
+    @Override
+    public List<RealEstate> getLastReserved() throws SQLException, NoSuchRealEstateException {
+        List<RealEstate> getNewest = new ArrayList<>();
+        String sql = "SELECT DISTINCT real_estates.real_estate_id, reservation_conformation_date FROM real_estates LEFT JOIN reservations ON reservations.real_estate_id = real_estates.real_estate_id ORDER BY reservation_conformation_date DESC LIMIT 4";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)){
+            while (resultSet.next()){
+                getNewest.add(findRealEstateById(resultSet.getInt("real_estate_id")));
+            }
+        } return getNewest;
+    }
+
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("real_estate_id");
         String name = resultSet.getString("real_estate_name");
@@ -142,6 +180,7 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         if(resultSet.getBoolean("is_public")){
             realEstate.setPublic(true);
         }
+        realEstate.setAvgRating(resultSet.getFloat("avg_rating"));
 
         realEstate.setUpldoadDate(resultSet.getTimestamp("upload_date").toLocalDateTime());
         return realEstate;

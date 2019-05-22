@@ -1,7 +1,6 @@
 package com.codecool.web.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class RealEstate extends AbstractModel {
 
@@ -13,9 +12,10 @@ public class RealEstate extends AbstractModel {
     private int price;
 
     private String description;
-    private List<String> extras;
+    private String extras;
     private boolean isPublic = false;
     private LocalDateTime uploadDate;
+    private float avgRating;
 
     public RealEstate(int id, String name, String country, String city, String address, int bedCount, int price) {
         super(id);
@@ -51,15 +51,11 @@ public class RealEstate extends AbstractModel {
         return price;
     }
 
-    public List<String> getExtras() {
+    public String getExtras() {
         return extras;
     }
 
-    public void setExtras(String extra) {
-        extras.add(extra);
-    }
-
-    public void setExtras(List<String> extras) {
+    public void setExtras(String extras) {
         this.extras = extras;
     }
 
@@ -86,5 +82,13 @@ public class RealEstate extends AbstractModel {
 
     public LocalDateTime getUpldoadDate() {
         return uploadDate;
+    }
+
+    public void setAvgRating(float avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public float getAvgRating() {
+        return avgRating;
     }
 }
