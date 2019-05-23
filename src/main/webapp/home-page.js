@@ -8,6 +8,18 @@ function onHomePageLoad() {
     }
 }
 
+
+function decodeBase64(s) {
+    let e={},i,b=0,c,x,l=0,a,r='',w=String.fromCharCode,L=s.length;
+    const A="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    for(i=0;i<64;i++){e[A.charAt(i)]=i;}
+    for(x=0;x<L;x++){
+        c=e[s.charAt(x)];b=(b<<6)+c;l+=6;
+        while(l>=8){((a=(b>>>(l-=8))&0xff)||(x<(L-2)))&&(r+=w(a));}
+    }
+    return r;
+};
+
 function createRow(arrayList) {
     const rowEl = document.createElement("div");
     rowEl.classList.add("row");
@@ -16,8 +28,17 @@ function createRow(arrayList) {
         const oneFourthEl = document.createElement("div");
         oneFourthEl.classList.add("one-fourth");
 
+        const imgSrc = decodeBase64(arrayList[j].pic);
+
+        const mainImgEl = document.createElement("img");
+        mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+
+        const ringImg = document.createElement("img");
+        ringImg.src = "img/dark-angled-ring.svg"
+
         const img = document.createElement("div");
         img.classList.add("one-fourth-img");
+
 
         const h3NameEl = document.createElement("h3");
         h3NameEl.textContent = arrayList[j].name;
@@ -33,6 +54,10 @@ function createRow(arrayList) {
         const buttonEl = document.createElement("button");
         buttonEl.textContent = "More";
 
+
+
+        oneFourthEl.appendChild(mainImgEl);
+        oneFourthEl.appendChild(ringImg);
         oneFourthEl.appendChild(img);
         oneFourthEl.appendChild(h3NameEl);
         oneFourthEl.appendChild(pEl);

@@ -2,6 +2,8 @@ package com.codecool.web.model;
 
 import java.time.LocalDateTime;
 
+
+
 public class RealEstate extends AbstractModel {
 
     private String name;
@@ -16,6 +18,8 @@ public class RealEstate extends AbstractModel {
     private boolean isPublic = false;
     private LocalDateTime uploadDate;
     private float avgRating;
+    private byte[] pic;
+
 
     public RealEstate(int id, String name, String country, String city, String address, int bedCount, int price) {
         super(id);
@@ -76,7 +80,7 @@ public class RealEstate extends AbstractModel {
     }
     
 
-    public void setUpldoadDate(LocalDateTime upldoadDate) {
+    public void setUploadDate(LocalDateTime upldoadDate) {
         this.uploadDate = upldoadDate;
     }
 
@@ -90,5 +94,13 @@ public class RealEstate extends AbstractModel {
 
     public float getAvgRating() {
         return avgRating;
+    }
+
+    public byte[] getPic() {
+        return pic;
+    }
+
+    public void setPic(byte[] pic) {
+        this.pic = pic;
     }
 }

@@ -2,10 +2,8 @@ package com.codecool.web.dao.database;
 
 import com.codecool.web.dao.RealEstateDao;
 import com.codecool.web.model.RealEstate;
-import com.codecool.web.model.Reservation;
 import com.codecool.web.service.exception.NoSuchRealEstateException;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -182,7 +180,7 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         }
         realEstate.setAvgRating(resultSet.getFloat("avg_rating"));
 
-        realEstate.setUpldoadDate(resultSet.getTimestamp("upload_date").toLocalDateTime());
+        realEstate.setUploadDate(resultSet.getTimestamp("upload_date").toLocalDateTime());
         return realEstate;
     }
 

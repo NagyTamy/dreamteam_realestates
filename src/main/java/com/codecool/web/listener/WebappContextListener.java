@@ -1,5 +1,6 @@
 package com.codecool.web.listener;
 
+import com.codecool.web.dao.database.DatabasePictureDao;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
