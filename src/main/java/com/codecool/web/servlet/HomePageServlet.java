@@ -6,6 +6,10 @@ import com.codecool.web.dao.database.DatabasePictureDao;
 import com.codecool.web.dao.database.DatabaseRealEstatetDao;
 import com.codecool.web.dto.RealEstateOffersDto;
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.user.AbstractUser;
+import com.codecool.web.model.user.Admin;
+import com.codecool.web.model.user.Landlord;
+import com.codecool.web.model.user.Renter;
 import com.codecool.web.service.PictureService;
 import com.codecool.web.service.RealEstateService;
 import com.codecool.web.service.exception.NoSuchPictureException;
@@ -34,9 +38,35 @@ public class HomePageServlet extends AbstractServlet {
             List<RealEstate> newest = realEstateService.getNewest();
             List<RealEstate> trending = realEstateService.getLastReserved();
             List<String> menuList = new ArrayList<>();
-            menuList.add("log in");
-            menuList.add("register");
 
+            AbstractUser user = (AbstractUser) req.getAttribute("user");
+            if (user != null){
+                if(user instanceof Renter){
+                    menuList.add("Profile");
+                    menuList.add("Messages");
+                    menuList.add("Reservations");
+                    menuList.add("Reviews");
+                    menuList.add("Favs");
+                } else if (user instanceof Landlord){
+                    menuList.add("Profile");
+                    menuList.add("Messages");
+                    menuList.add("Reservations");
+                    menuList.add("Reviews");
+                    menuList.add("Favs");
+                    menuList.add("Homes");
+                } else if (user instanceof Admin){
+                    menuList.add("Profile");
+                    menuList.add("Messages");
+                    menuList.add("Reservations");
+                    menuList.add("Reviews");
+                    menuList.add("Favs");
+                    menuList.add("Homes");
+                    menuList.add("Users");
+                }
+            } else {
+                menuList.add("Log in");
+                menuList.add("Register");
+            }
 
             RealEstateOffersDto onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList);
 

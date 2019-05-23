@@ -126,38 +126,41 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
     }
 
     @Override
-    public void addNewPrivateMessage(String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException {
-        String sql = "INSERT INTO messages(sender_name, receiver_name, real_estate, history, title, content) VALUES(?, ?, ?, ?, ?, ?)";
+    public void addNewPrivateMessage(String currentUser, String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException {
+        String sql = "SET session.osuser to ?; INSERT INTO messages(sender_name, receiver_name, real_estate, history, title, content) VALUES(?, ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, sender);
-            statement.setString(2, receiver);
-            statement.setInt(3, realEstate);
-            statement.setInt(4, previousMessageId);
-            statement.setString(5, title);
-            statement.setString(6, content);
+            statement.setString(1, currentUser);
+            statement.setString(2, sender);
+            statement.setString(3, receiver);
+            statement.setInt(4, realEstate);
+            statement.setInt(5, previousMessageId);
+            statement.setString(6, title);
+            statement.setString(7, content);
             executeInsert(statement);
         }
     }
 
     @Override
-    public void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException {
-        String sql = "INSERT INTO messages(sender_name, history, title, content, real_estate) VALUES(?, ?, ?, ?, ?)";
+    public void addNewSystemMessage(String currentUser, String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException {
+        String sql = "SET session.osuser to ?; INSERT INTO messages(sender_name, history, title, content, real_estate) VALUES(?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, sender);
-            statement.setInt(2, previousMessageId);
-            statement.setString(3, title);
-            statement.setString(4, content);
-            statement.setInt(5, realEstate);
+            statement.setString(1, currentUser);
+            statement.setString(2, sender);
+            statement.setInt(3, previousMessageId);
+            statement.setString(4, title);
+            statement.setString(5, content);
+            statement.setInt(6, realEstate);
             executeInsert(statement);
         }
     }
 
 
     @Override
-    public void removeMessage(int messageId) throws SQLException {
-        String sql = "DELETE FROM messages WHERE message_id=?";
+    public void removeMessage(String currentUser, int messageId) throws SQLException {
+        String sql = "SET session.osuser to ?; DELETE FROM messages WHERE message_id=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setInt(1, messageId);
+            statement.setString(1, currentUser);
+            statement.setInt(2, messageId);
             executeInsert(statement);
         }
     }

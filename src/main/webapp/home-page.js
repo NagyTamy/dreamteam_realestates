@@ -18,7 +18,7 @@ function decodeBase64(s) {
         while(l>=8){((a=(b>>>(l-=8))&0xff)||(x<(L-2)))&&(r+=w(a));}
     }
     return r;
-};
+}
 
 function createRow(arrayList) {
     const rowEl = document.createElement("div");
@@ -54,8 +54,10 @@ function createRow(arrayList) {
         const buttonEl = document.createElement("button");
         buttonEl.textContent = "More";
 
+        const realEstateIdAttr = document.createAttribute('id');
+        realEstateIdAttr.value = arrayList[j].id;
 
-
+        oneFourthEl.setAttributeNode(realEstateIdAttr);
         oneFourthEl.appendChild(mainImgEl);
         oneFourthEl.appendChild(ringImg);
         oneFourthEl.appendChild(img);
@@ -63,6 +65,7 @@ function createRow(arrayList) {
         oneFourthEl.appendChild(pEl);
         oneFourthEl.appendChild(descEl);
         oneFourthEl.appendChild(buttonEl);
+        oneFourthEl.addEventListener('click', onTileClick);
 
         rowEl.appendChild(oneFourthEl);
     }

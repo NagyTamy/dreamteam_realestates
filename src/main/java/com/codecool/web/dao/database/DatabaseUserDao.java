@@ -58,43 +58,47 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
     }
 
     @Override
-    public void addUser(String userName, String eMail, String password) throws SQLException{
-        String sql = "INSERT INTO users(user_name, email, password) VALUES(?, ?, ?)";
+    public void addUser(String currentUser, String userName, String eMail, String password) throws SQLException{
+        String sql = "SET session.osuser to ?; INSERT INTO users(user_name, email, password) VALUES(?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, userName);
+            statement.setString(1, currentUser);
+            statement.setString(2, userName);
+            statement.setString(3, eMail);
+            statement.setString(4, password);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void updateUserData(String currentUser, String userName, String eMail, String password, String theme) throws SQLException {
+        String sql ="SET session.osuser to ?; UPDATE users SET email=?, password=?, unique_theme=? WHERE user_name=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, currentUser);
             statement.setString(2, eMail);
             statement.setString(3, password);
+            statement.setString(4, theme);
+            statement.setString(5, userName);
             executeInsert(statement);
         }
     }
 
     @Override
-    public void updateUserData(String userName, String eMail, String password, String theme) throws SQLException {
-        String sql ="UPDATE users SET email=?, password=?, unique_theme=? WHERE user_name=?";
+    public void updateUserRole(String currentUser, String userName, String role) throws SQLException {
+        String sql ="SET session.osuser to ?; UPDATE users SET role_name=? WHERE user_name=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, eMail);
-            statement.setString(2, password);
-            statement.setString(3, theme);
-            statement.setString(4, userName);
+            statement.setString(1, currentUser);
+            statement.setString(2, role);
+            statement.setString(3, userName);
             executeInsert(statement);
         }
     }
 
     @Override
-    public void updateUserRole(String userName, String role) throws SQLException {
-        String sql ="UPDATE users SET role_name=? WHERE user_name=?";
+    public void removeUser(String currentUser, String userName) throws SQLException {
+        String sql = "SET session.osuser to ?; DELETE FROM users WHERE user_name=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, role);
+            statement.setString(1, currentUser);
             statement.setString(2, userName);
-            executeInsert(statement);
-        }
-    }
-
-    @Override
-    public void removeUser(String userName) throws SQLException {
-        String sql = "DELETE FROM users WHERE user_name=?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, userName);
             executeInsert(statement);
         }
     }

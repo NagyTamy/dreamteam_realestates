@@ -28,20 +28,20 @@ public class UserService {
         return userDao.getUsersByRole(role);
     }
 
-    public void addUser(String userName, String eMail, String password) throws SQLException{
-        userDao.addUser(userName, eMail, password);
+    public void addUser(String currentuser, String userName, String eMail, String password) throws SQLException{
+        userDao.addUser(currentuser, userName, eMail, password);
     }
 
-    public void updateUserData(String userName, String eMail, String password, String theme) throws SQLException{
-        userDao.updateUserData(userName, eMail, password, theme);
+    public void updateUserData(String currentuser, String userName, String eMail, String password, String theme) throws SQLException{
+        userDao.updateUserData(currentuser, userName, eMail, password, theme);
     }
 
-    public void updateUserRole(String userName, String role) throws SQLException{
-        userDao.updateUserRole(userName, role);
+    public void updateUserRole(String currentuser, String userName, String role) throws SQLException{
+        userDao.updateUserRole(currentuser, userName, role);
     }
 
-    public void removeUser(String userName) throws SQLException{
-        userDao.removeUser(userName);
+    public void removeUser(String currentuser, String userName) throws SQLException{
+        userDao.removeUser(currentuser, userName);
     }
 
 }

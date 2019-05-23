@@ -16,13 +16,13 @@ public interface RealEstateDao {
 
     RealEstate findByReservationId(int reservationId) throws SQLException, NoSuchRealEstateException;
 
-    void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException;
+    void addRealEstate(String currentUser, String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException;
 
-    void updateRealEstate(int bedCount, int price, String description, String extras, int realEstateId) throws SQLException;
+    void updateRealEstate(String currentUser, int bedCount, int price, String description, String extras, int realEstateId) throws SQLException;
 
-    void removeRealEstate(int realEstateId) throws SQLException;
+    void removeRealEstate(String currentUser, int realEstateId) throws SQLException;
 
-    void changeRealEstateState(int realEstateId) throws SQLException, NoSuchRealEstateException;
+    void changeRealEstateState(String currentUser, int realEstateId) throws SQLException, NoSuchRealEstateException;
 
     List<RealEstate> getBestRated() throws SQLException;
 

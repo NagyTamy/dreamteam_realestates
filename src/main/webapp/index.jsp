@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
     <script src="index.js"></script>
     <script src="home-page.js"></script>
+    <script src="realestate.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>

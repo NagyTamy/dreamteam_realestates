@@ -36,20 +36,20 @@ public class RealEstateService {
         return realEstateDao.findByReservationId(reservationId);
     }
 
-    public void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException{
-        realEstateDao.addRealEstate(name, country, city, address, bedCount, price, description, extras);
+    public void addRealEstate(String currentUser, String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException{
+        realEstateDao.addRealEstate(currentUser, name, country, city, address, bedCount, price, description, extras);
     }
 
-    public void updateRealEstate(int bedCount, int price, String description, String extras, int realEstateId) throws SQLException{
-        realEstateDao.updateRealEstate(bedCount, price, description, extras, realEstateId);
+    public void updateRealEstate(String currentUser, int bedCount, int price, String description, String extras, int realEstateId) throws SQLException{
+        realEstateDao.updateRealEstate(currentUser, bedCount, price, description, extras, realEstateId);
     }
 
-    public void removeRealEstate(int realEstateId) throws SQLException{
-        realEstateDao.removeRealEstate(realEstateId);
+    public void removeRealEstate(String currentUser, int realEstateId) throws SQLException{
+        realEstateDao.removeRealEstate(currentUser, realEstateId);
     }
 
-    public void changeRealEstateState(int realEstateId) throws SQLException, NoSuchRealEstateException{
-        realEstateDao.changeRealEstateState(realEstateId);
+    public void changeRealEstateState(String currentUser, int realEstateId) throws SQLException, NoSuchRealEstateException{
+        realEstateDao.changeRealEstateState(currentUser, realEstateId);
     }
 
     public List<RealEstate> getBestRated() throws SQLException, NoSuchPictureException{
