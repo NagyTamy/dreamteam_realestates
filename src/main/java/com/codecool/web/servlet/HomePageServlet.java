@@ -45,23 +45,20 @@ public class HomePageServlet extends AbstractServlet {
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Reservations");
-                    menuList.add("Reviews");
                     menuList.add("Favs");
                 } else if (user instanceof Landlord){
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Reservations");
-                    menuList.add("Reviews");
                     menuList.add("Favs");
-                    menuList.add("Homes");
+                    menuList.add("Houses");
                 } else if (user instanceof Admin){
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Reservations");
-                    menuList.add("Reviews");
                     menuList.add("Favs");
-                    menuList.add("Homes");
-                    menuList.add("Users");
+                    menuList.add("Houses");
+                    menuList.add("Admin");
                 }
             } else {
                 menuList.add("Log in");

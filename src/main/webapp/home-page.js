@@ -36,10 +36,6 @@ function createRow(arrayList) {
         const ringImg = document.createElement("img");
         ringImg.src = "img/dark-angled-ring.svg"
 
-        const img = document.createElement("div");
-        img.classList.add("one-fourth-img");
-
-
         const h3NameEl = document.createElement("h3");
         h3NameEl.textContent = arrayList[j].name;
 
@@ -60,7 +56,6 @@ function createRow(arrayList) {
         oneFourthEl.setAttributeNode(realEstateIdAttr);
         oneFourthEl.appendChild(mainImgEl);
         oneFourthEl.appendChild(ringImg);
-        oneFourthEl.appendChild(img);
         oneFourthEl.appendChild(h3NameEl);
         oneFourthEl.appendChild(pEl);
         oneFourthEl.appendChild(descEl);
