@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DatabaseReservationDao extends AbstractDao implements ReservationDao {
 
-    DatabaseReservationDao(Connection connection) {
+    public DatabaseReservationDao(Connection connection) {
         super(connection);
     }
 

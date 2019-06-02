@@ -6,6 +6,11 @@ const INTERNAL_SERVER_ERROR = 500;
 
 let navContentDivEl;
 let containerContentDivEl;
+let headerTextEl;
+let headerImgEl;
+const brEl = document.createElement("br");
+
+
 
 function clearMessages() {
     const messageEls = document.getElementsByClassName('message');
@@ -49,22 +54,16 @@ function removeAllChildren(el) {
     }
 }
 
-function insertDivider(string) {
+function insertDivider(string, className) {
     const dividerDivEl = document.createElement('div');
-    dividerDivEl.classList.add('divider');
+    dividerDivEl.classList.add(className);
     const dividerSpanEl = document.createElement('span');
     const dividerFourSpanEl = document.createElement('span');
-    const dividerSpanTwoEl = document.createElement('span');
-    const dividerSpanFiveEl = document.createElement('span');
-    dividerSpanTwoEl.classList.add('pattern');
-    dividerSpanFiveEl.classList.add('pattern');
     const dividerSpanThreeEl = document.createElement('span');
     dividerSpanThreeEl.textContent = string;
 
     dividerDivEl.appendChild(dividerSpanEl);
-    dividerDivEl.appendChild(dividerSpanTwoEl);
     dividerDivEl.appendChild(dividerSpanThreeEl);
-    dividerDivEl.appendChild(dividerSpanFiveEl);
     dividerDivEl.appendChild(dividerFourSpanEl);
 
     return dividerDivEl;
@@ -96,6 +95,9 @@ function onOtherResponse(targetEl, xhr) {
 function onLoad(){
     navContentDivEl = document.getElementById('menu');
     containerContentDivEl = document.getElementById('container');
+    removeAllChildren(containerContentDivEl);
+    headerTextEl = document.getElementById("header-text");
+    headerImgEl = document.getElementById("header-image");
 
     const xhr = new XMLHttpRequest();
     xhr.addEventListener('load', onHomePageLoad);

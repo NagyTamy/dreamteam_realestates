@@ -38,26 +38,25 @@ public class HomePageServlet extends AbstractServlet {
             List<RealEstate> newest = realEstateService.getNewest();
             List<RealEstate> trending = realEstateService.getLastReserved();
             List<String> menuList = new ArrayList<>();
+            RealEstate randomOffer = realEstateService.getRandomRealEstate();
 
             AbstractUser user = (AbstractUser) req.getAttribute("user");
             if (user != null){
+                req.setAttribute("user", user);
                 if(user instanceof Renter){
                     menuList.add("Profile");
                     menuList.add("Messages");
-                    menuList.add("Reservations");
                     menuList.add("Favs");
                 } else if (user instanceof Landlord){
                     menuList.add("Profile");
                     menuList.add("Messages");
-                    menuList.add("Reservations");
+                    menuList.add("Real Estates");
                     menuList.add("Favs");
-                    menuList.add("Houses");
                 } else if (user instanceof Admin){
                     menuList.add("Profile");
                     menuList.add("Messages");
-                    menuList.add("Reservations");
+                    menuList.add("Real Estates");
                     menuList.add("Favs");
-                    menuList.add("Houses");
                     menuList.add("Admin");
                 }
             } else {
@@ -65,7 +64,7 @@ public class HomePageServlet extends AbstractServlet {
                 menuList.add("Register");
             }
 
-            RealEstateOffersDto onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList);
+            RealEstateOffersDto onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer);
 
 
             sendMessage(resp, HttpServletResponse.SC_OK, onLoadOffers);

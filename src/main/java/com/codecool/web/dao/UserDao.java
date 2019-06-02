@@ -2,6 +2,7 @@ package com.codecool.web.dao;
 
 import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoInstanceException;
+import com.codecool.web.service.exception.NoSuchCommentException;
 import com.codecool.web.service.exception.NoSuchUserException;
 
 import java.sql.SQLException;
@@ -22,5 +23,7 @@ public interface UserDao {
     void updateUserRole(String currentUser, String userName, String role) throws SQLException;
 
     void removeUser(String currentUser, String userName) throws SQLException;
+
+    AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException;
 
 }

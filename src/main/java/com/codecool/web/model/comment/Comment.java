@@ -1,6 +1,9 @@
 package com.codecool.web.model.comment;
 
+import com.codecool.web.model.user.AbstractUser;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public abstract class Comment {
 
@@ -9,6 +12,8 @@ public abstract class Comment {
     private String reviewerName;
     private String review;
     private LocalDateTime timestamp;
+    private AbstractUser user;
+    private String timeStampString;
 
     private boolean isFlagged;
 
@@ -18,6 +23,7 @@ public abstract class Comment {
         this.reviewerName = reviewerName;
         this.review = review;
         this.timestamp = timestamp;
+        timeStampString = timeStampToString(timestamp);
     }
 
     public int getReservationId() {
@@ -48,5 +54,22 @@ public abstract class Comment {
 
     public int getId() {
         return id;
+    }
+
+    public void setUser(AbstractUser user) {
+        this.user = user;
+    }
+
+    public AbstractUser getUser() {
+        return user;
+    }
+
+    private String timeStampToString(LocalDateTime timestamp){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return timestamp.format(formatter);
+    }
+
+    public String getTimeStampString() {
+        return timeStampString;
     }
 }

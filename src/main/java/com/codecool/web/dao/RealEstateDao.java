@@ -29,4 +29,6 @@ public interface RealEstateDao {
     List<RealEstate> getNewest() throws SQLException;
 
     List<RealEstate> getLastReserved() throws SQLException, NoSuchRealEstateException;
+
+    int getNumberOfRealEstates() throws SQLException;
 }

@@ -34,7 +34,7 @@ function createRow(arrayList) {
         mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
 
         const ringImg = document.createElement("img");
-        ringImg.src = "img/dark-angled-ring.svg"
+        ringImg.src = "img/dark-angled-ring.svg";
 
         const h3NameEl = document.createElement("h3");
         h3NameEl.textContent = arrayList[j].name;
@@ -50,7 +50,7 @@ function createRow(arrayList) {
         const buttonEl = document.createElement("button");
         buttonEl.textContent = "More";
 
-        const realEstateIdAttr = document.createAttribute('id');
+        const realEstateIdAttr = document.createAttribute('real-estate-id');
         realEstateIdAttr.value = arrayList[j].id;
 
         oneFourthEl.setAttributeNode(realEstateIdAttr);
@@ -73,18 +73,68 @@ function createMenu(realEstateOffersDto) {
     for (let i = 0; i < realEstateOffersDto.menuList.length; i++){
         const liMenuEl = document.createElement("li");
         liMenuEl.textContent = realEstateOffersDto.menuList[i];
+
+        const mainNavAttr = document.createAttribute("menulist-id");
+        mainNavAttr.value = realEstateOffersDto.menuList[i];
+        liMenuEl.setAttributeNode(mainNavAttr);
+
         ulMenuEl.appendChild(liMenuEl);
     }
 }
 
+function createHeaderText(realEstate){
+    const realEstateIdAttr = document.createAttribute('real-estate-id');
+    realEstateIdAttr.value =  realEstate.id;
+
+    removeAllChildren(headerTextEl);
+    const h2TextEl = document.createElement("h2");
+    h2TextEl.textContent = realEstate.name;
+    const descriptionPEl = document.createElement("p");
+    descriptionPEl.textContent = realEstate.description;
+
+    headerTextEl.addEventListener('click', onTileClick);
+    headerTextEl.setAttributeNode(realEstateIdAttr);
+    headerTextEl.appendChild(h2TextEl);
+    headerTextEl.appendChild(descriptionPEl);
+    return headerTextEl;
+}
+
+function createHeaderImg(realEstate, imgPath){
+    const realEstateIdAttr = document.createAttribute('real-estate-id');
+    realEstateIdAttr.value =  realEstate.id;
+
+    removeAllChildren(headerImgEl);
+
+    const imgSrc = decodeBase64(imgPath);
+
+    const houseImgEl = document.createElement("img");
+    houseImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+
+    const ringImg = document.createElement("img");
+    ringImg.src = "img/ring.svg";
+    ringImg.classList.add("ring");
+
+    headerImgEl.addEventListener('click', onTileClick);
+    headerImgEl.setAttributeNode(realEstateIdAttr);
+    headerImgEl.appendChild(houseImgEl);
+    headerImgEl.appendChild(ringImg);
+    return headerImgEl;
+}
+
+function createRandomOffer(realEstateOffersDto) {
+    createHeaderImg(realEstateOffersDto.randomOffer, realEstateOffersDto.randomOffer.pic);
+    createHeaderText(realEstateOffersDto.randomOffer);
+
+}
 
 function onRealEstateGuestOffers(realEstateOffersDto){
+    createRandomOffer(realEstateOffersDto);
     createMenu(realEstateOffersDto);
-    containerContentDivEl.appendChild(insertDivider('Newest'));
+    containerContentDivEl.appendChild(insertDivider('Newest', 'divider'));
     containerContentDivEl.appendChild(createRow(realEstateOffersDto.newest));
-    containerContentDivEl.appendChild(insertDivider('Best rated'));
+    containerContentDivEl.appendChild(insertDivider('Best rated', 'divider'));
     containerContentDivEl.appendChild(createRow(realEstateOffersDto.bestRated));
-    containerContentDivEl.appendChild(insertDivider('Trending'));
+    containerContentDivEl.appendChild(insertDivider('Trending', 'divider'));
     containerContentDivEl.appendChild(createRow(realEstateOffersDto.trending));
 }
 

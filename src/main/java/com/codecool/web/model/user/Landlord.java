@@ -9,6 +9,7 @@ public class Landlord extends AbstractUser {
 
     private List<RealEstate> ownedRealEstate;
     private List<Reservation> incomingReservations;
+    private String role = "Landlord";
 
     public Landlord(String name, String eMail) {
         super(name, eMail);
@@ -36,5 +37,9 @@ public class Landlord extends AbstractUser {
 
     public void setIncomingReservations(List<Reservation> incomingReservations) {
         this.incomingReservations = incomingReservations;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

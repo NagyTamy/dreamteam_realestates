@@ -3,6 +3,7 @@ package com.codecool.web.service;
 import com.codecool.web.dao.UserDao;
 import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoInstanceException;
+import com.codecool.web.service.exception.NoSuchCommentException;
 import com.codecool.web.service.exception.NoSuchUserException;
 
 import java.sql.SQLException;
@@ -42,6 +43,10 @@ public class UserService {
 
     public void removeUser(String currentuser, String userName) throws SQLException{
         userDao.removeUser(currentuser, userName);
+    }
+
+    public AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException{
+        return userDao.getUserByCommentId(commentId);
     }
 
 }

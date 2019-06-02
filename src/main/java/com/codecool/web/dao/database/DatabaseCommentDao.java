@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DatabaseCommentDao extends AbstractDao implements CommentDao {
 
-    DatabaseCommentDao(Connection connection) {
+    public DatabaseCommentDao(Connection connection) {
         super(connection);
     }
 
@@ -200,19 +200,20 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
         LocalDateTime time = resultSet.getTimestamp("date").toLocalDateTime();
 
         Comment comment;
-        if(!resultSet.getString("user_name").isEmpty()){
-            comment = new UserComment(id, reservationId, reviewername, review, time, userRating, resultSet.getString("user_name"));
-            if(resultSet.getBoolean("is_flagged")){
-                comment.setFlagged(true);
-            } return comment;
-        }
+
         if(resultSet.getInt("real_estate_id") != 0){
             comment = new RealEstateComment(id, reservationId, reviewername, review, time, realEstateRating, resultSet.getInt("real_estate_id"));
             if(resultSet.getBoolean("is_flagged")){
                 comment.setFlagged(true);
             } return comment;
-        } throw new NoInstanceException();
+        } else {
+            comment = new UserComment(id, reservationId, reviewername, review, time, userRating, resultSet.getString("user_name"));
+            if(resultSet.getBoolean("is_flagged")){
+                comment.setFlagged(true);
+            } return comment;
+        }
 
     }
+
 
 }

@@ -4,11 +4,14 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="datepickk.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.scss">
+    <script src="datepickk.min.js"></script>
     <script src="index.js"></script>
     <script src="home-page.js"></script>
     <script src="realestate.js"></script>
+    <script src="profile.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>
@@ -25,10 +28,10 @@
             <div id="header-image"></div>
         </div>
         <div id="right-header-box">
+            <div id="logo" onclick="onLoad()"></div>
             <div id="header-text">
-                <h2>Lorem Ipsum</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis nulla eget libero commodo hendrerit. Etiam dapibus eleifend odio, condimentum ornare metus commodo eget. Donec porttitor nec urna ut aliquam. Aliquam dolor nisl, tincidunt nec velit eu, tempus facilisis diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sagittis nulla eget libero commodo hendrerit. Etiam dapibus eleifend odio, condimentum ornare metus commodo eget. Donec porttitor nec urna ut aliquam. Aliquam dolor nisl, tincidunt nec velit eu, tempus facilisis diam. </p>
             </div>
+
         </div>
 <!-- NAV -->
         <nav id="menu">
@@ -41,6 +44,13 @@
     </header>
 <!-- CONTAINER FOR MAIN CONTENT -->
     <div id="container" class="hidden content">
+        <div id="comment-form" class="hidden content">
+            <form>
+                <textarea name="comment" rows="5" placeholder="Type your comment here..."></textarea>
+                <input type="number" name="rating" id="rating-input" min="1" max="5" />
+                <button onclick="createReview()">Send</button>
+            </form>
+        </div>
     </div>
     <footer>
         <img src="img/dark-angled-ring-w-bg.svg" alt="ring">

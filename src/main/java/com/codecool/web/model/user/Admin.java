@@ -12,7 +12,8 @@ public class Admin extends AbstractUser {
     private List<Reservation> incomingReservations;
     private List<SystemMessages> systemMessages;
     private List<RealEstate> systemRealEstates;
-    int id;
+    private int id;
+    private String role = "Admin";
 
     public Admin(int id, String name, String eMail) {
         super(name, eMail);
@@ -69,5 +70,9 @@ public class Admin extends AbstractUser {
 
     public int getId() {
         return id;
+    }
+
+    public String getRole(){
+        return role;
     }
 }

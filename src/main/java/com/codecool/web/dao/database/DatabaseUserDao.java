@@ -6,6 +6,7 @@ import com.codecool.web.model.user.Admin;
 import com.codecool.web.model.user.Landlord;
 import com.codecool.web.model.user.Renter;
 import com.codecool.web.service.exception.NoInstanceException;
+import com.codecool.web.service.exception.NoSuchCommentException;
 import com.codecool.web.service.exception.NoSuchUserException;
 
 import java.sql.*;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class DatabaseUserDao extends AbstractDao implements UserDao {
 
-    DatabaseUserDao(Connection connection) {
+    public DatabaseUserDao(Connection connection) {
         super(connection);
     }
 
@@ -101,6 +102,19 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
             statement.setString(2, userName);
             executeInsert(statement);
         }
+    }
+
+    @Override
+    public AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException {
+        String sql = "SELECT * FROM users LEFT JOIN reviews r on users.user_name = r.reviewer_name WHERE id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, commentId);
+            try (ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    return fetchUser(resultSet);
+                }
+            }
+        } throw new NoSuchCommentException();
     }
 
     private AbstractUser fetchUser(ResultSet resultSet) throws SQLException, NoInstanceException {

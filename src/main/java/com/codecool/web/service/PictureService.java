@@ -41,4 +41,12 @@ public class PictureService {
         pictureDao.deletePicture(imgId);
     }
 
+    public Picture findMainForRealEstate(int realEstateId) throws SQLException, NoSuchPictureException{
+        return pictureDao.findMainForRealEstate(realEstateId);
+    }
+
+    public Picture findMainForUser(String userName) throws SQLException, NoSuchPictureException{
+        return pictureDao.findMainForUser(userName);
+    }
+
 }

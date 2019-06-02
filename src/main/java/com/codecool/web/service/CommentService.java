@@ -65,4 +65,12 @@ public class CommentService {
     public void flagComment(int commentId) throws SQLException, NoSuchCommentException, NoInstanceException{
         commentDao.flagComment(commentId);
     }
+
+    public boolean hasReviews(int realEstateId) throws SQLException, NoInstanceException{
+        boolean hasReviews = false;
+        if (commentDao.getAllAboutRealEstate(realEstateId).size() > 0){
+            hasReviews = true;
+        }
+        return hasReviews;
+    }
 }

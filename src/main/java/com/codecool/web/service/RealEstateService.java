@@ -9,6 +9,7 @@ import com.codecool.web.service.exception.NoSuchRealEstateException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Random;
 
 public class RealEstateService {
 
@@ -74,6 +75,23 @@ public class RealEstateService {
                 item.setPic(picture.getImage());
             }
         } return basicList;
+    }
+
+    public RealEstate getRandomRealEstate() throws SQLException, NoSuchRealEstateException, NoSuchPictureException{
+        int num = generateRandomNumber();
+        RealEstate randomOffer = realEstateDao.findRealEstateById(num);
+        randomOffer.setPic(pictureDao.findMainForRealEstate(randomOffer.getId()).getImage());
+        return randomOffer;
+    }
+
+    private int generateRandomNumber() throws SQLException{
+        int maxNum = realEstateDao.getNumberOfRealEstates();
+        Random number = new Random();
+        return (number.nextInt(maxNum))+1;
+    }
+
+    public boolean isOwner(int realEstateId, String user) throws SQLException, NoSuchRealEstateException{
+        return realEstateDao.findRealEstatesByUser(user).contains(findRealEstateById(realEstateId));
     }
 
 }

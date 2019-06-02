@@ -36,4 +36,9 @@ abstract class AbstractServlet extends HttpServlet {
         resp.setStatus(status);
         om.writeValue(resp.getOutputStream(), object);
     }
+
+    boolean isLoggedIn(HttpServletRequest request){
+        AbstractUser user = (AbstractUser) request.getAttribute("user");
+        return user != null;
+    }
 }

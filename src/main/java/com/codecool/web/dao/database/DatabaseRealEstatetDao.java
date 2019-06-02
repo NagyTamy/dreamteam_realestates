@@ -129,7 +129,7 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
     @Override
     public List<RealEstate> getBestRated() throws SQLException {
         List<RealEstate> getBestRated = new ArrayList<>();
-        String sql = "SELECT * FROM real_estates ORDER BY avg_rating LIMIT 4";
+        String sql = "SELECT * FROM real_estates WHERE is_public='true' ORDER BY avg_rating DESC LIMIT 4";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)){
             while (resultSet.next()){
@@ -141,7 +141,7 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
     @Override
     public List<RealEstate> getNewest() throws SQLException {
         List<RealEstate> getNewest = new ArrayList<>();
-        String sql = "SELECT * FROM real_estates ORDER BY upload_date DESC LIMIT 4";
+        String sql = "SELECT * FROM real_estates WHERE is_public='true' ORDER BY upload_date DESC LIMIT 4";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)){
             while (resultSet.next()){
@@ -153,13 +153,24 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
     @Override
     public List<RealEstate> getLastReserved() throws SQLException, NoSuchRealEstateException {
         List<RealEstate> getNewest = new ArrayList<>();
-        String sql = "SELECT DISTINCT real_estates.real_estate_id, reservation_conformation_date FROM real_estates LEFT JOIN reservations ON reservations.real_estate_id = real_estates.real_estate_id ORDER BY reservation_conformation_date DESC LIMIT 4";
+        String sql = "SELECT DISTINCT real_estates.real_estate_id, reservation_conformation_date FROM real_estates LEFT JOIN reservations ON reservations.real_estate_id = real_estates.real_estate_id WHERE is_public='true' ORDER BY reservation_conformation_date DESC LIMIT 4";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)){
             while (resultSet.next()){
                 getNewest.add(findRealEstateById(resultSet.getInt("real_estate_id")));
             }
         } return getNewest;
+    }
+
+    @Override
+    public int getNumberOfRealEstates() throws SQLException {
+        String sql = "SELECT count(real_estate_id) as num FROM real_estates WHERE is_public='true'";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)){
+            if (resultSet.next()){
+                return resultSet.getInt("num");
+            }
+        } return 0;
     }
 
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {
