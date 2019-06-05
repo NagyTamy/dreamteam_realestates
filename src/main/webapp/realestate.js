@@ -124,57 +124,70 @@ function onReviewsLoad(realEstatePageDto) {
 
     if(realEstatePageDto.hasReviews){
         for(let i = 0; i < realEstatePageDto.allReview.length; i++){
-            const commentDivEl = document.createElement("div");
-            commentDivEl.id = "comment";
+            if(!realEstatePageDto.allReview[i].flagged) {
+                const commentDivEl = document.createElement("div");
+                commentDivEl.id = "comment";
 
-            const commentTextDivEl = document.createElement("div");
-            commentTextDivEl.id = "comment-text";
+                const commentTextDivEl = document.createElement("div");
+                commentTextDivEl.id = "comment-text";
 
-            const pEl = document.createElement("p");
-            pEl.classList.add("datas");
-            pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
+                const flagDiv = document.createElement("div");
+                flagDiv.id = realEstatePageDto.allReview[i].id;
+                flagDiv.classList.add("flag-comment");
+                flagDiv.addEventListener('click', onFlagReviewClicked);
 
-            const pTextEl = document.createElement("p");
-            pTextEl.textContent = realEstatePageDto.allReview[i].review;
+                const tooltipSpanEl = document.createElement("span");
+                tooltipSpanEl.textContent = "Report comment";
+                tooltipSpanEl.classList.add("tooltip");
 
-            commentTextDivEl.appendChild(pEl);
-            commentTextDivEl.appendChild(pTextEl);
-            commentDivEl.appendChild(commentTextDivEl);
+                const pEl = document.createElement("p");
+                pEl.classList.add("datas");
+                pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
 
-            const commentUserDivEl = document.createElement("div");
-            commentUserDivEl.id = "comment-user";
+                const pTextEl = document.createElement("p");
+                pTextEl.textContent = realEstatePageDto.allReview[i].review;
 
-            const profilePicImgEl = document.createElement("img");
-            const imgSrc = decodeBase64(realEstatePageDto.allReview[i].user.profilePic);
-            profilePicImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+                commentTextDivEl.appendChild(pEl);
+                commentTextDivEl.appendChild(pTextEl);
+                commentTextDivEl.appendChild(flagDiv);
+                commentTextDivEl.appendChild(tooltipSpanEl);
+                commentDivEl.appendChild(commentTextDivEl);
 
-            const profileBoxDivEl = document.createElement("div");
-            profileBoxDivEl.id = "profile-box";
+                const commentUserDivEl = document.createElement("div");
+                commentUserDivEl.id = "comment-user";
 
-            const pNameEl = document.createElement("p");
-            pNameEl.textContent = "Name: " + realEstatePageDto.allReview[i].user.name;
+                const profilePicImgEl = document.createElement("img");
+                const imgSrc = decodeBase64(realEstatePageDto.allReview[i].user.profilePic);
+                profilePicImgEl.src = 'data:image/jpg;base64,' + imgSrc;
 
-            const pRoleEl = document.createElement("p");
-            pRoleEl.textContent = "Role: " + realEstatePageDto.allReview[i].user.role;
+                const profileBoxDivEl = document.createElement("div");
+                profileBoxDivEl.id = "profile-box";
 
-            const pRatingEl = document.createElement("p");
-            pRatingEl.textContent = "Rating: " + realEstatePageDto.allReview[i].user.avgRating;
+                const pNameEl = document.createElement("p");
+                pNameEl.textContent = "Name: " + realEstatePageDto.allReview[i].user.name;
 
-            profileBoxDivEl.appendChild(pNameEl);
-            profileBoxDivEl.appendChild(pRoleEl);
-            profileBoxDivEl.appendChild(pRatingEl);
+                const pRoleEl = document.createElement("p");
+                pRoleEl.textContent = "Role: " + realEstatePageDto.allReview[i].user.role;
 
-            const toProfileButtonEl = document.createElement("button");
-            toProfileButtonEl.textContent = "Profile";
-            toProfileButtonEl.classList.add("inverse-button");
-            toProfileButtonEl.id = realEstatePageDto.allReview[i].user.name;
-            toProfileButtonEl.addEventListener('click', onProfileLoad);
+                const pRatingEl = document.createElement("p");
+                pRatingEl.textContent = "Rating: " + realEstatePageDto.allReview[i].user.avgRating;
 
-            commentUserDivEl.appendChild(profilePicImgEl);
-            commentUserDivEl.appendChild(profileBoxDivEl);
-            commentUserDivEl.appendChild(toProfileButtonEl);
-            commentDivEl.appendChild(commentUserDivEl);
-            reviewContainerDivEl.appendChild(commentDivEl);
+                profileBoxDivEl.appendChild(pNameEl);
+                profileBoxDivEl.appendChild(pRoleEl);
+                profileBoxDivEl.appendChild(pRatingEl);
+
+                const toProfileButtonEl = document.createElement("button");
+                toProfileButtonEl.textContent = "Profile";
+                toProfileButtonEl.classList.add("inverse-button");
+                toProfileButtonEl.id = realEstatePageDto.allReview[i].user.name;
+                toProfileButtonEl.addEventListener('click', onProfileLoad);
+
+                commentUserDivEl.appendChild(profilePicImgEl);
+                commentUserDivEl.appendChild(profileBoxDivEl);
+                commentUserDivEl.appendChild(toProfileButtonEl);
+                commentDivEl.appendChild(commentUserDivEl);
+                reviewContainerDivEl.appendChild(commentDivEl);
+            }
 
         }
     } else {

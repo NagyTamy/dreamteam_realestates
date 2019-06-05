@@ -34,7 +34,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     @Override
     public List<Comment> getAllByWriter(String userName) throws SQLException, NoInstanceException {
         List<Comment> allCommentByWriter = new ArrayList<>();
-        String sql ="SELECT * FROM reviews WHERE reviewer_name=?";
+        String sql ="SELECT * FROM reviews WHERE reviewer_name=? ORDER BY date DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -48,7 +48,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     @Override
     public List<Comment> getAllAboutUser(String userName) throws SQLException, NoInstanceException {
         List<Comment> allCommentAboutUser = new ArrayList<>();
-        String sql ="SELECT * FROM reviews WHERE user_name=?";
+        String sql ="SELECT * FROM reviews WHERE user_name=? ORDER BY date DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -62,7 +62,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     @Override
     public List<Comment> getAllAboutRealEstate(int realEstateId) throws SQLException, NoInstanceException {
         List<Comment> allCommentAboutRealEstate = new ArrayList<>();
-        String sql ="SELECT * FROM reviews WHERE real_estate_id=?";
+        String sql ="SELECT * FROM reviews WHERE real_estate_id=? ORDER BY date DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, realEstateId);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -72,6 +72,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
             }
         }
     }
+
 
     @Override
     public int avgUserRating(String userName) throws SQLException{
@@ -112,7 +113,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     @Override
     public List<Comment> getAllFlagged() throws SQLException, NoInstanceException {
         List<Comment> allFlagged = new ArrayList<>();
-        String sql ="SELECT * FROM reviews WHERE is_flagged='true'";
+        String sql ="SELECT * FROM reviews WHERE is_flagged='true' ORDER BY date DESC";
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql)){
             while (resultSet.next()){

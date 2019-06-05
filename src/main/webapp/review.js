@@ -29,3 +29,6 @@ function createReviewForm() {
 function sendReview() {
     
 }
+
+
+function onFlagReviewClicked() {}

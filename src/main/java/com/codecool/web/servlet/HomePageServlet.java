@@ -47,24 +47,11 @@ public class HomePageServlet extends AbstractServlet {
 
             if (user != null){
                 setSessionUser(req, user);
-                if(user instanceof Renter){
-                    menuList.add("Profile");
-                    menuList.add("Messages");
-                    menuList.add("Favs");
-                    menuList.add("Log out");
-                } else if (user instanceof Landlord){
-                    menuList.add("Profile");
-                    menuList.add("Messages");
-                    menuList.add("Real Estates");
-                    menuList.add("Favs");
-                    menuList.add("Log out");
-                } else if (user instanceof Admin){
-                    menuList.add("Profile");
-                    menuList.add("Messages");
-                    menuList.add("Real Estates");
-                    menuList.add("Favs");
-                    menuList.add("Admin");
-                    menuList.add("Log out");
+                menuList.add("Profile");
+                menuList.add("Favs");
+                menuList.add("Log out");
+                if (user instanceof Admin){
+                    menuList.add(2, "Admin");
                 }
                 onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer, user.getName());
             } else {

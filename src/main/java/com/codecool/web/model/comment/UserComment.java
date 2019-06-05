@@ -12,6 +12,7 @@ public class UserComment extends Comment {
         super(id, reservationId, reviewerName, review, timestamp);
         this.userRating = userRating;
         this.reviewedUser = reviewedUser;
+        setHasRealEstate(false);
     }
 
     public String getReviewedUser() {
@@ -20,5 +21,9 @@ public class UserComment extends Comment {
 
     public int getUserRating() {
         return userRating;
+    }
+
+    public boolean hasRealEstate() {
+        return false;
     }
 }

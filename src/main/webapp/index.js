@@ -122,7 +122,8 @@ function onOtherResponse(targetEl, xhr) {
 function onLoad(){
     navContentDivEl = document.getElementById('menu');
     containerContentDivEl = document.getElementById('container');
-    profileDiv = document.getElementById("profile");
+    profileDiv = document.createElement("div");
+    profileDiv.id = "profile";
     headerTextEl = document.getElementById("header-text");
     headerImgEl = document.getElementById("header-image");
 

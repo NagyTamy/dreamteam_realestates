@@ -745,6 +745,35 @@ aside{
     cursor: pointer;
 }
 
+.flag-comment{
+    background-image: url('../img/flag.svg');
+    width: 20px;
+    height: 20px;
+    float: right;
+}
+
+.tooltip{
+    visibility: hidden;
+    background-color: var(--transparent-dark-red);
+    color: var(--light-pink);
+    float: right;
+    font-size: 0.8em;
+    padding: 2px 5px 4px 5px;
+}
+
+.flag-comment:hover ~ .tooltip {
+    cursor: pointer;
+    visibility: visible;
+}
+
+.past-reservation{
+    background: lightgrey;
+}
+
+.current-reservation{
+    background: darkorange;
+}
+
 
 
 

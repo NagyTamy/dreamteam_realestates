@@ -12,10 +12,12 @@ public abstract class Comment {
     private String reviewerName;
     private String review;
     private LocalDateTime timestamp;
-    private AbstractUser user;
+    private AbstractUser user; /*reviewer*/
+    private AbstractUser reviewedUser;
     private String timeStampString;
+    private boolean hasRealEstate;
 
-    private boolean isFlagged;
+    private boolean isFlagged = false;
 
     public Comment(int id, int reservationId, String reviewerName, String review, LocalDateTime timestamp) {
         this.id = id;
@@ -71,5 +73,21 @@ public abstract class Comment {
 
     public String getTimeStampString() {
         return timeStampString;
+    }
+
+    public void setReviewedUser(AbstractUser reviewedUser) {
+        this.reviewedUser = reviewedUser;
+    }
+
+    public AbstractUser getReviewedUserInstance() {
+        return reviewedUser;
+    }
+
+    public void setHasRealEstate(boolean hasRealEstate) {
+        this.hasRealEstate = hasRealEstate;
+    }
+
+    public boolean isHasRealEstate() {
+        return hasRealEstate;
     }
 }

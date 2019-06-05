@@ -17,7 +17,7 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
 
     @Override
     public Reservation findReservationById(int reservationId) throws SQLException, NoSuchReservationException {
-        String sql = "SELECT * FROM reservations WHERE reservation_id=?";
+        String sql = "SELECT * FROM reservations WHERE reservation_id=? ORDER BY begins DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, reservationId);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -31,7 +31,7 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
     @Override
     public List<Reservation> getAllByRealEstate(int realEstateId) throws SQLException{
         List<Reservation> getAllByRealEstate = new ArrayList<>();
-        String sql = "SELECT * FROM reservations WHERE real_estate_id=?";
+        String sql = "SELECT * FROM reservations WHERE real_estate_id=? ORDER BY begins DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1, realEstateId);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -45,7 +45,7 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
     @Override
     public List<Reservation> getAllByOwner(String userName) throws SQLException {
         List<Reservation> getAllByOwner = new ArrayList<>();
-        String sql = "SELECT * FROM reservations LEFT JOIN real_estates re on reservations.real_estate_id = re.real_estate_id WHERE user_name=?";
+        String sql = "SELECT * FROM reservations LEFT JOIN real_estates re on reservations.real_estate_id = re.real_estate_id WHERE user_name=? ORDER BY begins DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -57,9 +57,51 @@ public class DatabaseReservationDao extends AbstractDao implements ReservationDa
     }
 
     @Override
+    public List<Reservation> getAllPastByRenter(String userName) throws SQLException {
+        List<Reservation> getAllPastByRenter = new ArrayList<>();
+        String sql = "SELECT * FROM reservations WHERE tenant_name=? AND begins < now() AND ends < now() ORDER BY begins DESC";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                while (resultSet.next()){
+                    getAllPastByRenter.add(fetchReservation(resultSet));
+                } return getAllPastByRenter;
+            }
+        }
+    }
+
+    @Override
+    public List<Reservation> getAllUpcomingByRenter(String userName) throws SQLException {
+        List<Reservation> getAllUpcomingByRenter = new ArrayList<>();
+        String sql = "SELECT * FROM reservations WHERE tenant_name=? AND begins > now() ORDER BY begins DESC";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                while (resultSet.next()){
+                    getAllUpcomingByRenter.add(fetchReservation(resultSet));
+                } return getAllUpcomingByRenter;
+            }
+        }
+    }
+
+    @Override
+    public Reservation getCurrentByRenter(String userName) throws SQLException {
+        String sql = "SELECT * FROM reservations WHERE tenant_name=? AND begins < now() AND ends > now() ORDER BY begins DESC";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if (resultSet.next()){
+                    return fetchReservation(resultSet);
+                }
+            }
+        } return null;
+    }
+
+
+    @Override
     public List<Reservation> getAllByRenter(String userName) throws SQLException{
         List<Reservation> getAllByRenter = new ArrayList<>();
-        String sql = "SELECT * FROM reservations WHERE tenant_name=?";
+        String sql = "SELECT * FROM reservations WHERE tenant_name=? ORDER BY begins DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try(ResultSet resultSet = statement.executeQuery()){

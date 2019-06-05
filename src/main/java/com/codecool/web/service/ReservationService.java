@@ -47,4 +47,17 @@ public class ReservationService {
     public void removeReservation(int reservationId) throws SQLException{
         reservationDao.removeReservation(reservationId);
     }
+
+
+    public List<Reservation> getAllPastByRenter (String userName) throws SQLException{
+        return reservationDao.getAllPastByRenter(userName);
+    }
+
+    public List<Reservation> getAllUpcomingByRenter (String userName) throws SQLException{
+        return reservationDao.getAllUpcomingByRenter(userName);
+    }
+
+    public Reservation getCurrentByRenter(String userName) throws SQLException{
+        return reservationDao.getCurrentByRenter(userName);
+    }
 }

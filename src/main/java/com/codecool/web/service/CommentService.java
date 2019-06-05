@@ -73,4 +73,5 @@ public class CommentService {
         }
         return hasReviews;
     }
+
 }

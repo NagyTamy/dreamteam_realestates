@@ -3,16 +3,15 @@ package com.codecool.web.dto;
 import com.codecool.web.model.RealEstate;
 import com.codecool.web.model.Reservation;
 import com.codecool.web.model.comment.Comment;
+import com.codecool.web.model.comment.RealEstateComment;
+import com.codecool.web.model.comment.UserComment;
 import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.model.user.Admin;
 import com.codecool.web.model.user.Landlord;
 import com.codecool.web.service.*;
-import com.codecool.web.service.exception.NoInstanceException;
-import com.codecool.web.service.exception.NoSuchCommentException;
-import com.codecool.web.service.exception.NoSuchPictureException;
-import com.codecool.web.service.exception.NoSuchUserException;
+import com.codecool.web.service.exception.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,31 +24,43 @@ public class UserProfileDto {
     private CommentService commentService;
     private PictureService pictureService;
     private MessageService messageService;
+    private RealEstateService realEstateService;
+    private ReservationService reservationService;
     private List<SystemMessages> allRequest;
     private List<Comment> allSentReview;
-    private List<Reservation> allReservation;
+    private List<Reservation> allPastReservation;
+    private Reservation currentReservation;
+    private List<Reservation> allUpcomingReservation;
     private List<RealEstate> ownRealEstates;
     private UserService userService;
     private boolean isLoggedIn;
     private boolean isOwn;
     private boolean hasRealEstates;
+    private boolean hasCurrentReservation;
 
     public UserProfileDto(String userName, RealEstateService realEstateService, ReservationService reservationService,
                           MessageService messageService, List<String> asideMenu, CommentService commentService, UserService userService,
                           PictureService pictureService, boolean isLoggedIn, boolean isOwn)
-    throws SQLException, NoSuchUserException, NoInstanceException, NoSuchCommentException, NoSuchPictureException {
+    throws SQLException, NoSuchUserException, NoInstanceException, NoSuchCommentException, NoSuchPictureException, NoSuchRealEstateException {
         this.user = userService.getUserByName(userName);
         user.setProfilePic(pictureService.findMainForUser(userName).getImage());
         this.commentService = commentService;
+        this.reservationService = reservationService;
         this.pictureService = pictureService;
+        this.realEstateService = realEstateService;
         this.userService = userService;
         this.asideMenu = asideMenu;
         this.allreview = setAllReview(userName);
         this.isLoggedIn = isLoggedIn;
         this.isOwn = isOwn;
         this.allRequest = messageService.filterSystemRequestsBySender(userName);
-        this.allSentReview = commentService.getAllByWriter(userName);
-        this.allReservation = reservationService.getAllByRenter(userName);
+        this.allSentReview = setSentReviews(userName);
+        this.allPastReservation = setRealEstateToReservationList(reservationService.getAllPastByRenter(userName));
+        this.hasCurrentReservation = hasCurrentReservation(userName);
+        if (hasCurrentReservation){
+            this.currentReservation = setRealEstateToSingleReservation(reservationService.getCurrentByRenter(userName));
+        }
+        this.allUpcomingReservation = setRealEstateToReservationList(reservationService.getAllUpcomingByRenter(userName));
         this.ownRealEstates = realEstateService.findRealEstatesByUser(userName);
         this.hasRealEstates = hasRealEstates();
     }
@@ -84,6 +95,35 @@ public class UserProfileDto {
         return allreview;
     }
 
+    private List<Comment> setSentReviews(String userName) throws SQLException, NoInstanceException, NoSuchRealEstateException, NoSuchPictureException, NoSuchCommentException, NoSuchUserException {
+        allSentReview = commentService.getAllByWriter(userName);
+        for (Comment comment : allSentReview){
+            if(comment instanceof RealEstateComment){
+                int realEstateId = ((RealEstateComment) comment).getReviewedRealEstate();
+                RealEstate realEstate = realEstateService.findRealEstateById(realEstateId);
+                realEstate.setPic(pictureService.findMainForRealEstate(realEstateId).getImage());
+                ((RealEstateComment) comment).setRealEstate(realEstate);
+            } else {
+                AbstractUser user = userService.getUserByName(((UserComment) comment).getReviewedUser());
+                user.setProfilePic(pictureService.findMainForUser(userName).getImage());
+                comment.setReviewedUser(user);
+            }
+        } return allSentReview;
+    }
+
+    private List<Reservation> setRealEstateToReservationList(List<Reservation> list) throws SQLException, NoSuchRealEstateException, NoSuchPictureException{
+        for (Reservation reservation : list){
+            reservation.setRealEstate(realEstateService.findRealEstateById(reservation.getRealEstateId()));
+            reservation.getRealEstate().setPic(pictureService.findMainForRealEstate(reservation.getRealEstateId()).getImage());
+        } return list;
+    }
+
+    private Reservation setRealEstateToSingleReservation(Reservation reservation) throws SQLException, NoSuchRealEstateException, NoSuchPictureException{
+        reservation.setRealEstate(realEstateService.findRealEstateById(reservation.getRealEstateId()));
+        reservation.getRealEstate().setPic(pictureService.findMainForRealEstate(reservation.getRealEstateId()).getImage());
+        return reservation;
+    }
+
     private boolean hasRealEstates(){
         return ownRealEstates.size() > 1;
     }
@@ -100,11 +140,31 @@ public class UserProfileDto {
         return allSentReview;
     }
 
-    public List<Reservation> getAllReservation() {
-        return allReservation;
+    private boolean hasCurrentReservation(String userName) throws SQLException{
+        if (reservationService.getCurrentByRenter(userName) != null){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<RealEstate> getOwnRealEstates() {
         return ownRealEstates;
+    }
+
+    public boolean hasCurrentReservation() {
+        return hasCurrentReservation;
+    }
+
+    public List<Reservation> getAllPastReservation() {
+        return allPastReservation;
+    }
+
+    public List<Reservation> getAllUpcomingReservation() {
+        return allUpcomingReservation;
+    }
+
+    public Reservation getCurrentReservation() {
+        return currentReservation;
     }
 }

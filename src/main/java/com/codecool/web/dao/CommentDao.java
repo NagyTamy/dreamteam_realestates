@@ -34,4 +34,5 @@ public interface CommentDao {
 
     void flagComment(int commentId) throws SQLException, NoSuchCommentException, NoInstanceException;
 
+
 }

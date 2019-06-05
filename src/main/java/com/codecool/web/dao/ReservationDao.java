@@ -15,6 +15,12 @@ public interface ReservationDao {
 
     List<Reservation> getAllByOwner(String userName) throws SQLException;
 
+    List<Reservation> getAllPastByRenter (String userName) throws SQLException;
+
+    List<Reservation> getAllUpcomingByRenter (String userName) throws SQLException;
+
+    Reservation getCurrentByRenter(String userName) throws SQLException;
+
     List<Reservation> getAllByRenter(String userName) throws SQLException;
 
     Reservation addReservation(int realEstateId, String renter, LocalDateTime begins, LocalDateTime ends) throws SQLException;
