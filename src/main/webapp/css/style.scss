@@ -57,6 +57,7 @@ a{
     --light-pink: #F7D3D2;
     --transparent-dark-red: rgba(49,2,13,0.2);
     --scrollbar-width: 1140px;
+    --aside-height: 49px;
 }
 
 body{
@@ -240,13 +241,30 @@ header{
     line-height: 1.5;
 }
 
-#comment, textarea{
+#comment, textarea, #request{
     width: 100%;
     border: solid 2px var(--dark-red);
     background: var(--light-pink);
     min-height: 200px;
     overflow: visible;
     margin-top: 30px;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+}
+
+#request{
+    min-height: 120px;
+    padding: 10px;
+}
+
+#request-data{
+    width: 80%;
+    float: left;
+}
+
+textarea{
+    padding: 10px;
 }
 
 #comment-text{
@@ -468,12 +486,32 @@ button:hover{
     cursor: pointer;
 }
 
-input[type=text]{
+input[type=text], input[type=password]{
     font-family: inherit;
     color: var(--dark-red);
     background: var(--light-pink);
     border: solid 1px var(--transparent-dark-red);
     padding-left: 10px;
+}
+
+#log-in-form{
+    width: 50%;
+    margin: 30px auto;
+}
+
+#log-in-form input[type=text], #log-in-form input[type=password]{
+    font-size: 1em;
+    line-height: 2em;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+#log-in-form button{
+    width: 49%;
+}
+
+.button-right{
+    float: right;
 }
 
 .one-fourth button{
@@ -540,8 +578,7 @@ input[type=text]{
     top: -15px;
 }
 
-
-nav{
+header nav{
     position: absolute;
     color: var(--dark-red);
     top: 450px;
@@ -580,6 +617,26 @@ nav li:hover::before{
 .marked-nav:before{
     background: var(--dark-red);
     background-image: url("../img/light-angled-ring.svg");
+}
+
+aside nav li{
+    width: 100%;
+    margin-left: 35px;
+    margin-right: 30px;
+    line-height: 2;
+}
+
+aside nav li:before{
+    margin-top: 17px;
+}
+
+.marked-aside:before{
+    background: var(--dark-red);
+    background-image: url("../img/light-angled-ring.svg");
+}
+
+.marked-aside{
+    background-color: var(--transparent-dark-red);
 }
 
 #header-form{
@@ -632,7 +689,7 @@ footer img:nth-child(2){
     cursor: pointer;
 }
 
-.error-message{
+.message{
     font-family: inherit;
     font-size: 1em;
     color: inherit;
@@ -653,6 +710,39 @@ footer img:nth-child(2){
     background: url('../img/logo-pb.svg');
     background-repeat: no-repeat;
     background-size: auto;
+}
+
+#logo:hover{
+    cursor: pointer;
+}
+
+
+aside{
+    width: 21.785%;
+    height: var(--aside-height);
+    position: relative;
+    float: right;
+    margin: 30px 0 0 30px;
+    line-height: 1.5em;
+    border: solid 2px var(--dark-red);
+}
+
+#log-in-link{
+    font-size: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+    font-family: inherit;
+    color: inherit;
+}
+
+.request-button{
+    width: 20%;
+    float: right;
+    margin-top: 30px;
+}
+
+.link{
+    cursor: pointer;
 }
 
 

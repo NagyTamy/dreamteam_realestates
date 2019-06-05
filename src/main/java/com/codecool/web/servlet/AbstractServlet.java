@@ -23,8 +23,12 @@ abstract class AbstractServlet extends HttpServlet {
     }
 
     AbstractUser getSessionUser(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         return  (AbstractUser) session.getAttribute("user");
+    }
+
+    void setSessionUser(HttpServletRequest request, AbstractUser user){
+        request.getSession().setAttribute("user", user);
     }
 
     void handleSqlError(HttpServletResponse resp, SQLException ex) throws IOException {
@@ -38,7 +42,7 @@ abstract class AbstractServlet extends HttpServlet {
     }
 
     boolean isLoggedIn(HttpServletRequest request){
-        AbstractUser user = (AbstractUser) request.getAttribute("user");
+        AbstractUser user = getSessionUser(request);
         return user != null;
     }
 }

@@ -12,6 +12,11 @@
     <script src="home-page.js"></script>
     <script src="realestate.js"></script>
     <script src="profile.js"></script>
+    <script src="log-in.js"></script>
+    <script src="review.js"></script>
+    <script src="reservation.js"></script>
+    <script src="logout.js"></script>
+    <script src="request.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>
@@ -44,13 +49,8 @@
     </header>
 <!-- CONTAINER FOR MAIN CONTENT -->
     <div id="container" class="hidden content">
-        <div id="comment-form" class="hidden content">
-            <form>
-                <textarea name="comment" rows="5" placeholder="Type your comment here..."></textarea>
-                <input type="number" name="rating" id="rating-input" min="1" max="5" />
-                <button onclick="createReview()">Send</button>
-            </form>
-        </div>
+        <div id="profile"></div>
+
     </div>
     <footer>
         <img src="img/dark-angled-ring-w-bg.svg" alt="ring">

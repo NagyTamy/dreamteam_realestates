@@ -69,6 +69,7 @@ function createRow(arrayList) {
 
 function createMenu(realEstateOffersDto) {
     const ulMenuEl = document.getElementById("menu");
+    removeAllChildren(ulMenuEl);
 
     for (let i = 0; i < realEstateOffersDto.menuList.length; i++){
         const liMenuEl = document.createElement("li");
@@ -76,6 +77,21 @@ function createMenu(realEstateOffersDto) {
 
         const mainNavAttr = document.createAttribute("menulist-id");
         mainNavAttr.value = realEstateOffersDto.menuList[i];
+
+        const item = realEstateOffersDto.menuList[i];
+
+        if(item === "Log in"){
+            liMenuEl.addEventListener('click', onLogInClicked);
+        } else if(item === "Profile"){
+            const liElAttr = document.createAttribute("id");
+            liElAttr.value = realEstateOffersDto.userName;
+            liMenuEl.setAttributeNode(liElAttr);
+            console.log(liElAttr);
+            liMenuEl.addEventListener('click', onProfileLoad);
+        } else if(item === "Log out"){
+            liMenuEl.addEventListener('click', onLogOutLoad);
+        }
+        liMenuEl.classList.add("main");
         liMenuEl.setAttributeNode(mainNavAttr);
 
         ulMenuEl.appendChild(liMenuEl);
@@ -128,6 +144,7 @@ function createRandomOffer(realEstateOffersDto) {
 }
 
 function onRealEstateGuestOffers(realEstateOffersDto){
+    removeAllChildren(containerContentDivEl);
     createRandomOffer(realEstateOffersDto);
     createMenu(realEstateOffersDto);
     containerContentDivEl.appendChild(insertDivider('Newest', 'divider'));

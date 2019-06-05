@@ -45,7 +45,7 @@ public class RealEstatePageServlet extends AbstractServlet {
             UserDao userDao = new DatabaseUserDao(connection);
             UserService userService = new UserService(userDao);
 
-            AbstractUser user = (AbstractUser) req.getAttribute("user");
+            AbstractUser user = getSessionUser(req);
 
             int id = Integer.parseInt(req.getParameter("id"));
 
@@ -54,27 +54,21 @@ public class RealEstatePageServlet extends AbstractServlet {
 
             if(user != null){
                 isLoggedIn = true;
-                req.setAttribute("user", user);
+                setSessionUser(req, user);
                 isOwner = realEstateService.isOwner(id, user.getName());
             } else {
                 isOwner = false;
                 isLoggedIn = false;
             }
 
+
             RealEstatePageDto realEstatePageDto = new RealEstatePageDto(id, commentService, userService, realEstateService, pictureService, reservationService, isLoggedIn, isOwner);
-            System.out.println(realEstatePageDto);
             sendMessage(resp, HttpServletResponse.SC_OK, realEstatePageDto);
 
         } catch (SQLException ex) {
             handleSqlError(resp, ex);
-        } catch (NoSuchRealEstateException ex){
-            ex.getMessage();
-        } catch (NoSuchPictureException ex){
-            ex.getMessage();
-        } catch (NoInstanceException ex){
-            ex.getMessage();
-        }catch (NoSuchCommentException ex){
-            ex.getMessage();
+        } catch (Throwable ex){
+            throw new ServletException(ex);
         }
     }
 }

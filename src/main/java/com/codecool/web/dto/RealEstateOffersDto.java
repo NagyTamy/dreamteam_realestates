@@ -11,6 +11,16 @@ public class RealEstateOffersDto {
     private List<RealEstate> trending;
     private List<String> menuList;
     private RealEstate randomOffer;
+    private String userName;
+
+    public RealEstateOffersDto(List<RealEstate> newest, List<RealEstate> bestRated, List<RealEstate> trending, List<String> menuList, RealEstate randomOffer, String userName){
+        this.newest = newest;
+        this.bestRated = bestRated;
+        this.trending = trending;
+        this.menuList = menuList;
+        this.randomOffer = randomOffer;
+        this.userName = userName;
+    }
 
     public RealEstateOffersDto(List<RealEstate> newest, List<RealEstate> bestRated, List<RealEstate> trending, List<String> menuList, RealEstate randomOffer){
         this.newest = newest;
@@ -18,6 +28,9 @@ public class RealEstateOffersDto {
         this.trending = trending;
         this.menuList = menuList;
         this.randomOffer = randomOffer;
+
+
+
     }
 
     public List<RealEstate> getBestRated() {
@@ -38,5 +51,9 @@ public class RealEstateOffersDto {
 
     public RealEstate getRandomOffer() {
         return randomOffer;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

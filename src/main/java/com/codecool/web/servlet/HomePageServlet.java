@@ -40,41 +40,48 @@ public class HomePageServlet extends AbstractServlet {
             List<String> menuList = new ArrayList<>();
             RealEstate randomOffer = realEstateService.getRandomRealEstate();
 
-            AbstractUser user = (AbstractUser) req.getAttribute("user");
+            RealEstateOffersDto onLoadOffers;
+
+            AbstractUser user = getSessionUser(req);
+            System.out.println(user);
+
             if (user != null){
-                req.setAttribute("user", user);
+                setSessionUser(req, user);
                 if(user instanceof Renter){
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Favs");
+                    menuList.add("Log out");
                 } else if (user instanceof Landlord){
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Real Estates");
                     menuList.add("Favs");
+                    menuList.add("Log out");
                 } else if (user instanceof Admin){
                     menuList.add("Profile");
                     menuList.add("Messages");
                     menuList.add("Real Estates");
                     menuList.add("Favs");
                     menuList.add("Admin");
+                    menuList.add("Log out");
                 }
+                onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer, user.getName());
             } else {
                 menuList.add("Log in");
                 menuList.add("Register");
+                onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer);
             }
 
-            RealEstateOffersDto onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer);
+
 
 
             sendMessage(resp, HttpServletResponse.SC_OK, onLoadOffers);
 
         } catch (SQLException ex) {
             handleSqlError(resp, ex);
-        } catch (NoSuchRealEstateException ex){
-            ex.getMessage();
-        } catch (NoSuchPictureException ex){
-            ex.getMessage();
+        } catch (Throwable ex){
+            throw new ServletException(ex);
         }
     }
 }

@@ -6,6 +6,7 @@ import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.RealEstate;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -16,6 +17,7 @@ public abstract class AbstractUser {
     private String password;
     private String theme;
     private LocalDateTime regDate;
+    private String stringRegDate;
     private byte[] profilePic;
     private List<RealEstate> favourites;
     private List<PrivateMessages> messages;
@@ -59,6 +61,7 @@ public abstract class AbstractUser {
     }
 
     public void setRegDate(LocalDateTime regDate) {
+        this.stringRegDate = timeStampToString(regDate);
         this.regDate = regDate;
     }
 
@@ -126,4 +129,12 @@ public abstract class AbstractUser {
         this.avgRating = avgRating;
     }
 
+    private String timeStampToString(LocalDateTime timestamp){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return timestamp.format(formatter);
+    }
+
+    public String getStringRegDate() {
+        return stringRegDate;
+    }
 }

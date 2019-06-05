@@ -9,8 +9,35 @@ let containerContentDivEl;
 let headerTextEl;
 let headerImgEl;
 const brEl = document.createElement("br");
+let profileDiv;
 
+function markedAside(id) {
+    const contentEls = document.getElementsByClassName('aside-nav');
+    console.log(contentEls);
+    for (let i = 0; i < contentEls.length; i++) {
+        const contentEl = contentEls[i];
+        const navId = contentEl.getAttribute("nav-id");
+        if (id.includes(navId)) {
+            contentEl.classList.add('marked-aside');
+        } else {
+            contentEl.classList.remove('marked-aside');
+        }
+    }
+}
 
+function markedNav(id) {
+    const contentEls = document.getElementsByClassName('main');
+    console.log(contentEls);
+    for (let i = 0; i < contentEls.length; i++) {
+        const contentEl = contentEls[i];
+        const navId = contentEl.getAttribute("menulist-id");
+        if (id.includes(navId)) {
+            contentEl.classList.add('marked-nav');
+        } else {
+            contentEl.classList.remove('marked-nav');
+        }
+    }
+}
 
 function clearMessages() {
     const messageEls = document.getElementsByClassName('message');
@@ -95,9 +122,10 @@ function onOtherResponse(targetEl, xhr) {
 function onLoad(){
     navContentDivEl = document.getElementById('menu');
     containerContentDivEl = document.getElementById('container');
-    removeAllChildren(containerContentDivEl);
+    profileDiv = document.getElementById("profile");
     headerTextEl = document.getElementById("header-text");
     headerImgEl = document.getElementById("header-image");
+
 
     const xhr = new XMLHttpRequest();
     xhr.addEventListener('load', onHomePageLoad);

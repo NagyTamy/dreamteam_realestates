@@ -26,12 +26,12 @@ public class RealEstatePageDto {
     private Picture mainPic;
     private boolean hasReviews;
     private boolean isLoggedIn;
-    private boolean isOwner;
+    private boolean isOwn;
     private List<Reservation> availability;
     private List<Comment> allReview;
 
     public RealEstatePageDto(int realEstateId, CommentService commentService, UserService userService, RealEstateService realEstateService, PictureService pictureService,
-                             ReservationService reservationService, boolean isLoggedIn, boolean isOwner)
+                             ReservationService reservationService, boolean isLoggedIn, boolean isOwn)
             throws NoInstanceException, SQLException, NoSuchCommentException, NoSuchRealEstateException, NoSuchPictureException {
 
         this.realEstateId = realEstateId;
@@ -44,7 +44,7 @@ public class RealEstatePageDto {
         this.mainPic = pictureService.findMainForRealEstate(realEstateId);
         this.hasReviews = commentService.hasReviews(realEstateId);
         this.isLoggedIn = isLoggedIn;
-        this.isOwner = isOwner;
+        this.isOwn = isOwn;
         this.availability = reservationService.getAllByRealEstate(realEstateId);
         setAllReview(realEstateId);
 
@@ -79,8 +79,8 @@ public class RealEstatePageDto {
         return isLoggedIn;
     }
 
-    public boolean getIsOwner() {
-        return isOwner;
+    public boolean isOwn() {
+        return isOwn;
     }
 
     public int getRealEstateId() {
@@ -89,7 +89,6 @@ public class RealEstatePageDto {
 
     private List<Comment> setAllReview(int realEstateId) throws SQLException, NoInstanceException, NoSuchCommentException, NoSuchPictureException {
         allReview = commentService.getAllAboutRealEstate(realEstateId);
-        System.out.println(allReview);
         for (Comment comment: allReview){
             AbstractUser user = userService.getUserByCommentId(comment.getId());
             user.setProfilePic(pictureService.findMainForUser(user.getName()).getImage());

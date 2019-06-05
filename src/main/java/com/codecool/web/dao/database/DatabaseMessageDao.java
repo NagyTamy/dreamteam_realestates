@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DatabaseMessageDao extends AbstractDao implements MessageDao {
 
-    DatabaseMessageDao(Connection connection) {
+    public DatabaseMessageDao(Connection connection) {
         super(connection);
     }
 
@@ -85,7 +85,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
     @Override
     public List<SystemMessages> filterSystemRequestsBySender(String userName) throws SQLException {
         List<SystemMessages> allSystemRequestBySender = new ArrayList<>();
-        String sql = "SELECT * FROM messages WHERE sender_name=?";
+        String sql = "SELECT * FROM messages WHERE sender_name=? AND receiver_name='system'";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -99,7 +99,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
     @Override
     public List<SystemMessages> filterSystemRequestByTime(LocalDateTime begins, LocalDateTime ends) throws SQLException {
         List<SystemMessages> systemMessagesFilteredByTime = new ArrayList<>();
-        String sql = "SELECT * FROM messages WHERE date BETWEEN ? AND ?";
+        String sql = "SELECT * FROM messages WHERE receiver_name='system' AND date BETWEEN ? AND ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setTimestamp(1, Timestamp.valueOf(begins));
             statement.setTimestamp(2, Timestamp.valueOf(ends));
@@ -114,7 +114,7 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
     @Override
     public List<SystemMessages> filterSystemRequestByType(String messageTitle) throws SQLException {
         List<SystemMessages> systemMessagesFilteredByTime = new ArrayList<>();
-        String sql = "SELECT * FROM messages WHERE title=?";
+        String sql = "SELECT * FROM messages WHERE title=? AND receiver_name='system'";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1 ,messageTitle);
             try (ResultSet resultSet = statement.executeQuery()) {

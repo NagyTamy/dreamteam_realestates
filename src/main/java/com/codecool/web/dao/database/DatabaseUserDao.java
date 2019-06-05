@@ -118,25 +118,25 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
     }
 
     private AbstractUser fetchUser(ResultSet resultSet) throws SQLException, NoInstanceException {
+        AbstractUser user;
         String role = resultSet.getString("role_name");
         String name = resultSet.getString("user_name");
         String eMail = resultSet.getString("email");
+        String password = resultSet.getString("password");
         if(role.equals("renter")){
-            AbstractUser renter = new Renter(name, eMail);
-            renter.setAvgRating(resultSet.getFloat("avg_rating"));
-            return renter;
+            user = new Renter(name, eMail);
         } else if(role.equals("landlord")){
-            AbstractUser landlord = new Landlord(name, eMail);
-            landlord.setAvgRating(resultSet.getFloat("avg_rating"));
-            return landlord;
+            user = new Landlord(name, eMail);
         } else if (role.equals("admin")){
             int id = resultSet.getInt("admin_id");
-            AbstractUser admin = new Admin(id, name, eMail);
-            admin.setAvgRating(resultSet.getFloat("avg_rating"));
-            return admin;
+            user = new Admin(id, name, eMail);
         } else {
             throw new NoInstanceException();
         }
+        user.setAvgRating(resultSet.getFloat("avg_rating"));
+        user.setRegDate(resultSet.getTimestamp("registration_date").toLocalDateTime());
+        user.setPassword(password);
+        return user;
     }
 
 }

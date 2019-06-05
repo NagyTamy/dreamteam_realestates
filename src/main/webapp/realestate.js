@@ -17,7 +17,6 @@ function onRealEstateLoad(){
     if (this.status === OK) {
         console.log(JSON.parse(this.responseText));
         onRealEstateUniquePage(JSON.parse(this.responseText));
-        showContents(['container']);
     } else {
         onOtherResponse(containerContentDivEl, this);
     }
@@ -29,7 +28,7 @@ function onRealEstateUniquePage(realEstatePageDto){
     createRealEstateHeader(realEstatePageDto);
     loadAllPictures(realEstatePageDto);
     createRealEstateAsideEl(realEstatePageDto);
-    onReviewsLoad(realEstatePageDto);
+    containerContentDivEl.appendChild(onReviewsLoad(realEstatePageDto));
 
 }
 
@@ -84,22 +83,36 @@ function toggleBigPicture() {
 }
 
 function createRealEstateAsideEl(realEstatePageDto) {
-    const reservCalDivEl = document.createElement("div");
-    reservCalDivEl.id = "reservation-calendar";
+    if(!realEstatePageDto.isOwn) {
+        const reservCalDivEl = document.createElement("div");
+        reservCalDivEl.id = "reservation-calendar";
 
-    const calendarDivEl = document.createElement("div");
-    calendarDivEl.classList.add("calendar");
+        const calendarDivEl = document.createElement("div");
+        calendarDivEl.classList.add("calendar");
 
-    const datepicker = new Datepickk();
-    datepicker.container = calendarDivEl;
-    datepicker.show();
-    datepicker.range = true;
-    datepicker.maxSelections = 1;
+        const datepicker = new Datepickk();
+        datepicker.container = calendarDivEl;
+        datepicker.show();
+        datepicker.range = true;
+        datepicker.maxSelections = 1;
 
+        reservCalDivEl.appendChild(calendarDivEl);
 
-
-    reservCalDivEl.appendChild(calendarDivEl);
-    containerContentDivEl.appendChild(reservCalDivEl);
+        if (realEstatePageDto.isLoggedIn) {
+            const reservationButton = document.createElement("button");
+            reservationButton.textContent = "Reserve";
+            reservationButton.id = realEstatePageDto.realEstate.id;
+            reservationButton.addEventListener('click', onReservationButtonClicked);
+            reservCalDivEl.appendChild(reservationButton);
+        } else {
+            const messageDivEl = document.createElement("p");
+            messageDivEl.textContent = "Please log in to reserve this real estate!";
+            messageDivEl.classList.add("message");
+            messageDivEl.addEventListener('click', onLogInClicked)
+            reservCalDivEl.appendChild(messageDivEl);
+        }
+        containerContentDivEl.appendChild(reservCalDivEl);
+    }
 }
 
 function onReviewsLoad(realEstatePageDto) {
@@ -119,7 +132,7 @@ function onReviewsLoad(realEstatePageDto) {
 
             const pEl = document.createElement("p");
             pEl.classList.add("datas");
-            pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRatingc;
+            pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
 
             const pTextEl = document.createElement("p");
             pTextEl.textContent = realEstatePageDto.allReview[i].review;
@@ -166,15 +179,12 @@ function onReviewsLoad(realEstatePageDto) {
         }
     } else {
         const noReviewDivEl = document.createElement("div");
-        noReviewDivEl.classList.add("error-message");
-        noReviewDivEl.textContent = "No one reviewed this Real Estate yet.";
+        newError(noReviewDivEl, "No reviews yet.")
         reviewContainerDivEl.appendChild(noReviewDivEl);
     }
-    if(realEstatePageDto.isLoggedIn && !realEstatePageDto.isOwner){
-        showContents(["container", "comment-form"]);
+
+    if(realEstatePageDto.isLoggedIn && !realEstatePageDto.isOwn){
+        reviewContainerDivEl.appendChild(createReviewForm());
     }
-
-
-    containerContentDivEl.appendChild(reviewContainerDivEl);
-
+    return reviewContainerDivEl;
 }

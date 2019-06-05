@@ -3,6 +3,7 @@ package com.codecool.web.model.messages;
 import com.codecool.web.model.user.AbstractUser;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public abstract class AbstractMessage {
 
@@ -13,7 +14,8 @@ public abstract class AbstractMessage {
     private LocalDateTime time;
     private int previousMessageId;
     private int realEstateId;
-
+    private String stringDate;
+    private boolean hasRealEstate;
     private boolean isAnswered;
 
     public AbstractMessage(int id, String sender, String title, String message, LocalDateTime time, int previousMessageId, int realEstateId){
@@ -24,6 +26,7 @@ public abstract class AbstractMessage {
         this.time = time;
         this.previousMessageId = previousMessageId;
         this.realEstateId = realEstateId;
+        this.hasRealEstate = hasRealEstate();
     }
 
     public int getId() {
@@ -47,7 +50,7 @@ public abstract class AbstractMessage {
     }
 
     public void setAnswered(boolean isAnswered) {
-        isAnswered = isAnswered;
+        this.isAnswered = isAnswered;
     }
 
     public boolean getIsAnswered(){
@@ -56,5 +59,22 @@ public abstract class AbstractMessage {
 
     public int getPreviousMessageId() {
         return previousMessageId;
+    }
+
+    private boolean hasRealEstate(){
+        return realEstateId != 0;
+    }
+
+    public boolean isHasRealEstate() {
+        return hasRealEstate;
+    }
+
+    public String getStringDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return time.format(formatter);
+    }
+
+    public int getRealEstateId() {
+        return realEstateId;
     }
 }
