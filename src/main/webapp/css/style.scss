@@ -244,13 +244,13 @@ header{
     margin-left: 0;
 }
 
-#reviews, #own-real-estates{
+#reviews, #own-real-estates, #messages-container{
     width: 74.343%;
     height: auto;
     line-height: 1.5;
 }
 
-#comment, textarea, #request{
+#comment, textarea, #request, #private-message{
     width: 100%;
     border: solid 2px var(--dark-red);
     background: var(--light-pink);
@@ -260,6 +260,36 @@ header{
     font-size: inherit;
     font-family: inherit;
     line-height: inherit;
+}
+
+#private-message{
+    width: 100%;
+    border: solid 2px var(--dark-red);
+    background: var(--light-pink);
+    min-height: 101.5px;
+    overflow: visible;
+    margin-top: 30px;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+}
+
+#message-text-preview{
+    text-align: right;
+    float: right;
+    padding: 10px;
+}
+
+#message-text-preview h3{
+    font-weight: bold;
+}
+
+#message-text-preview p{
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 1.5em;
+    line-height: 1.5em;
 }
 
 #request{
@@ -295,7 +325,18 @@ textarea{
     overflow: hidden;
 }
 
-#comment-user img{
+.image-for-message{
+    background: var(--dark-red);
+    width: 100px;
+    position: relative;
+    float: left;
+    height: 100px;
+    overflow: hidden;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#comment-user img, .image-for-message img{
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -784,8 +825,4 @@ aside{
 .current-reservation{
     background: darkorange;
 }
-
-
-
-
 

@@ -29,7 +29,7 @@ function onUserProfileLoad(userPageDto) {
     addUserPhoto(userPageDto);
     addUserData(userPageDto);
     createAsideEl(userPageDto);
-    createContainerForUserReviews(userPageDto, "Reviews");
+    createContainerForUserProfile(userPageDto, "Reviews");
 }
 
 function addUserPhoto(userPageDto) {
@@ -76,7 +76,7 @@ function addUserData(userPageDto) {
     return headerTextEl;
 }
 
-function createContainerForUserReviews(userPageDto, navId) {
+function createContainerForUserProfile(userPageDto, navId) {
     markedAside(navId);
     if(navId === "Reviews") {
         removeAllChildren(profileDiv);
@@ -129,7 +129,7 @@ function createAsideEl(userPageDto) {
         liEl.classList.add("aside-nav");
         liEl.textContent = menuList[i];
         liEl.setAttributeNode(liElAttr);
-        liEl.addEventListener('click', function () { createContainerForUserReviews(userPageDto, liElAttr.value)});
+        liEl.addEventListener('click', function () { createContainerForUserProfile(userPageDto, liElAttr.value)});
         ulEl.appendChild(liEl);
     }
 
@@ -325,10 +325,108 @@ function onSentReviewsLoad(userPageDto) {
 function onMessagesLoad(userPageDto) {
     /*loads all the messages sorted by time, grouped by topic*/
     const messageListContainer = document.createElement("div");
-    messageListContainer.id = "reviews";
-    const dividerSpanEl = insertDivider("My reservations", "divider");
+    messageListContainer.id = "messages-container";
+    const dividerSpanEl = insertDivider("My messages", "divider");
     dividerSpanEl.classList.add("realestatedivider");
     messageListContainer.appendChild(dividerSpanEl);
+
+    if(userPageDto.hasPrivateMessages) {
+        for (let i = 0; i < userPageDto.messageBatches.length; i++){
+            const messageContainerDivEl = document.createElement("div");
+            messageContainerDivEl.id = "private-message";
+
+            const lastMessageForDisplay = userPageDto.messageBatches[i][0];
+
+            if(lastMessageForDisplay.iAmReceiver){
+                const imageDivEl = document.createElement("div");
+                imageDivEl.classList.add("image-for-message");
+                imageDivEl.id = lastMessageForDisplay.senderUser.name;
+                imageDivEl.addEventListener('click', onProfileLoad);
+
+                const imgSrc = decodeBase64(lastMessageForDisplay.senderUser.profilePic);
+
+                const usrImg = document.createElement("img");
+                usrImg.src = 'data:image/jpg;base64,' + imgSrc;
+
+
+                const ringImg = document.createElement("img");
+                ringImg.src = "img/ring.svg";
+                ringImg.classList.add("ring");
+
+                imageDivEl.appendChild(usrImg);
+                imageDivEl.appendChild(ringImg);
+                messageContainerDivEl.appendChild(imageDivEl);
+            } else {
+                const imageDivEl = document.createElement("div");
+                imageDivEl.classList.add("image-for-message");
+                imageDivEl.id = lastMessageForDisplay.receiverUser.name;
+                imageDivEl.addEventListener('click', onProfileLoad);
+
+                const imgSrc = decodeBase64(lastMessageForDisplay.receiverUser.profilePic);
+
+                const usrImg = document.createElement("img");
+                usrImg.src = 'data:image/jpg;base64,' + imgSrc;
+
+                const ringImg = document.createElement("img");
+                ringImg.src = "img/ring.svg";
+                ringImg.classList.add("ring");
+
+                imageDivEl.appendChild(usrImg);
+                imageDivEl.appendChild(ringImg);
+                messageContainerDivEl.appendChild(imageDivEl);
+            }
+
+            const messageTextPreviewDivEl = document.createElement("div");
+            messageTextPreviewDivEl.id = "message-text-preview";
+
+            const h3TitleEl = document.createElement("h3");
+            h3TitleEl.textContent = lastMessageForDisplay.stringDate + "     " + lastMessageForDisplay.title;
+            h3TitleEl.classList.add("link");
+            h3TitleEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i])});
+
+            const pPreviewEl = document.createElement("p");
+            pPreviewEl.classList.add("message-preview");
+            pPreviewEl.textContent = lastMessageForDisplay.message;
+            pPreviewEl.classList.add("link");
+            pPreviewEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i])});
+
+            messageTextPreviewDivEl.appendChild(h3TitleEl);
+            messageTextPreviewDivEl.appendChild(pPreviewEl);
+
+            if(lastMessageForDisplay.hasRealEstate) {
+                const pRealEstateEl = document.createElement("p");
+                pRealEstateEl.textContent = "Real estate: " + lastMessageForDisplay.realEstate.name;
+
+                const realEstateAttr = document.createAttribute("real-estate-id");
+                realEstateAttr.value = lastMessageForDisplay.realEstate.id;
+
+                pRealEstateEl.setAttributeNode(realEstateAttr);
+                pRealEstateEl.classList.add("link");
+                pRealEstateEl.addEventListener("click", onTileClick)
+                messageTextPreviewDivEl.appendChild(pRealEstateEl);
+            } else{
+                const pRealEstatEl = document.createElement("p");
+                pRealEstatEl.textContent = "No Real Estate attached to this conversation";
+                messageTextPreviewDivEl.appendChild(pRealEstatEl);
+            }
+
+            messageContainerDivEl.appendChild(messageTextPreviewDivEl);
+            messageListContainer.appendChild(messageContainerDivEl);
+        }
+    } else {
+        newMessage(messageListContainer, 'message', 'You do not have any messages yet.')
+    } return messageListContainer;
+
+
+
+    /*<div id="messages-container">
+            <div id="message-text-preview">
+                <h3>Title goes here</h3>
+                <p class="message-preview">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean m...</p>
+                <p>Related real estate: </p>
+            </div>
+        </div>
+    </div>*/
 
 
 }

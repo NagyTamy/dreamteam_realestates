@@ -12,6 +12,8 @@ public class PrivateMessages extends AbstractMessage {
     private AbstractUser senderUser;
     private AbstractUser receiverUser;
     private RealEstate realEstate;
+    private boolean iAmSender = false;
+    private boolean iAmReceiver = false;
 
 
     public PrivateMessages(int id, String sender, String title, String message, LocalDateTime time, String receiver, int previousMessageId, int realEstateId) {
@@ -45,5 +47,21 @@ public class PrivateMessages extends AbstractMessage {
 
     public RealEstate getRealEstate() {
         return realEstate;
+    }
+
+    public void setiAmReceiver(boolean iAmReceiver) {
+        this.iAmReceiver = iAmReceiver;
+    }
+
+    public void setiAmSender(boolean iAmSender) {
+        this.iAmSender = iAmSender;
+    }
+
+    public boolean isiAmReceiver() {
+        return iAmReceiver;
+    }
+
+    public boolean isiAmSender() {
+        return iAmSender;
     }
 }

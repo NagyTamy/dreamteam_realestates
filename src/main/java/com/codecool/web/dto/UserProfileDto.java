@@ -187,24 +187,33 @@ public class UserProfileDto {
         return messageService.hasPrivateMessages(userName);
     }
 
-    private void setUsersAndRealEstateToMessageList (LinkedList<PrivateMessages> list) throws SQLException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
+    private void setUsersAndRealEstateToMessageList (LinkedList<PrivateMessages> list, String currentUser) throws SQLException, NoSuchUserException, NoSuchPictureException, NoInstanceException, NoSuchRealEstateException{
         for (PrivateMessages privateMessage : list) {
             String receiverName = privateMessage.getReceiver();
-            privateMessage.setRecieverUser(userService.getUserByName(receiverName));
-            String senderName = privateMessage.getReceiver();
-            privateMessage.setSenderUser(userService.getUserByName(senderName));
+            AbstractUser receiverUser = userService.getUserByName(receiverName);
+            receiverUser.setProfilePic(pictureService.findMainForUser(receiverName).getImage());
+            privateMessage.setRecieverUser(receiverUser);
+            String senderName = privateMessage.getSender();
+            AbstractUser senderUser = userService.getUserByName(senderName);
+            senderUser.setProfilePic(pictureService.findMainForUser(senderName).getImage());
+            privateMessage.setSenderUser(senderUser);
+            if(receiverName.equals(currentUser)){
+                privateMessage.setiAmReceiver(true);
+            } else {
+                privateMessage.setiAmSender(true);
+            }
             if(privateMessage.getHasRealEstate()){
-                System.out.println(privateMessage.getHasRealEstate());
-                System.out.println(privateMessage.getRealEstateId());
-                privateMessage.setRealEstate(realEstateService.findRealEstateById(privateMessage.getRealEstateId()));
+                RealEstate realEstate = realEstateService.findRealEstateById(privateMessage.getRealEstateId());
+                realEstate.setPic(pictureService.findMainForRealEstate(privateMessage.getRealEstateId()).getImage());
+                privateMessage.setRealEstate(realEstate);
             }
         }
     }
 
-    private List<LinkedList<PrivateMessages>> setMessageBatchForUser(String currentUser) throws SQLException, NoSuchMessageException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
+    private List<LinkedList<PrivateMessages>> setMessageBatchForUser(String currentUser) throws SQLException, NoSuchPictureException, NoSuchMessageException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
         List<LinkedList<PrivateMessages>> setMessageBatchForUser = messageService.getMessageBatches(currentUser);
         for(LinkedList<PrivateMessages> item : setMessageBatchForUser){
-            setUsersAndRealEstateToMessageList(item);
+            setUsersAndRealEstateToMessageList(item, currentUser);
         } return setMessageBatchForUser;
     }
 
