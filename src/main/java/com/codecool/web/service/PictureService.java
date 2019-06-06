@@ -2,6 +2,7 @@ package com.codecool.web.service;
 
 import com.codecool.web.dao.PictureDao;
 import com.codecool.web.model.Picture;
+import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoSuchPictureException;
 
 import java.io.FileNotFoundException;
@@ -47,6 +48,12 @@ public class PictureService {
 
     public Picture findMainForUser(String userName) throws SQLException, NoSuchPictureException{
         return pictureDao.findMainForUser(userName);
+    }
+
+    public List<AbstractUser> setMainForUserList(List<AbstractUser> list) throws SQLException, NoSuchPictureException{
+        for (AbstractUser user : list){
+            user.setProfilePic(findMainForUser(user.getName()).getImage());
+        } return list;
     }
 
 }

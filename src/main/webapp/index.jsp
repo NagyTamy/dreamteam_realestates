@@ -19,6 +19,8 @@
     <script src="request.js"></script>
     <script src="favourites.js"></script>
     <script src="messages.js"></script>
+    <script src="admin.js"></script>
+    <script src="register.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>

@@ -86,12 +86,15 @@ function createMenu(realEstateOffersDto) {
             const liElAttr = document.createAttribute("id");
             liElAttr.value = realEstateOffersDto.userName;
             liMenuEl.setAttributeNode(liElAttr);
-            console.log(liElAttr);
             liMenuEl.addEventListener('click', onProfileLoad);
         } else if(item === "Favs"){
             liMenuEl.addEventListener('click', onFavsLoad);
         } else if(item === "Log out"){
             liMenuEl.addEventListener('click', onLogOutLoad);
+        } else if(item === "Admin"){
+            liMenuEl.addEventListener('click', onAdminPageClick);
+        } else if(item === "Register"){
+            liMenuEl.addEventListener('click', onRegisterClick);
         }
         liMenuEl.classList.add("main");
         liMenuEl.setAttributeNode(mainNavAttr);

@@ -68,7 +68,7 @@ public class RealEstateService {
         return addMainPictures(getLastReserved);
     }
 
-    private List<RealEstate> addMainPictures(List<RealEstate> basicList) throws SQLException, NoSuchPictureException {
+    public List<RealEstate> addMainPictures(List<RealEstate> basicList) throws SQLException, NoSuchPictureException {
         for (RealEstate item : basicList){
             Picture picture = pictureDao.findMainForRealEstate(item.getId());
             if(picture != null){
