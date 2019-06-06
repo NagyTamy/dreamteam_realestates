@@ -5,6 +5,7 @@ import com.codecool.web.model.messages.AbstractMessage;
 import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.service.exception.NoSuchMessageException;
+import org.springframework.jdbc.support.xml.SqlXmlFeatureNotImplementedException;
 
 import javax.sound.midi.Receiver;
 import java.sql.SQLException;
@@ -74,6 +75,12 @@ public class MessageService {
         return messageDao.getAllPrivateMessageByUser(currentUser);
     }
 
+    public boolean hasPrivateMessages(String currentUser) throws SQLException{
+        return messageDao.getAllPrivateMessageByUser(currentUser).size() > 0;
+    }
+
+
+
     private PrivateMessages findMessageByHistoryId(int previousMessageId) throws SQLException, NoSuchMessageException{
          return messageDao.findMessageByHistoryId(previousMessageId);
     }
@@ -91,23 +98,24 @@ public class MessageService {
         List<LinkedList<PrivateMessages>> getMesageBatches = new ArrayList<>();
         int i = 0;
         while(!allPrivateMessage.isEmpty()){
-            System.out.println("Start: " + allPrivateMessage.size() +  "   I: " +i);
             if(allPrivateMessage.get(i).getPreviousMessageId() == 0){
                 PrivateMessages item = allPrivateMessage.get(i);
-                System.out.println("Before remove: " + allPrivateMessage.size() +  "   I: " +i);
                 LinkedList<PrivateMessages> messageBatch = new LinkedList<>();
                 messageBatch.add(item);
                 allPrivateMessage.remove(item);
-                System.out.println("After remove first: " + allPrivateMessage.size() +  "   I: " +i);
                 int z = 1;
                 while(hasNextMessage(item.getId())){
                     PrivateMessages nextMessage = findMessageByHistoryId(item.getId());
                     allPrivateMessage.remove(findIndex(nextMessage, allPrivateMessage));
                     messageBatch.add(nextMessage);
-                    System.out.println("After remove in while: "+ allPrivateMessage.size() +  "   I: " +i + "Iteration count: " + z);
                     item = nextMessage;
                     z++;
                 } getMesageBatches.add(messageBatch);
+                if(i < (allPrivateMessage.size()-1)){
+                    i++;
+                } else {
+                    i = 0;
+                }
             } else {
                 if(i < (allPrivateMessage.size()-1)){
                     i++;

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public class PrivateMessages extends AbstractMessage {
 
     private String receiver;
-    private int realEstateId = 0;
 
     private AbstractUser senderUser;
     private AbstractUser receiverUser;
@@ -22,14 +21,6 @@ public class PrivateMessages extends AbstractMessage {
 
     public String getReceiver() {
         return receiver;
-    }
-
-    public int getRealEstateId() {
-        return realEstateId;
-    }
-
-    public void setRealEstateId(int realEstateId) {
-        this.realEstateId = realEstateId;
     }
 
     public void setSenderUser(AbstractUser senderUser) {

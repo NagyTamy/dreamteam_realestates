@@ -62,11 +62,7 @@ public abstract class AbstractMessage {
     }
 
     private boolean hasRealEstate(){
-        return realEstateId != 0;
-    }
-
-    public boolean isHasRealEstate() {
-        return hasRealEstate;
+        return realEstateId !=  0;
     }
 
     public String getStringDate(){
@@ -77,5 +73,9 @@ public abstract class AbstractMessage {
 
     public int getRealEstateId() {
         return realEstateId;
+    }
+
+    public boolean getHasRealEstate() {
+        return hasRealEstate;
     }
 }

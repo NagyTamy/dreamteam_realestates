@@ -178,7 +178,6 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
                 }
             }
         }
-        System.out.println(getAllPrivateMessageByUser);
         return getAllPrivateMessageByUser;
     }
 

@@ -89,7 +89,7 @@ function createContainerForUserReviews(userPageDto, navId) {
         profileDiv.appendChild(onSentReviewsLoad(userPageDto))
     } else if(navId === "Messages"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onMessagesLoad())
+        profileDiv.appendChild(onMessagesLoad(userPageDto))
     } else if(navId === "My reservations"){
         removeAllChildren(profileDiv);
         profileDiv.appendChild(onReservationsLoad(userPageDto))
@@ -322,8 +322,15 @@ function onSentReviewsLoad(userPageDto) {
     return sentReviewContainerDivEl;
 }
 
-function onMessagesLoad() {
+function onMessagesLoad(userPageDto) {
     /*loads all the messages sorted by time, grouped by topic*/
+    const messageListContainer = document.createElement("div");
+    messageListContainer.id = "reviews";
+    const dividerSpanEl = insertDivider("My reservations", "divider");
+    dividerSpanEl.classList.add("realestatedivider");
+    messageListContainer.appendChild(dividerSpanEl);
+
+
 }
 
 function onReservationsLoad(userPageDto) {

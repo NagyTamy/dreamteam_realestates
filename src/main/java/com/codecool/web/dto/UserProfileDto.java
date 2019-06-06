@@ -35,6 +35,7 @@ public class UserProfileDto {
     private List<RealEstate> ownRealEstates;
     private UserService userService;
     private List<LinkedList<PrivateMessages>> messageBatches;
+    private boolean hasPrivateMessages;
     private boolean isLoggedIn;
     private boolean isOwn;
     private boolean hasRealEstates;
@@ -66,7 +67,10 @@ public class UserProfileDto {
         this.allUpcomingReservation = setRealEstateToReservationList(reservationService.getAllUpcomingByRenter(userName));
         this.ownRealEstates = setPicturesToRealEstateList(userName);
         this.hasRealEstates = hasRealEstates();
-        this.messageBatches = setMessageBatchForUser(userName);
+        this.hasPrivateMessages = checkPrivateMessages(userName);
+        if(hasPrivateMessages){
+            this.messageBatches = setMessageBatchForUser(userName);
+        }
     }
 
     public AbstractUser getUser() {
@@ -179,13 +183,19 @@ public class UserProfileDto {
         return currentReservation;
     }
 
+    private boolean checkPrivateMessages(String userName) throws SQLException{
+        return messageService.hasPrivateMessages(userName);
+    }
+
     private void setUsersAndRealEstateToMessageList (LinkedList<PrivateMessages> list) throws SQLException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
         for (PrivateMessages privateMessage : list) {
             String receiverName = privateMessage.getReceiver();
             privateMessage.setRecieverUser(userService.getUserByName(receiverName));
             String senderName = privateMessage.getReceiver();
             privateMessage.setSenderUser(userService.getUserByName(senderName));
-            if(privateMessage.isHasRealEstate()){
+            if(privateMessage.getHasRealEstate()){
+                System.out.println(privateMessage.getHasRealEstate());
+                System.out.println(privateMessage.getRealEstateId());
                 privateMessage.setRealEstate(realEstateService.findRealEstateById(privateMessage.getRealEstateId()));
             }
         }
@@ -200,5 +210,9 @@ public class UserProfileDto {
 
     public List<LinkedList<PrivateMessages>> getMessageBatches() {
         return messageBatches;
+    }
+
+    public boolean isHasPrivateMessages() {
+        return hasPrivateMessages;
     }
 }
