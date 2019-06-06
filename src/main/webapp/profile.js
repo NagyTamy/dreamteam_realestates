@@ -330,6 +330,8 @@ function onMessagesLoad(userPageDto) {
     dividerSpanEl.classList.add("realestatedivider");
     messageListContainer.appendChild(dividerSpanEl);
 
+    let receiverName;
+
     if(userPageDto.hasPrivateMessages) {
         for (let i = 0; i < userPageDto.messageBatches.length; i++){
             const messageContainerDivEl = document.createElement("div");
@@ -353,6 +355,8 @@ function onMessagesLoad(userPageDto) {
                 ringImg.src = "img/ring.svg";
                 ringImg.classList.add("ring");
 
+                receiverName = lastMessageForDisplay.senderUser.name;
+
                 imageDivEl.appendChild(usrImg);
                 imageDivEl.appendChild(ringImg);
                 messageContainerDivEl.appendChild(imageDivEl);
@@ -371,10 +375,13 @@ function onMessagesLoad(userPageDto) {
                 ringImg.src = "img/ring.svg";
                 ringImg.classList.add("ring");
 
+                receiverName = lastMessageForDisplay.receiverUser.name;
+
                 imageDivEl.appendChild(usrImg);
                 imageDivEl.appendChild(ringImg);
                 messageContainerDivEl.appendChild(imageDivEl);
             }
+
 
             const messageTextPreviewDivEl = document.createElement("div");
             messageTextPreviewDivEl.id = "message-text-preview";
@@ -388,7 +395,7 @@ function onMessagesLoad(userPageDto) {
             pPreviewEl.classList.add("message-preview");
             pPreviewEl.textContent = lastMessageForDisplay.message;
             pPreviewEl.classList.add("link");
-            pPreviewEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i])});
+            pPreviewEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i], userPageDto.user.name, receiverName)});
 
             messageTextPreviewDivEl.appendChild(h3TitleEl);
             messageTextPreviewDivEl.appendChild(pPreviewEl);

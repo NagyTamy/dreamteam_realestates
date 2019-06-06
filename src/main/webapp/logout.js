@@ -18,6 +18,7 @@ function onLogOutPageLoad(){
 
 
 function setDelay(message) {
+    markedNav("Log out");
     removeAllChildren(containerContentDivEl);
     newMessage(containerContentDivEl, "message", message);
 

@@ -20,6 +20,7 @@ function onFavRealEstatesLoad() {
 
 function onloadFavList(favourites) {
     removeAllChildren(containerContentDivEl);
+    markedNav("Favs");
     containerContentDivEl.appendChild(insertDivider('Favourites', 'divider'));
     if (favourites.length > 0) {
         const rowEl = document.createElement("div");
