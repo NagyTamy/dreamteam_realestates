@@ -56,6 +56,7 @@ a{
     --dark-red: #31020D;
     --light-pink: #F7D3D2;
     --transparent-dark-red: rgba(49,2,13,0.2);
+    --transparent-darker-red: rgba(49,2,13,0.6);
     --scrollbar-width: 1140px;
     --aside-height: 49px;
 }
@@ -244,10 +245,16 @@ header{
     margin-left: 0;
 }
 
-#reviews, #own-real-estates, #messages-container{
+#reviews, #own-real-estates, #messages-container, #message-history{
     width: 74.343%;
     height: auto;
     line-height: 1.5;
+}
+
+#message-history{
+    border: solid 2px var(--transparent-dark-red);
+    overflow-y: auto;
+    max-height: 600px;
 }
 
 #comment, textarea, #request, #private-message{
@@ -259,7 +266,7 @@ header{
     margin-top: 30px;
     font-size: inherit;
     font-family: inherit;
-    line-height: inherit;
+    line-height: 1.5em;
 }
 
 #private-message{
@@ -818,6 +825,7 @@ aside{
     visibility: visible;
 }
 
+
 .past-reservation{
     background: lightgrey;
 }
@@ -825,4 +833,56 @@ aside{
 .current-reservation{
     background: darkorange;
 }
+
+.tooltip-incoming, .tooltip-outgoing{
+    display: none;
+    width: 40%;
+    background-color: var(--transparent-darker-red);
+    color: var(--light-pink);
+    font-size: 0.7em;
+    padding: 2px 10px 4px 10px;
+}
+
+.tooltip-incoming{
+    float: left;
+}
+
+.tooltip-outgoing{
+    float: right;
+    text-align: right;
+}
+
+.incoming{
+    width: 60%;
+    float: left;
+    overflow: hidden;
+    margin: 10px 10px 0 10px;
+}
+
+.outgoing{
+    width: 60%;
+    float: right;
+    overflow: hidden;
+    margin: 10px 10px 0 10px;
+}
+
+.content{
+    padding: 10px;
+    background-color: var(--transparent-dark-red);
+}
+
+#message-history div:last-child{
+    padding-bottom: 10px;
+}
+
+#new-message{
+    width: 74.343%;
+}
+
+#new-message textarea{
+    min-height: 80px;
+    overflow: auto;
+}
+
+
 
