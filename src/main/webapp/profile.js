@@ -95,10 +95,10 @@ function createContainerForUserReviews(userPageDto, navId) {
         profileDiv.appendChild(onReservationsLoad(userPageDto))
     } else if(navId === "User's real estates"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onOwnedRealEstateLoads())
+        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto))
     } else if(navId === "My real estates"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onOwnedRealEstateLoads())
+        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto))
     } else if(navId === "Send message"){
         removeAllChildren(profileDiv);
         profileDiv.appendChild(sendPrivateMessageToUser())
@@ -148,46 +148,50 @@ function onOwnRequestsLoad(userPageDto){
     dividerSpanEl.classList.add("realestatedivider");
     requestContainerEl.appendChild(dividerSpanEl);
 
-    for (let i = 0; i < userPageDto.allRequest.length; i++){
-        const request = userPageDto.allRequest[i];
+    if(userPageDto.allRequest.length > 0) {
+        for (let i = 0; i < userPageDto.allRequest.length; i++) {
+            const request = userPageDto.allRequest[i];
 
-        const requestDivEl = document.createElement("div");
-        requestDivEl.id = "request";
+            const requestDivEl = document.createElement("div");
+            requestDivEl.id = "request";
 
-        const requestDataDivEl = document.createElement("div");
-        requestDataDivEl.id = "request-data";
+            const requestDataDivEl = document.createElement("div");
+            requestDataDivEl.id = "request-data";
 
-        const pTypeEl = document.createElement("p");
-        pTypeEl.textContent = request.title;
-        const pDateEl = document.createElement("p");
-        pDateEl.textContent = request.stringDate;
-        const pMessageEl = document.createElement("p");
-        pMessageEl.textContent = request.message;
-        const pRealEstateEl = document.createElement("p");
-        if(request.hasRealEstate){
-            pRealEstateEl.textContent = request.realEstateId;
-            const pAttr = document.createAttribute("real-estate-id");
-            pAttr.value = request.realEstateId;
-            pRealEstateEl.classList.add("link");
-            pRealEstateEl.setAttributeNode(pAttr);
-            pRealEstateEl.addEventListener("click", onTileClick);
-        } else {
-            pRealEstateEl.textContent = "No Real Estate related to this request";
+            const pTypeEl = document.createElement("p");
+            pTypeEl.textContent = request.title;
+            const pDateEl = document.createElement("p");
+            pDateEl.textContent = request.stringDate;
+            const pMessageEl = document.createElement("p");
+            pMessageEl.textContent = request.message;
+            const pRealEstateEl = document.createElement("p");
+            if (request.hasRealEstate) {
+                pRealEstateEl.textContent = request.realEstateId;
+                const pAttr = document.createAttribute("real-estate-id");
+                pAttr.value = request.realEstateId;
+                pRealEstateEl.classList.add("link");
+                pRealEstateEl.setAttributeNode(pAttr);
+                pRealEstateEl.addEventListener("click", onTileClick);
+            } else {
+                pRealEstateEl.textContent = "No Real Estate related to this request";
+            }
+            requestDataDivEl.appendChild(pTypeEl);
+            requestDataDivEl.appendChild(pDateEl);
+            requestDataDivEl.appendChild(pMessageEl);
+            requestDataDivEl.appendChild(pRealEstateEl);
+
+
+            const requestButtonEl = document.createElement("button");
+            requestButtonEl.classList.add("request-button");
+            requestButtonEl.textContent = "Delete";
+            requestButtonEl.addEventListener('click', onDeleteRequestClick);
+
+            requestDivEl.appendChild(requestDataDivEl);
+            requestDivEl.appendChild(requestButtonEl);
+            requestContainerEl.appendChild(requestDivEl);
         }
-        requestDataDivEl.appendChild(pTypeEl);
-        requestDataDivEl.appendChild(pDateEl);
-        requestDataDivEl.appendChild(pMessageEl);
-        requestDataDivEl.appendChild(pRealEstateEl);
-
-
-        const requestButtonEl = document.createElement("button");
-        requestButtonEl.classList.add("request-button");
-        requestButtonEl.textContent = "Delete";
-        requestButtonEl.addEventListener('click', onDeleteRequestClick);
-
-        requestDivEl.appendChild(requestDataDivEl);
-        requestDivEl.appendChild(requestButtonEl);
-        requestContainerEl.appendChild(requestDivEl);
+    } else {
+        newError(requestContainerEl, "You do not have any requests yet.");
     }
 
     return requestContainerEl;
@@ -422,8 +426,68 @@ function createReservationBox(reservationObject, cssClassForBg) {
 
 }
 
-function onOwnedRealEstateLoads() {
+function onOwnedRealEstateLoads(userPageDto) {
     /*lists every real estate owned by the profile owner*/
+    const ownRealEstateContainer = document.createElement("div");
+    ownRealEstateContainer.id = "own-real-estates";
+
+    const dividerSpanEl = insertDivider("My houses", "divider");
+    dividerSpanEl.classList.add("realestatedivider");
+    ownRealEstateContainer.appendChild(dividerSpanEl);
+
+    if (userPageDto.hasRealEstates) {
+        const rowEl = document.createElement("div");
+        rowEl.classList.add("row");
+
+        for (let j = 0; j < userPageDto.ownRealEstates.length; j++) {
+            const oneThirdDivEl = document.createElement("div");
+            oneThirdDivEl.classList.add("one-third");
+
+            const imgSrc = decodeBase64(userPageDto.ownRealEstates[j].pic);
+
+            const mainImgEl = document.createElement("img");
+            mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+
+            const ringImg = document.createElement("img");
+            ringImg.src = "img/dark-angled-ring.svg";
+
+            const h3NameEl = document.createElement("h3");
+            h3NameEl.textContent = userPageDto.ownRealEstates[j].name;
+
+            const pEl = document.createElement("p");
+            pEl.id = 'country';
+            pEl.textContent = userPageDto.ownRealEstates[j].country;
+
+            const descEl = document.createElement("div");
+            descEl.id = "description";
+            descEl.textContent = userPageDto.ownRealEstates[j].description;
+
+            const buttonEl = document.createElement("button");
+            buttonEl.textContent = "More";
+
+            const realEstateIdAttr = document.createAttribute('real-estate-id');
+            realEstateIdAttr.value = userPageDto.ownRealEstates[j].id;
+
+            oneThirdDivEl.setAttributeNode(realEstateIdAttr);
+            oneThirdDivEl.appendChild(mainImgEl);
+            oneThirdDivEl.appendChild(ringImg);
+            oneThirdDivEl.appendChild(h3NameEl);
+            oneThirdDivEl.appendChild(pEl);
+            oneThirdDivEl.appendChild(descEl);
+            oneThirdDivEl.appendChild(buttonEl);
+            oneThirdDivEl.addEventListener('click', onTileClick);
+
+            rowEl.appendChild(oneThirdDivEl);
+        }
+        ownRealEstateContainer.appendChild(rowEl);
+    } else {
+        if(userPageDto.own) {
+            newError(ownRealEstateContainer, "You do not have real estates uploaded yet.");
+        } else {
+            newError(ownRealEstateContainer, "This user does not have any public real estate, please check back later.")
+        }
+    } return ownRealEstateContainer;
+
 }
 
 function sendPrivateMessageToUser() {

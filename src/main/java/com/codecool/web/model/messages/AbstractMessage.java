@@ -71,7 +71,8 @@ public abstract class AbstractMessage {
 
     public String getStringDate(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return time.format(formatter);
+        stringDate = time.format(formatter);
+        return stringDate;
     }
 
     public int getRealEstateId() {

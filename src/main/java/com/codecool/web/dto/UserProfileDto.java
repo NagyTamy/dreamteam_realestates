@@ -14,6 +14,7 @@ import com.codecool.web.service.*;
 import com.codecool.web.service.exception.*;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserProfileDto {
@@ -33,6 +34,7 @@ public class UserProfileDto {
     private List<Reservation> allUpcomingReservation;
     private List<RealEstate> ownRealEstates;
     private UserService userService;
+    private List<LinkedList<PrivateMessages>> messageBatches;
     private boolean isLoggedIn;
     private boolean isOwn;
     private boolean hasRealEstates;
@@ -41,10 +43,11 @@ public class UserProfileDto {
     public UserProfileDto(String userName, RealEstateService realEstateService, ReservationService reservationService,
                           MessageService messageService, List<String> asideMenu, CommentService commentService, UserService userService,
                           PictureService pictureService, boolean isLoggedIn, boolean isOwn)
-    throws SQLException, NoSuchUserException, NoInstanceException, NoSuchCommentException, NoSuchPictureException, NoSuchRealEstateException {
+    throws SQLException, NoSuchUserException, NoInstanceException, NoSuchCommentException, NoSuchPictureException, NoSuchRealEstateException, NoSuchMessageException {
         this.user = userService.getUserByName(userName);
         user.setProfilePic(pictureService.findMainForUser(userName).getImage());
         this.commentService = commentService;
+        this.messageService = messageService;
         this.reservationService = reservationService;
         this.pictureService = pictureService;
         this.realEstateService = realEstateService;
@@ -61,8 +64,9 @@ public class UserProfileDto {
             this.currentReservation = setRealEstateToSingleReservation(reservationService.getCurrentByRenter(userName));
         }
         this.allUpcomingReservation = setRealEstateToReservationList(reservationService.getAllUpcomingByRenter(userName));
-        this.ownRealEstates = realEstateService.findRealEstatesByUser(userName);
+        this.ownRealEstates = setPicturesToRealEstateList(userName);
         this.hasRealEstates = hasRealEstates();
+        this.messageBatches = setMessageBatchForUser(userName);
     }
 
     public AbstractUser getUser() {
@@ -124,6 +128,13 @@ public class UserProfileDto {
         return reservation;
     }
 
+    private List<RealEstate> setPicturesToRealEstateList(String userName) throws SQLException, NoSuchPictureException{
+        ownRealEstates = realEstateService.findRealEstatesByUser(userName);
+        for (RealEstate realEstate : ownRealEstates){
+            realEstate.setPic(pictureService.findMainForRealEstate(realEstate.getId()).getImage());
+        } return ownRealEstates;
+    }
+
     private boolean hasRealEstates(){
         return ownRealEstates.size() > 1;
     }
@@ -166,5 +177,28 @@ public class UserProfileDto {
 
     public Reservation getCurrentReservation() {
         return currentReservation;
+    }
+
+    private void setUsersAndRealEstateToMessageList (LinkedList<PrivateMessages> list) throws SQLException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
+        for (PrivateMessages privateMessage : list) {
+            String receiverName = privateMessage.getReceiver();
+            privateMessage.setRecieverUser(userService.getUserByName(receiverName));
+            String senderName = privateMessage.getReceiver();
+            privateMessage.setSenderUser(userService.getUserByName(senderName));
+            if(privateMessage.isHasRealEstate()){
+                privateMessage.setRealEstate(realEstateService.findRealEstateById(privateMessage.getRealEstateId()));
+            }
+        }
+    }
+
+    private List<LinkedList<PrivateMessages>> setMessageBatchForUser(String currentUser) throws SQLException, NoSuchMessageException, NoSuchUserException, NoInstanceException, NoSuchRealEstateException{
+        List<LinkedList<PrivateMessages>> setMessageBatchForUser = messageService.getMessageBatches(currentUser);
+        for(LinkedList<PrivateMessages> item : setMessageBatchForUser){
+            setUsersAndRealEstateToMessageList(item);
+        } return setMessageBatchForUser;
+    }
+
+    public List<LinkedList<PrivateMessages>> getMessageBatches() {
+        return messageBatches;
     }
 }

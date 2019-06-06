@@ -41,6 +41,8 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         } return findRealEstatesByUser;
     }
 
+
+
     @Override
     public List<RealEstate> getAllRealEstate() throws SQLException{
         List<RealEstate> getAllRealEstate = new ArrayList<>();
@@ -171,6 +173,20 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
                 return resultSet.getInt("num");
             }
         } return 0;
+    }
+
+    @Override
+    public List<RealEstate> findFavouritesForUser(String userName) throws SQLException{
+        List<RealEstate> findFavouritesForUser = new ArrayList<>();
+        String sql = "SELECT * FROM favourites LEFT JOIN real_estates re on favourites.real_estate_id = re.real_estate_id WHERE favourites.user_name=?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                while (resultSet.next()){
+                    findFavouritesForUser.add(fetchRealEstate(resultSet));
+                }
+            }
+        } return findFavouritesForUser;
     }
 
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {

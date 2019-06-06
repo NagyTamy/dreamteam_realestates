@@ -94,4 +94,10 @@ public class RealEstateService {
         return realEstateDao.findRealEstatesByUser(user).contains(findRealEstateById(realEstateId));
     }
 
+    public List<RealEstate> findFavouritesForUser(String userName) throws SQLException, NoSuchPictureException{
+        List<RealEstate> findFavouritesForUser = realEstateDao.findFavouritesForUser(userName);
+        addMainPictures(findFavouritesForUser);
+        return findFavouritesForUser;
+    }
+
 }

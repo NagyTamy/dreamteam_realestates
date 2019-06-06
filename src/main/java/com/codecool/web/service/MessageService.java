@@ -2,12 +2,17 @@ package com.codecool.web.service;
 
 import com.codecool.web.dao.MessageDao;
 import com.codecool.web.model.messages.AbstractMessage;
+import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.service.exception.NoSuchMessageException;
 
+import javax.sound.midi.Receiver;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MessageService {
 
@@ -59,5 +64,57 @@ public class MessageService {
 
     public void removeMessage(String currentUser, int messageId) throws SQLException{
         messageDao.removeMessage(currentUser, messageId);
+    }
+
+    private boolean hasNextMessage(int messageId) throws SQLException{
+        return messageDao.hasNextMessage(messageId);
+    }
+
+    private List<PrivateMessages> getAllPrivateMessageByUser(String currentUser) throws SQLException{
+        return messageDao.getAllPrivateMessageByUser(currentUser);
+    }
+
+    private PrivateMessages findMessageByHistoryId(int previousMessageId) throws SQLException, NoSuchMessageException{
+         return messageDao.findMessageByHistoryId(previousMessageId);
+    }
+
+    private int findIndex(PrivateMessages nextMessage, List<PrivateMessages> list){
+        for(PrivateMessages item : list){
+            if(nextMessage.getId() == item.getId()){
+                return list.indexOf(item);
+            }
+        } return 0;
+    }
+
+    public List<LinkedList<PrivateMessages>> getMessageBatches(String currentUser) throws SQLException, NoSuchMessageException{
+        List<PrivateMessages> allPrivateMessage = getAllPrivateMessageByUser(currentUser);
+        List<LinkedList<PrivateMessages>> getMesageBatches = new ArrayList<>();
+        int i = 0;
+        while(!allPrivateMessage.isEmpty()){
+            System.out.println("Start: " + allPrivateMessage.size() +  "   I: " +i);
+            if(allPrivateMessage.get(i).getPreviousMessageId() == 0){
+                PrivateMessages item = allPrivateMessage.get(i);
+                System.out.println("Before remove: " + allPrivateMessage.size() +  "   I: " +i);
+                LinkedList<PrivateMessages> messageBatch = new LinkedList<>();
+                messageBatch.add(item);
+                allPrivateMessage.remove(item);
+                System.out.println("After remove first: " + allPrivateMessage.size() +  "   I: " +i);
+                int z = 1;
+                while(hasNextMessage(item.getId())){
+                    PrivateMessages nextMessage = findMessageByHistoryId(item.getId());
+                    allPrivateMessage.remove(findIndex(nextMessage, allPrivateMessage));
+                    messageBatch.add(nextMessage);
+                    System.out.println("After remove in while: "+ allPrivateMessage.size() +  "   I: " +i + "Iteration count: " + z);
+                    item = nextMessage;
+                    z++;
+                } getMesageBatches.add(messageBatch);
+            } else {
+                if(i < (allPrivateMessage.size()-1)){
+                    i++;
+                } else {
+                    i = 0;
+                }
+            }
+        } return getMesageBatches;
     }
 }

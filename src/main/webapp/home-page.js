@@ -88,6 +88,8 @@ function createMenu(realEstateOffersDto) {
             liMenuEl.setAttributeNode(liElAttr);
             console.log(liElAttr);
             liMenuEl.addEventListener('click', onProfileLoad);
+        } else if(item === "Favs"){
+            liMenuEl.addEventListener('click', onFavsLoad);
         } else if(item === "Log out"){
             liMenuEl.addEventListener('click', onLogOutLoad);
         }

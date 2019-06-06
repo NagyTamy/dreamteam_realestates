@@ -31,4 +31,6 @@ public interface RealEstateDao {
     List<RealEstate> getLastReserved() throws SQLException, NoSuchRealEstateException;
 
     int getNumberOfRealEstates() throws SQLException;
+
+    List<RealEstate> findFavouritesForUser(String userName) throws SQLException;
 }

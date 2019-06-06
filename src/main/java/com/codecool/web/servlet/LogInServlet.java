@@ -26,7 +26,7 @@ public class LogInServlet extends AbstractServlet {
             PasswordHashService passwordHashService = new PasswordHashService();
 
             AbstractUser user = userService.getUserByName(req.getParameter("name"));
-            System.out.println(user);
+
 
             if (user != null){
                 String password = req.getParameter("password");

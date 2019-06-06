@@ -165,6 +165,50 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
         }
     }
 
+    @Override
+    public List<PrivateMessages> getAllPrivateMessageByUser(String currentUser) throws SQLException{
+        List<PrivateMessages> getAllPrivateMessageByUser = new ArrayList<>();
+        String sql = "SELECT * FROM messages WHERE receiver_name != 'system' AND (sender_name=? OR receiver_name=?) ORDER BY date DESC ";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, currentUser);
+            statement.setString(2, currentUser);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    getAllPrivateMessageByUser.add((PrivateMessages) fetchMessages(resultSet));
+                }
+            }
+        }
+        System.out.println(getAllPrivateMessageByUser);
+        return getAllPrivateMessageByUser;
+    }
+
+    @Override
+    public PrivateMessages findMessageByHistoryId(int previousMessageId) throws SQLException, NoSuchMessageException {
+        String sql = "SELECT * FROM messages WHERE history=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, previousMessageId);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if (resultSet.next()){
+                    return (PrivateMessages) fetchMessages(resultSet);
+                }
+            }
+        } throw new NoSuchMessageException();
+    }
+
+    @Override
+    public boolean hasNextMessage(int messageId) throws SQLException {
+        String sql = "SELECT * FROM messages WHERE history=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, messageId);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if (resultSet.next()){
+                    return true;
+                }
+            }
+        } return false;
+    }
+
+
     private AbstractMessage fetchMessages(ResultSet resultSet) throws SQLException{
 
         int id = resultSet.getInt("message_id");

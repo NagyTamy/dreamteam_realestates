@@ -17,6 +17,7 @@
     <script src="reservation.js"></script>
     <script src="logout.js"></script>
     <script src="request.js"></script>
+    <script src="favourites.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>

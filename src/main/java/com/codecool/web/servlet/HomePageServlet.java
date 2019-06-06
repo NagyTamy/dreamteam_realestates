@@ -43,7 +43,6 @@ public class HomePageServlet extends AbstractServlet {
             RealEstateOffersDto onLoadOffers;
 
             AbstractUser user = getSessionUser(req);
-            System.out.println(user);
 
             if (user != null){
                 setSessionUser(req, user);

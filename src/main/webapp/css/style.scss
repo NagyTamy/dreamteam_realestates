@@ -167,17 +167,26 @@ header{
     float: left;
 }
 
-.one-fourth:hover{
+.one-third{
+    width: 29.166%;
+    margin: 0 0 0 30px;
+    height: 450px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+}
+
+.one-fourth:hover, .one-third:hover{
     cursor: pointer;
 }
 
-.one-fourth img{
+.one-fourth img, .one-third img{
     width: 100%;
     height: 250px;
     border-radius: 50%;
 }
 
-.one-fourth img:nth-child(2){
+.one-fourth img:nth-child(2), .one-third img:nth-child(2){
     width: 100%;
     height: 250px;
     border-radius: 50%;
@@ -185,7 +194,7 @@ header{
     right: 0.1%;
 }
 
-.one-fourth h3{
+.one-fourth h3, .one-third h3{
     font-size: 1.5em;
     font-weight: bold;
     line-height: 1;
@@ -235,7 +244,7 @@ header{
     margin-left: 0;
 }
 
-#reviews{
+#reviews, #own-real-estates{
     width: 74.343%;
     height: auto;
     line-height: 1.5;
@@ -514,7 +523,7 @@ input[type=text], input[type=password]{
     float: right;
 }
 
-.one-fourth button{
+.one-fourth button, .one-third button{
     width: 40%;
     position: absolute;
     margin: 12px 30%;
@@ -694,6 +703,8 @@ footer img:nth-child(2){
     font-size: 1em;
     color: inherit;
     text-align: center;
+    height: 100px;
+    line-height: 2em;
 }
 
 .hidden{

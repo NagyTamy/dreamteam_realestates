@@ -44,7 +44,6 @@ public class UserPageServlet extends AbstractServlet {
             RealEstateService realEstateService = new RealEstateService(realEstateDao, pictureDao);
 
             String userName = req.getParameter("id");
-            System.out.println(userName);
             AbstractUser user = userService.getUserByName(userName);
 
 

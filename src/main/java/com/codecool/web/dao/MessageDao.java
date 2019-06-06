@@ -1,6 +1,7 @@
 package com.codecool.web.dao;
 
 import com.codecool.web.model.messages.AbstractMessage;
+import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.service.exception.NoSuchMessageException;
 
@@ -32,4 +33,10 @@ public interface MessageDao {
     void addNewSystemMessage(String currentUser, String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException;
 
     void removeMessage(String currentUser, int messageId) throws SQLException;
+
+    List<PrivateMessages> getAllPrivateMessageByUser(String currentUser) throws SQLException;
+
+    PrivateMessages findMessageByHistoryId(int previousMessageId) throws SQLException, NoSuchMessageException;
+
+    boolean hasNextMessage (int messageId) throws SQLException;
 }
