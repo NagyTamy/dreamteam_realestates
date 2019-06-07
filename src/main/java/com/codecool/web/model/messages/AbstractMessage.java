@@ -27,6 +27,7 @@ public abstract class AbstractMessage {
         this.previousMessageId = previousMessageId;
         this.realEstateId = realEstateId;
         this.hasRealEstate = hasRealEstate();
+        this.stringDate = getStringDate();
     }
 
     public int getId() {

@@ -245,13 +245,14 @@ header{
     margin-left: 0;
 }
 
-#reviews, #own-real-estates, #messages-container, #message-history{
+#reviews, #own-real-estates, #messages-container, #convo{
     width: 74.343%;
     height: auto;
     line-height: 1.5;
 }
 
 #message-history{
+    width: 100%;
     border: solid 2px var(--transparent-dark-red);
     overflow-y: auto;
     max-height: 600px;
@@ -786,6 +787,31 @@ aside{
     border: solid 2px var(--dark-red);
 }
 
+#admin-re-search, #admin-user-search{
+    clear: both;
+    width: 21.785%;
+    position: relative;
+    float: right;
+    margin: 30px 0 0 30px;
+    line-height: 1.5em;
+
+}
+
+#admin-re-search input[type=text], #admin-user-search input[type=text]{
+    width: 100%;
+    height: 30px;
+    margin-bottom: 20px;
+}
+
+#admin-user-search input[type=text]{
+    margin-top: 20px;
+}
+
+#admin-re-search button, #admin-user-search button{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 #log-in-link{
     font-size: inherit;
     font-weight: bold;
@@ -875,13 +901,30 @@ aside{
     padding-bottom: 10px;
 }
 
-#new-message{
-    width: 74.343%;
-}
-
 #new-message textarea{
     min-height: 80px;
     overflow: auto;
+}
+
+table{
+    width: 100%;
+    border: solid 2px var(--transparent-darker-red);
+    font-family: inherit;
+    font-size: inherit;
+}
+
+tr{
+    border-bottom: solid 1px var(--transparent-dark-red);
+    line-height: 1.5em;
+}
+
+td{
+    text-align: right;
+    padding: 5px;
+}
+
+.center-text{
+    text-align: center;
 }
 
 

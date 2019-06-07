@@ -83,25 +83,25 @@ function createContainerForUserProfile(userPageDto, navId) {
         profileDiv.appendChild(onReviewsLoad(userPageDto));
     } else if(navId === "My requests"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onOwnRequestsLoad(userPageDto))
+        profileDiv.appendChild(onOwnRequestsLoad(userPageDto));
     } else if(navId === "My reviews"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onSentReviewsLoad(userPageDto))
+        profileDiv.appendChild(onSentReviewsLoad(userPageDto));
     } else if(navId === "Messages"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onMessagesLoad(userPageDto))
+        profileDiv.appendChild(onMessagesLoad(userPageDto));
     } else if(navId === "My reservations"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onReservationsLoad(userPageDto))
+        profileDiv.appendChild(onReservationsLoad(userPageDto));
     } else if(navId === "User's real estates"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto))
+        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto));
     } else if(navId === "My real estates"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto))
+        profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto));
     } else if(navId === "Send message"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(sendPrivateMessageToUser())
+        profileDiv.appendChild(sendPrivateMessageToUser());
     } else {
         removeAllChildren(profileDiv);
         newError(profileDiv, "Ooops, something went wrong. Please chose an option from the menu!");
@@ -548,50 +548,99 @@ function onOwnedRealEstateLoads(userPageDto) {
     ownRealEstateContainer.appendChild(dividerSpanEl);
 
     if (userPageDto.hasRealEstates) {
-        const rowEl = document.createElement("div");
-        rowEl.classList.add("row");
+        if(userPageDto.own) {
+            const rowEl = document.createElement("div");
+            rowEl.classList.add("row");
 
-        for (let j = 0; j < userPageDto.ownRealEstates.length; j++) {
-            const oneThirdDivEl = document.createElement("div");
-            oneThirdDivEl.classList.add("one-third");
+            for (let j = 0; j < userPageDto.ownRealEstates.length; j++) {
+                const oneThirdDivEl = document.createElement("div");
+                oneThirdDivEl.classList.add("one-third");
 
-            const imgSrc = decodeBase64(userPageDto.ownRealEstates[j].pic);
+                const imgSrc = decodeBase64(userPageDto.ownRealEstates[j].pic);
 
-            const mainImgEl = document.createElement("img");
-            mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+                const mainImgEl = document.createElement("img");
+                mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
 
-            const ringImg = document.createElement("img");
-            ringImg.src = "img/dark-angled-ring.svg";
+                const ringImg = document.createElement("img");
+                ringImg.src = "img/dark-angled-ring.svg";
 
-            const h3NameEl = document.createElement("h3");
-            h3NameEl.textContent = userPageDto.ownRealEstates[j].name;
+                const h3NameEl = document.createElement("h3");
+                h3NameEl.textContent = userPageDto.ownRealEstates[j].name;
 
-            const pEl = document.createElement("p");
-            pEl.id = 'country';
-            pEl.textContent = userPageDto.ownRealEstates[j].country;
+                const pEl = document.createElement("p");
+                pEl.id = 'country';
+                pEl.textContent = userPageDto.ownRealEstates[j].country;
 
-            const descEl = document.createElement("div");
-            descEl.id = "description";
-            descEl.textContent = userPageDto.ownRealEstates[j].description;
+                const descEl = document.createElement("div");
+                descEl.id = "description";
+                descEl.textContent = userPageDto.ownRealEstates[j].description;
 
-            const buttonEl = document.createElement("button");
-            buttonEl.textContent = "More";
+                const buttonEl = document.createElement("button");
+                buttonEl.textContent = "More";
 
-            const realEstateIdAttr = document.createAttribute('real-estate-id');
-            realEstateIdAttr.value = userPageDto.ownRealEstates[j].id;
+                const realEstateIdAttr = document.createAttribute('real-estate-id');
+                realEstateIdAttr.value = userPageDto.ownRealEstates[j].id;
 
-            oneThirdDivEl.setAttributeNode(realEstateIdAttr);
-            oneThirdDivEl.appendChild(mainImgEl);
-            oneThirdDivEl.appendChild(ringImg);
-            oneThirdDivEl.appendChild(h3NameEl);
-            oneThirdDivEl.appendChild(pEl);
-            oneThirdDivEl.appendChild(descEl);
-            oneThirdDivEl.appendChild(buttonEl);
-            oneThirdDivEl.addEventListener('click', onTileClick);
+                oneThirdDivEl.setAttributeNode(realEstateIdAttr);
+                oneThirdDivEl.appendChild(mainImgEl);
+                oneThirdDivEl.appendChild(ringImg);
+                oneThirdDivEl.appendChild(h3NameEl);
+                oneThirdDivEl.appendChild(pEl);
+                oneThirdDivEl.appendChild(descEl);
+                oneThirdDivEl.appendChild(buttonEl);
+                oneThirdDivEl.addEventListener('click', onTileClick);
 
-            rowEl.appendChild(oneThirdDivEl);
+                rowEl.appendChild(oneThirdDivEl);
+            }
+            ownRealEstateContainer.appendChild(rowEl);
+        } else {
+            const rowEl = document.createElement("div");
+            rowEl.classList.add("row");
+
+            for (let j = 0; j < userPageDto.ownRealEstates.length; j++) {
+                if (userPageDto.ownRealEstates[i].isPublic) {
+                    const oneThirdDivEl = document.createElement("div");
+                    oneThirdDivEl.classList.add("one-third");
+
+                    const imgSrc = decodeBase64(userPageDto.ownRealEstates[j].pic);
+
+                    const mainImgEl = document.createElement("img");
+                    mainImgEl.src = 'data:image/jpg;base64,' + imgSrc;
+
+                    const ringImg = document.createElement("img");
+                    ringImg.src = "img/dark-angled-ring.svg";
+
+                    const h3NameEl = document.createElement("h3");
+                    h3NameEl.textContent = userPageDto.ownRealEstates[j].name;
+
+                    const pEl = document.createElement("p");
+                    pEl.id = 'country';
+                    pEl.textContent = userPageDto.ownRealEstates[j].country;
+
+                    const descEl = document.createElement("div");
+                    descEl.id = "description";
+                    descEl.textContent = userPageDto.ownRealEstates[j].description;
+
+                    const buttonEl = document.createElement("button");
+                    buttonEl.textContent = "More";
+
+                    const realEstateIdAttr = document.createAttribute('real-estate-id');
+                    realEstateIdAttr.value = userPageDto.ownRealEstates[j].id;
+
+                    oneThirdDivEl.setAttributeNode(realEstateIdAttr);
+                    oneThirdDivEl.appendChild(mainImgEl);
+                    oneThirdDivEl.appendChild(ringImg);
+                    oneThirdDivEl.appendChild(h3NameEl);
+                    oneThirdDivEl.appendChild(pEl);
+                    oneThirdDivEl.appendChild(descEl);
+                    oneThirdDivEl.appendChild(buttonEl);
+                    oneThirdDivEl.addEventListener('click', onTileClick);
+
+                    rowEl.appendChild(oneThirdDivEl);
+                }
+            }
+            ownRealEstateContainer.appendChild(rowEl);
         }
-        ownRealEstateContainer.appendChild(rowEl);
     } else {
         if(userPageDto.own) {
             newError(ownRealEstateContainer, "You do not have real estates uploaded yet.");

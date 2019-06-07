@@ -9,37 +9,39 @@ import com.codecool.web.service.exception.NoSuchRealEstateException;
 import com.codecool.web.service.exception.NoSuchUserException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminPageDto {
 
-    private RealEstate randomOffers;
+    private RealEstate randomOffer;
     private boolean hasRealEstates;
-    private List<RealEstate> allSystemRealEstates;
+    private List<RealEstate> ownRealEstates;
     private boolean hasPendingRequest;
     private List<SystemMessages> allPendingUserRequest;
     private List<Log> allLogs;
+    private List<String> asideMenu = new ArrayList<>(){{add("Requests"); add("Logs"); add("System real estates");}};
 
     public AdminPageDto(RealEstateService realEstateService, MessageService messageService, LogService logService)
             throws SQLException, NoSuchRealEstateException, NoSuchPictureException, NoSuchUserException {
-        this.randomOffers = realEstateService.getRandomRealEstate();
-        this.allSystemRealEstates = realEstateService.addMainPictures(realEstateService.findRealEstatesByUser("system"));
+        this.randomOffer = realEstateService.getRandomRealEstate();
+        this.ownRealEstates = realEstateService.addMainPictures(realEstateService.findRealEstatesByUser("system"));
         this.hasRealEstates = setHasRealEstate();
         this.allPendingUserRequest = messageService.getAllPendingSystemRequest();
         this.hasPendingRequest = setHasPendingRequest();
         this.allLogs = logService.getLogs();
     }
 
-    public RealEstate getRandomOffers() {
-        return randomOffers;
+    public RealEstate getRandomOffer() {
+        return randomOffer;
     }
 
-    public List<RealEstate> getAllSystemRealEstates() {
-        return allSystemRealEstates;
+    public List<RealEstate> getOwnRealEstates() {
+        return ownRealEstates;
     }
 
     private boolean setHasRealEstate(){
-        if(allSystemRealEstates.size() > 0){
+        if(ownRealEstates.size() > 0){
             hasRealEstates = true;
         } else {
             hasRealEstates = false;
@@ -62,7 +64,15 @@ public class AdminPageDto {
         return hasPendingRequest;
     }
 
+    public List<SystemMessages> getAllPendingUserRequest() {
+        return allPendingUserRequest;
+    }
+
     public List<Log> getAllLogs() {
         return allLogs;
+    }
+
+    public List<String> getAsideMenu() {
+        return asideMenu;
     }
 }

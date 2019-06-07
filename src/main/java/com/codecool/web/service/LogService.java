@@ -20,13 +20,23 @@ public class LogService {
         return setAdminForEachLog(logDao.getLogs());
     }
 
-    private Admin findUserByAdminId(int adminId) throws SQLException, NoSuchUserException{
-        return logDao.findUserByAdminId(adminId);
+    private Admin findUserByAdminId(int adminId) throws SQLException{
+        try {
+            return logDao.findUserByAdminId(adminId);
+        } catch (NoSuchUserException ex){
+            return null;
+        }
     }
 
     private List<Log> setAdminForEachLog(List<Log> list) throws SQLException, NoSuchUserException{
         for(Log log : list){
-            log.setAdmin(findUserByAdminId(log.getAdminId()));
+            Admin admin = findUserByAdminId(log.getAdminId());
+            if(admin != null){
+                log.setAdmin(admin);
+                log.setAdminUser(true);
+            } else {
+                log.setAdminUser(false);
+            }
         } return list;
     }
 }

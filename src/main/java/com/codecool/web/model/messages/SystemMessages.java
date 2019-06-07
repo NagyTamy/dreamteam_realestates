@@ -1,7 +1,9 @@
 package com.codecool.web.model.messages;
 
+import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.user.AbstractUser;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class SystemMessages extends AbstractMessage {
 
@@ -18,3 +20,4 @@ public class SystemMessages extends AbstractMessage {
     }
 
 }
+

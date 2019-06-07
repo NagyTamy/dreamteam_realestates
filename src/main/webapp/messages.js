@@ -1,12 +1,15 @@
 function onLoadConversation(listOfMessages, senderName, receiverName) {
     removeAllChildren(profileDiv);
 
-    const dividerSpanEl = insertDivider(receiverName, "divider");
-    dividerSpanEl.classList.add("realestatedivider");
-    profileDiv.appendChild(dividerSpanEl);
+    const convoDivEl = document.createElement("div");
+    convoDivEl.id = "convo";
 
     const messageHistoryDivEl = document.createElement("div");
     messageHistoryDivEl.id = "message-history";
+
+    const dividerSpanEl = insertDivider(receiverName, "divider");
+    dividerSpanEl.classList.add("realestatedivider");
+    convoDivEl.appendChild(dividerSpanEl);
 
 
     for(let i = 0; i < listOfMessages.length; i++){
@@ -90,8 +93,9 @@ function onLoadConversation(listOfMessages, senderName, receiverName) {
     messageSenderForm.appendChild(receiver);
     messageSenderForm.appendChild(sendMessageButton);
 
-    profileDiv.appendChild(messageHistoryDivEl);
-    profileDiv.appendChild(messageSenderForm);
+    convoDivEl.appendChild(messageHistoryDivEl);
+    convoDivEl.appendChild(messageSenderForm);
+    profileDiv.appendChild(convoDivEl);
 }
 
 

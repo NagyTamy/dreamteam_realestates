@@ -105,11 +105,11 @@ function createRealEstateAsideEl(realEstatePageDto) {
             reservationButton.addEventListener('click', onReservationButtonClicked);
             reservCalDivEl.appendChild(reservationButton);
         } else {
-            const messageDivEl = document.createElement("p");
-            messageDivEl.textContent = "Please log in to reserve this real estate!";
-            messageDivEl.classList.add("message");
-            messageDivEl.addEventListener('click', onLogInClicked)
-            reservCalDivEl.appendChild(messageDivEl);
+            const messagePEl = document.createElement("p");
+            messagePEl.textContent = "Please log in for reservation.";
+            messagePEl.classList.add("center-text");
+            messagePEl.addEventListener('click', onLogInClicked);
+            reservCalDivEl.appendChild(messagePEl);
         }
         containerContentDivEl.appendChild(reservCalDivEl);
     }
@@ -131,15 +131,6 @@ function onReviewsLoad(realEstatePageDto) {
                 const commentTextDivEl = document.createElement("div");
                 commentTextDivEl.id = "comment-text";
 
-                const flagDiv = document.createElement("div");
-                flagDiv.id = realEstatePageDto.allReview[i].id;
-                flagDiv.classList.add("flag-comment");
-                flagDiv.addEventListener('click', onFlagReviewClicked);
-
-                const tooltipSpanEl = document.createElement("span");
-                tooltipSpanEl.textContent = "Report comment";
-                tooltipSpanEl.classList.add("tooltip");
-
                 const pEl = document.createElement("p");
                 pEl.classList.add("datas");
                 pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
@@ -149,8 +140,20 @@ function onReviewsLoad(realEstatePageDto) {
 
                 commentTextDivEl.appendChild(pEl);
                 commentTextDivEl.appendChild(pTextEl);
-                commentTextDivEl.appendChild(flagDiv);
-                commentTextDivEl.appendChild(tooltipSpanEl);
+
+                if(realEstatePageDto.isLoggedIn) {
+                    const flagDiv = document.createElement("div");
+                    flagDiv.id = realEstatePageDto.allReview[i].id;
+                    flagDiv.classList.add("flag-comment");
+                    flagDiv.addEventListener('click', onFlagReviewClicked);
+
+                    const tooltipSpanEl = document.createElement("span");
+                    tooltipSpanEl.textContent = "Report comment";
+                    tooltipSpanEl.classList.add("tooltip");
+
+                    commentTextDivEl.appendChild(flagDiv);
+                    commentTextDivEl.appendChild(tooltipSpanEl);
+                }
                 commentDivEl.appendChild(commentTextDivEl);
 
                 const commentUserDivEl = document.createElement("div");

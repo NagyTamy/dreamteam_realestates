@@ -117,6 +117,7 @@ function onOtherResponse(targetEl, xhr) {
             newError(targetEl, `Unknown error: ${json.message}`);
         }
     }
+
 }
 
 function onLoad(){
