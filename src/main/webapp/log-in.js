@@ -27,21 +27,13 @@ function onLogInClicked(){
     const regButton = document.createElement("button");
     regButton.textContent = "Register";
     regButton.classList.add("button-right");
-    regButton.addEventListener('click', onRegButtonClicked);
+    regButton.addEventListener('click', onRegisterClick);
     formDiv.appendChild(regButton);
 
     logInFormDivEl.appendChild(formDiv);
     containerContentDivEl.appendChild(logInFormDivEl);
 }
 
-function onLoginResponse() {
-    if (this.status === OK) {
-        const user = JSON.parse(this.responseText);
-        onProfileLoad();
-    } else {
-        onOtherResponse(containerContentDivEl, this);
-    }
-}
 
 
 function doLogIn(){
@@ -61,8 +53,4 @@ function doLogIn(){
     xhr.addEventListener('error', onNetworkError);
     xhr.open('POST', 'login');
     xhr.send(params);
-}
-
-function onRegButtonClicked() {
-    
 }

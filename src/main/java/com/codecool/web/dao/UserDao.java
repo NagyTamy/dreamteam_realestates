@@ -12,11 +12,15 @@ public interface UserDao {
 
     AbstractUser getUserByName(String userName) throws SQLException, NoSuchUserException, NoInstanceException;
 
+    boolean isUserNameExist(String userName) throws SQLException;
+
+    boolean isEmailExist(String email) throws SQLException;
+
     List<AbstractUser> getAllUsers() throws SQLException, NoInstanceException;
 
     List<AbstractUser> getUsersByRole(String role) throws SQLException, NoInstanceException;
 
-    void addUser(String currentUser, String userName, String eMail, String password) throws SQLException;
+    void addUser(String userName, String eMail, String password) throws SQLException;
 
     void updateUserData(String currentUser, String userName, String eMail, String password, String theme) throws SQLException;
 

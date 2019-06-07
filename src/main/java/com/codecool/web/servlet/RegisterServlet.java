@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet("/login")
-public class LogInServlet extends AbstractServlet {
+@WebServlet("/register")
+public class RegisterServlet extends AbstractServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,22 +25,28 @@ public class LogInServlet extends AbstractServlet {
             UserService userService = new UserService(userDao);
             PasswordHashService passwordHashService = new PasswordHashService();
 
-            AbstractUser user = userService.getUserByName(req.getParameter("name"));
+            String userName = req.getParameter("name");
+            String eMail = req.getParameter("email");
+            String password = req.getParameter("password");
+            String passwordChk = req.getParameter("passwordChk");
 
-
-            if (user != null){
-                String password = req.getParameter("password");
-                boolean isPasswordValid = passwordHashService.validatePassword(password, user.getPassword());
-                if(isPasswordValid){
-                    setSessionUser(req, user);
-                    resp.sendRedirect("home");
-                } else {
-                    throw new ServiceException("Password doesn't match.");
-                }
-            } else {
-                throw new ServiceException("User with this name does not exists!");
+            if(!password.equals(passwordChk)){
+                throw new ServiceException("Passwords doesn't match!");
             }
 
+            if(userService.isUserNameExist(userName)){
+                throw new ServiceException("User with this name already exists!");
+            }
+
+            if(userService.isEmailExist(eMail)){
+                throw new ServiceException("User with this e-mail address already exists!");
+            }
+
+            String hashedPassword = passwordHashService.getHashedPassword(password);
+            userService.addUser(userName, eMail, hashedPassword);
+
+            setSessionUser(req, userService.getUserByName(userName));
+            resp.sendRedirect("home");
 
         } catch (SQLException ex) {
             handleSqlError(resp, ex);
@@ -48,4 +54,5 @@ public class LogInServlet extends AbstractServlet {
             throw new ServletException(ex);
         }
     }
+
 }

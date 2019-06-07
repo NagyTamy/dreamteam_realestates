@@ -33,6 +33,33 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
     }
 
     @Override
+    public boolean isUserNameExist(String userName) throws SQLException {
+        String sql = "SELECT * FROM users LEFT JOIN admins ON users.user_name = admins.user_name WHERE users.user_name=?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    return true;
+                }
+            }
+        } return false;
+    }
+
+    @Override
+    public boolean isEmailExist(String email) throws SQLException{
+        String sql = "SELECT * FROM users LEFT JOIN admins ON users.user_name = admins.user_name WHERE email=?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    return true;
+                }
+            }
+        } return false;
+    }
+
+
+    @Override
     public List<AbstractUser> getAllUsers() throws SQLException, NoInstanceException{
         List<AbstractUser> getAllUsers = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -59,13 +86,12 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
     }
 
     @Override
-    public void addUser(String currentUser, String userName, String eMail, String password) throws SQLException{
-        String sql = "SET session.osuser to ?; INSERT INTO users(user_name, email, password) VALUES(?, ?, ?)";
+    public void addUser(String currentUser, String eMail, String password) throws SQLException{
+        String sql = "INSERT INTO users(user_name, email, password) VALUES(?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, currentUser);
-            statement.setString(2, userName);
-            statement.setString(3, eMail);
-            statement.setString(4, password);
+            statement.setString(2, eMail);
+            statement.setString(3, password);
             executeInsert(statement);
         }
     }

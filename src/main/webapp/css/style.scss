@@ -552,20 +552,25 @@ input[type=text], input[type=password]{
     padding-left: 10px;
 }
 
-#log-in-form{
+#log-in-form, #registration-form{
     width: 50%;
     margin: 30px auto;
+
 }
 
-#log-in-form input[type=text], #log-in-form input[type=password]{
+#log-in-form input[type=text], #log-in-form input[type=password], #registration-form input[type=text], #registration-form input[type=password]{
     font-size: 1em;
     line-height: 2em;
     margin-bottom: 40px;
     width: 100%;
 }
 
-#log-in-form button{
+#log-in-form button, #registration-form button{
     width: 49%;
+}
+
+#registration-form button{
+    margin: 0 auto;
 }
 
 .button-right{

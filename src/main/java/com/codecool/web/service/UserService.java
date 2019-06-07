@@ -21,6 +21,14 @@ public class UserService {
         return userDao.getUserByName(userName);
     }
 
+    public boolean isUserNameExist(String userName) throws SQLException{
+        return userDao.isUserNameExist(userName);
+    }
+
+    public boolean isEmailExist(String email) throws SQLException{
+        return userDao.isEmailExist(email);
+    }
+
     public List<AbstractUser> getAllUsers() throws SQLException, NoInstanceException{
         return userDao.getAllUsers();
     }
@@ -29,8 +37,8 @@ public class UserService {
         return userDao.getUsersByRole(role);
     }
 
-    public void addUser(String currentuser, String userName, String eMail, String password) throws SQLException{
-        userDao.addUser(currentuser, userName, eMail, password);
+    public void addUser(String userName, String eMail, String password) throws SQLException{
+        userDao.addUser(userName, eMail, password);
     }
 
     public void updateUserData(String currentuser, String userName, String eMail, String password, String theme) throws SQLException{
