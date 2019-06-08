@@ -24,9 +24,9 @@ public interface CommentDao {
 
     List<Comment> getAllFlagged() throws SQLException, NoInstanceException;
 
-    void addUserComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException;
+    void addUserComment(String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException;
 
-    void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException;
+    void addRealEstateComment(String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException;
 
     void editComment(Comment editedComment) throws SQLException;
 

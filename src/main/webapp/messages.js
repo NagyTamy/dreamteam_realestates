@@ -54,6 +54,7 @@ function onLoadConversation(listOfMessages, senderName, receiverName) {
 
     const messageSenderForm = document.createElement("form");
     messageSenderForm.id = "new-message";
+    messageSenderForm.setAttribute('onsubmit', "return false;");
 
     const messageContentTextarea = document.createElement("textarea");
     messageContentTextarea.name = "new-message";
@@ -84,7 +85,7 @@ function onLoadConversation(listOfMessages, senderName, receiverName) {
     receiver.name = 'receiverName';
     receiver.value = receiverName;
 
-    sendMessageButton.addEventListener('click', onSendNewMessage);
+    sendMessageButton.addEventListener('click', onSendAnswer);
 
     messageSenderForm.appendChild(messageContentTextarea);
     messageSenderForm.appendChild(title);
@@ -108,14 +109,103 @@ function displayTime(tooltipEl) {
 
 }
 
-/*<div id="container">
+function onSendAnswer() {
+    const contentEl = document.querySelector('textarea');
+    const titleEl = document.querySelector('input[name=title]');
+    const previousMessageEl = document.querySelector('input[name=history]');
+    const senderNameEl = document.querySelector('input[name=senderName]');
+    const receiverNameEl = document.querySelector('input[name=receiverName]');
 
-    <div id="new-message">
-        <textarea name="new-message" rows="2" placeholder="Type your answer here..."></textarea>
-        <button class="button-right">Send</button>
-    </div>
-</div>*/
+    const content = contentEl.value;
+    const title = titleEl.value;
+    const history = previousMessageEl.value;
+    const sender = senderNameEl.value;
+    const receiver = receiverNameEl.value;
+
+    const params = new URLSearchParams();
+    params.append('content', content);
+    params.append('title', title);
+    params.append('history', history);
+    params.append('sender', sender);
+    params.append('receiver', receiver);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onMessageSentResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('PUT', 'message?' + params.toString());
+    xhr.send();
+}
+
+function onMessageSentResponse() {
+    clearMessages();
+    if (this.status === OK) {
+        removeAllChildren(containerContentDivEl);
+        setDelay(JSON.parse(this.responseText), onLoad(), 5000);
+    } else {
+        onOtherResponse(containerContentDivEl, this);
+    }
+}
+
+
+
+function sendPrivateMessageToUser(receiverName) {
+    /*loads the message sending page, sender set to logged in user, receiver set to profile owner*/
+    const convoContainer = document.createElement("div");
+    convoContainer.id = "convo";
+
+    const messageSenderForm = document.createElement("form");
+    messageSenderForm.id = "new-message";
+    messageSenderForm.setAttribute('onsubmit', "return false;");
+
+    const title = document.createElement("input");
+    title.type = 'text';
+    title.name = 'title';
+    title.placeholder = 'Add title';
+
+    const messageContentTextarea = document.createElement("textarea");
+    messageContentTextarea.name = "new-message";
+    messageContentTextarea.rows = 2;
+    messageContentTextarea.placeholder = "Type your message here...";
+
+    const sendMessageButton = document.createElement("button");
+    sendMessageButton.classList.add("button-right");
+    sendMessageButton.textContent = "Send";
+
+
+    const receiver = document.createElement("input");
+    receiver.type = 'hidden';
+    receiver.name = 'receiverName';
+    receiver.value = receiverName;
+
+    sendMessageButton.addEventListener('click', onSendNewMessage);
+
+    messageSenderForm.appendChild(title);
+    messageSenderForm.appendChild(messageContentTextarea);
+    messageSenderForm.appendChild(receiver);
+    messageSenderForm.appendChild(sendMessageButton);
+
+    convoContainer.appendChild(messageSenderForm);
+
+    return convoContainer;
+}
 
 function onSendNewMessage() {
-    
+    const contentEl = document.querySelector('textarea');
+    const titleEl = document.querySelector('input[name=title]');
+    const receiverNameEl = document.querySelector('input[name=receiverName]');
+
+    const content = contentEl.value;
+    const title = titleEl.value;
+    const receiver = receiverNameEl.value;
+
+    const params = new URLSearchParams();
+    params.append('content', content);
+    params.append('title', title);
+    params.append('receiver', receiver);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onMessageSentResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('POST', 'message');
+    xhr.send(params);
 }

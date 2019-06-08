@@ -133,7 +133,12 @@ function onReviewsLoad(realEstatePageDto) {
 
                 const pEl = document.createElement("p");
                 pEl.classList.add("datas");
-                pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
+                if(!realEstatePageDto.allReview[i].hasRealEstate){
+                    pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].userRating;
+
+                } else {
+                    pEl.textContent = realEstatePageDto.allReview[i].timeStampString + "   Rate: " + realEstatePageDto.allReview[i].realEstateRating;
+                }
 
                 const pTextEl = document.createElement("p");
                 pTextEl.textContent = realEstatePageDto.allReview[i].review;
@@ -160,7 +165,7 @@ function onReviewsLoad(realEstatePageDto) {
                 commentUserDivEl.id = "comment-user";
 
                 const profilePicImgEl = document.createElement("img");
-                const imgSrc = decodeBase64(realEstatePageDto.allReview[i].user.profilePic);
+                const imgSrc = decodeBase64(realEstatePageDto.allReview[i].user.pic);
                 profilePicImgEl.src = 'data:image/jpg;base64,' + imgSrc;
 
                 const profileBoxDivEl = document.createElement("div");
@@ -200,7 +205,8 @@ function onReviewsLoad(realEstatePageDto) {
     }
 
     if(realEstatePageDto.isLoggedIn && !realEstatePageDto.isOwn){
-        reviewContainerDivEl.appendChild(createReviewForm());
+
+        reviewContainerDivEl.appendChild(createReviewForm(realEstatePageDto.realEstateId));
     }
     return reviewContainerDivEl;
 }

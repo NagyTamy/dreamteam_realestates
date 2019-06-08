@@ -8,8 +8,8 @@ public class UserComment extends Comment {
     private String reviewedUser;
 
 
-    public UserComment(int id, int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) {
-        super(id, reservationId, reviewerName, review, timestamp);
+    public UserComment(int id, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) {
+        super(id, reviewerName, review, timestamp);
         this.userRating = userRating;
         this.reviewedUser = reviewedUser;
         setHasRealEstate(false);

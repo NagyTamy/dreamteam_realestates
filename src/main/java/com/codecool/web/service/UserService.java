@@ -41,16 +41,16 @@ public class UserService {
         userDao.addUser(userName, eMail, password);
     }
 
-    public void updateUserData(String currentuser, String userName, String eMail, String password, String theme) throws SQLException{
-        userDao.updateUserData(currentuser, userName, eMail, password, theme);
+    public void updateUserData(String userName, String eMail, String password, String theme) throws SQLException{
+        userDao.updateUserData(userName, eMail, password, theme);
     }
 
-    public void updateUserRole(String currentuser, String userName, String role) throws SQLException{
-        userDao.updateUserRole(currentuser, userName, role);
+    public void updateUserRole(String userName, String role) throws SQLException{
+        userDao.updateUserRole(userName, role);
     }
 
-    public void removeUser(String currentuser, String userName) throws SQLException{
-        userDao.removeUser(currentuser, userName);
+    public void removeUser(String userName) throws SQLException{
+        userDao.removeUser(userName);
     }
 
     public AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException{

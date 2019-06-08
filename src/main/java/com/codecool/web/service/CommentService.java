@@ -45,12 +45,12 @@ public class CommentService {
         return commentDao.getAllFlagged();
     }
 
-    public void addUserComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException{
-        commentDao.addUserComment(reservationId, reviewerName, review, timestamp, userRating, reviewedUser);
+    public void addUserComment(String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException{
+        commentDao.addUserComment(reviewerName, review, timestamp, userRating, reviewedUser);
     }
 
-    public void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException{
-        commentDao.addRealEstateComment(reservationId, reviewerName, review, timestamp, realEstateRating, reviewedRealEstate);
+    public void addRealEstateComment(String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException{
+        commentDao.addRealEstateComment(reviewerName, review, timestamp, realEstateRating, reviewedRealEstate);
     }
 
 

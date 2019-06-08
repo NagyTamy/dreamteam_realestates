@@ -12,7 +12,6 @@ import com.codecool.web.service.exception.NoSuchPictureException;
 import com.codecool.web.service.exception.NoSuchRealEstateException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RealEstatePageDto {
@@ -91,7 +90,7 @@ public class RealEstatePageDto {
         allReview = commentService.getAllAboutRealEstate(realEstateId);
         for (Comment comment: allReview){
             AbstractUser user = userService.getUserByCommentId(comment.getId());
-            user.setProfilePic(pictureService.findMainForUser(user.getName()).getImage());
+            user.setPic(pictureService.findMainForUser(user.getName()).getImage());
             comment.setUser(user);
         }
         return allReview;

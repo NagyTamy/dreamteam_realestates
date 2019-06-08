@@ -8,8 +8,7 @@ import com.codecool.web.model.comment.UserComment;
 import com.codecool.web.model.messages.PrivateMessages;
 import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.model.user.AbstractUser;
-import com.codecool.web.model.user.Admin;
-import com.codecool.web.model.user.Landlord;
+
 import com.codecool.web.service.*;
 import com.codecool.web.service.exception.*;
 
@@ -21,7 +20,7 @@ public class UserProfileDto {
 
     private AbstractUser user;
     private List<String> asideMenu;
-    private List<Comment> allreview;
+    private List<Comment> allReview;
     private CommentService commentService;
     private PictureService pictureService;
     private MessageService messageService;
@@ -40,13 +39,14 @@ public class UserProfileDto {
     private boolean isOwn;
     private boolean hasRealEstates;
     private boolean hasCurrentReservation;
+    private boolean hasReviews;
 
     public UserProfileDto(String userName, RealEstateService realEstateService, ReservationService reservationService,
                           MessageService messageService, List<String> asideMenu, CommentService commentService, UserService userService,
                           PictureService pictureService, boolean isLoggedIn, boolean isOwn)
     throws SQLException, NoSuchUserException, NoInstanceException, NoSuchCommentException, NoSuchPictureException, NoSuchRealEstateException, NoSuchMessageException {
         this.user = userService.getUserByName(userName);
-        user.setProfilePic(pictureService.findMainForUser(userName).getImage());
+        user.setPic(pictureService.findMainForUser(userName).getImage());
         this.commentService = commentService;
         this.messageService = messageService;
         this.reservationService = reservationService;
@@ -54,7 +54,7 @@ public class UserProfileDto {
         this.realEstateService = realEstateService;
         this.userService = userService;
         this.asideMenu = asideMenu;
-        this.allreview = setAllReview(userName);
+        this.allReview = setAllReview(userName);
         this.isLoggedIn = isLoggedIn;
         this.isOwn = isOwn;
         this.allRequest = messageService.filterSystemRequestsBySender(userName);
@@ -71,6 +71,7 @@ public class UserProfileDto {
         if(hasPrivateMessages){
             this.messageBatches = setMessageBatchForUser(userName);
         }
+        this.hasReviews = hasReviews();
     }
 
     public AbstractUser getUser() {
@@ -81,8 +82,8 @@ public class UserProfileDto {
         return asideMenu;
     }
 
-    public List<Comment> getAllreview() {
-        return allreview;
+    public List<Comment> getAllReview() {
+        return allReview;
     }
 
     public boolean isLoggedIn() {
@@ -94,13 +95,13 @@ public class UserProfileDto {
     }
 
     private List<Comment> setAllReview(String userName) throws SQLException, NoInstanceException, NoSuchCommentException, NoSuchPictureException {
-        allreview = commentService.getAllAboutUser(userName);
-        for (Comment comment: allreview){
+        allReview = commentService.getAllAboutUser(userName);
+        for (Comment comment: allReview){
             AbstractUser user = userService.getUserByCommentId(comment.getId());
-            user.setProfilePic(pictureService.findMainForUser(user.getName()).getImage());
+            user.setPic(pictureService.findMainForUser(user.getName()).getImage());
             comment.setUser(user);
         }
-        return allreview;
+        return allReview;
     }
 
     private List<Comment> setSentReviews(String userName) throws SQLException, NoInstanceException, NoSuchRealEstateException, NoSuchPictureException, NoSuchCommentException, NoSuchUserException {
@@ -113,10 +114,11 @@ public class UserProfileDto {
                 ((RealEstateComment) comment).setRealEstate(realEstate);
             } else {
                 AbstractUser user = userService.getUserByName(((UserComment) comment).getReviewedUser());
-                user.setProfilePic(pictureService.findMainForUser(userName).getImage());
+                user.setPic(pictureService.findMainForUser(userName).getImage());
                 comment.setReviewedUser(user);
             }
-        } return allSentReview;
+        }
+        return allSentReview;
     }
 
     private List<Reservation> setRealEstateToReservationList(List<Reservation> list) throws SQLException, NoSuchRealEstateException, NoSuchPictureException{
@@ -167,7 +169,7 @@ public class UserProfileDto {
         return ownRealEstates;
     }
 
-    public boolean hasCurrentReservation() {
+    public boolean isHasCurrentReservation() {
         return hasCurrentReservation;
     }
 
@@ -191,11 +193,11 @@ public class UserProfileDto {
         for (PrivateMessages privateMessage : list) {
             String receiverName = privateMessage.getReceiver();
             AbstractUser receiverUser = userService.getUserByName(receiverName);
-            receiverUser.setProfilePic(pictureService.findMainForUser(receiverName).getImage());
+            receiverUser.setPic(pictureService.findMainForUser(receiverName).getImage());
             privateMessage.setRecieverUser(receiverUser);
             String senderName = privateMessage.getSender();
             AbstractUser senderUser = userService.getUserByName(senderName);
-            senderUser.setProfilePic(pictureService.findMainForUser(senderName).getImage());
+            senderUser.setPic(pictureService.findMainForUser(senderName).getImage());
             privateMessage.setSenderUser(senderUser);
             if(receiverName.equals(currentUser)){
                 privateMessage.setiAmReceiver(true);
@@ -223,5 +225,18 @@ public class UserProfileDto {
 
     public boolean isHasPrivateMessages() {
         return hasPrivateMessages;
+    }
+
+    private boolean hasReviews(){
+        if (allReview.size() > 0){
+            hasReviews = true;
+        }
+        else {
+            hasReviews = false;
+        } return hasReviews;
+    }
+
+    public boolean isHasReviews() {
+        return hasReviews;
     }
 }

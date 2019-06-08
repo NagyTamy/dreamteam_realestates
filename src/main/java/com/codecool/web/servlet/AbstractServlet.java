@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 abstract class AbstractServlet extends HttpServlet {
 
@@ -44,5 +46,10 @@ abstract class AbstractServlet extends HttpServlet {
     boolean isLoggedIn(HttpServletRequest request){
         AbstractUser user = getSessionUser(request);
         return user != null;
+    }
+
+    String timeFormatter(LocalDateTime time){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return time.format(formatter);
     }
 }

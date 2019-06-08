@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 public abstract class Comment {
 
     private int id;
-    private int reservationId;
     private String reviewerName;
     private String review;
     private LocalDateTime timestamp;
@@ -19,18 +18,14 @@ public abstract class Comment {
 
     private boolean isFlagged = false;
 
-    public Comment(int id, int reservationId, String reviewerName, String review, LocalDateTime timestamp) {
+    public Comment(int id, String reviewerName, String review, LocalDateTime timestamp) {
         this.id = id;
-        this.reservationId = reservationId;
         this.reviewerName = reviewerName;
         this.review = review;
         this.timestamp = timestamp;
         timeStampString = timeStampToString(timestamp);
     }
 
-    public int getReservationId() {
-        return reservationId;
-    }
 
     public String getReviewerName() {
         return reviewerName;
@@ -90,4 +85,9 @@ public abstract class Comment {
     public boolean isHasRealEstate() {
         return hasRealEstate;
     }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+
 }

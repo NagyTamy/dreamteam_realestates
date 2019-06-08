@@ -35,7 +35,7 @@ function onUserProfileLoad(userPageDto) {
 function addUserPhoto(userPageDto) {
     removeAllChildren(headerImgEl);
 
-    const imgSrc = decodeBase64(userPageDto.user.profilePic);
+    const imgSrc = decodeBase64(userPageDto.user.pic);
 
     const profileImgEl = document.createElement("img");
     profileImgEl.src = 'data:image/jpg;base64,' + imgSrc;
@@ -101,7 +101,7 @@ function createContainerForUserProfile(userPageDto, navId) {
         profileDiv.appendChild(onOwnedRealEstateLoads(userPageDto));
     } else if(navId === "Send message"){
         removeAllChildren(profileDiv);
-        profileDiv.appendChild(sendPrivateMessageToUser());
+        profileDiv.appendChild(sendPrivateMessageToUser(userPageDto.user.name));
     } else {
         removeAllChildren(profileDiv);
         newError(profileDiv, "Ooops, something went wrong. Please chose an option from the menu!");
@@ -180,15 +180,17 @@ function onOwnRequestsLoad(userPageDto){
             requestDataDivEl.appendChild(pMessageEl);
             requestDataDivEl.appendChild(pRealEstateEl);
 
+            if (!request.isAnswered) {
+                const requestButtonEl = document.createElement("button");
+                requestButtonEl.classList.add("request-button");
+                requestButtonEl.textContent = "Delete";
+                requestButtonEl.id = request.id;
+                requestButtonEl.addEventListener('click', onDeleteRequestClick);
 
-            const requestButtonEl = document.createElement("button");
-            requestButtonEl.classList.add("request-button");
-            requestButtonEl.textContent = "Delete";
-            requestButtonEl.addEventListener('click', onDeleteRequestClick);
-
-            requestDivEl.appendChild(requestDataDivEl);
-            requestDivEl.appendChild(requestButtonEl);
-            requestContainerEl.appendChild(requestDivEl);
+                requestDivEl.appendChild(requestDataDivEl);
+                requestDivEl.appendChild(requestButtonEl);
+                requestContainerEl.appendChild(requestDivEl);
+            }
         }
     } else {
         newError(requestContainerEl, "You do not have any requests yet.");
@@ -216,7 +218,11 @@ function onSentReviewsLoad(userPageDto) {
 
             const pEl = document.createElement("p");
             pEl.classList.add("datas");
-            pEl.textContent = userPageDto.allSentReview[i].timeStampString + "   Rate: " + userPageDto.allSentReview[i].realEstateRating;
+            if(!userPageDto.allSentReview[i].hasRealEstate){
+                pEl.textContent = userPageDto.allSentReview[i].timeStampString + "   Rate: " + userPageDto.allSentReview[i].userRating;
+            } else {
+                pEl.textContent = userPageDto.allSentReview[i].timeStampString + "   Rate: " + userPageDto.allSentReview[i].realEstateRating;
+            }
 
             const pTextEl = document.createElement("p");
             pTextEl.textContent = userPageDto.allSentReview[i].review;
@@ -243,20 +249,20 @@ function onSentReviewsLoad(userPageDto) {
                 commentUserDivEl.id = "comment-user";
 
                 const profilePicImgEl = document.createElement("img");
-                const imgSrc = decodeBase64(userPageDto.allSentReview[i].reviewedUser.profilePic);
+                const imgSrc = decodeBase64(userPageDto.allSentReview[i].reviewedUserInstance.pic);
                 profilePicImgEl.src = 'data:image/jpg;base64,' + imgSrc;
 
                 const profileBoxDivEl = document.createElement("div");
                 profileBoxDivEl.id = "profile-box";
 
                 const pNameEl = document.createElement("p");
-                pNameEl.textContent = "Name: " + userPageDto.allSentReview[i].reviewedUser.name;
+                pNameEl.textContent = "Name: " + userPageDto.allSentReview[i].reviewedUserInstance.name;
 
                 const pRoleEl = document.createElement("p");
-                pRoleEl.textContent = "Role: " + userPageDto.allSentReview[i].reviewedUser.role;
+                pRoleEl.textContent = "Role: " + userPageDto.allSentReview[i].reviewedUserInstance.role;
 
                 const pRatingEl = document.createElement("p");
-                pRatingEl.textContent = "Rating: " + userPageDto.allSentReview[i].reviewedUser.avgRating;
+                pRatingEl.textContent = "Rating: " + userPageDto.allSentReview[i].reviewedUserInstance.avgRating;
 
                 profileBoxDivEl.appendChild(pNameEl);
                 profileBoxDivEl.appendChild(pRoleEl);
@@ -265,14 +271,13 @@ function onSentReviewsLoad(userPageDto) {
                 const toProfileButtonEl = document.createElement("button");
                 toProfileButtonEl.textContent = "Profile";
                 toProfileButtonEl.classList.add("inverse-button");
-                toProfileButtonEl.id = userPageDto.allSentReview[i].reviewedUser.name;
+                toProfileButtonEl.id = userPageDto.allSentReview[i].reviewedUserInstance.name;
                 toProfileButtonEl.addEventListener('click', onProfileLoad);
 
                 commentUserDivEl.appendChild(profilePicImgEl);
                 commentUserDivEl.appendChild(profileBoxDivEl);
                 commentUserDivEl.appendChild(toProfileButtonEl);
                 commentDivEl.appendChild(commentUserDivEl);
-                sentReviewContainerDivEl.appendChild(commentDivEl);
             } else {
                 const commentUserDivEl = document.createElement("div");
                 commentUserDivEl.id = "comment-user";
@@ -309,9 +314,28 @@ function onSentReviewsLoad(userPageDto) {
                 commentUserDivEl.appendChild(profileBoxDivEl);
                 commentUserDivEl.appendChild(toProfileButtonEl);
                 commentDivEl.appendChild(commentUserDivEl);
-                sentReviewContainerDivEl.appendChild(commentDivEl);
             }
 
+            const updateButton = document.createElement("button");
+            updateButton.textContent = "Update";
+            updateButton.classList.add("link");
+            updateButton.classList.add("comment-buttons");
+            updateButton.id = userPageDto.allSentReview[i].id;
+            updateButton.addEventListener('click', onReviewUpdateClicked);
+
+
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add("link");
+            deleteButton.classList.add("comment-buttons");
+            deleteButton.id = userPageDto.allSentReview[i].id;
+            deleteButton.addEventListener('click', onReviewDeleteClicked);
+
+            commentDivEl.appendChild(deleteButton);
+            commentDivEl.appendChild(updateButton);
+
+            sentReviewContainerDivEl.appendChild(commentDivEl);
         }
     } else {
         const noReviewDivEl = document.createElement("div");
@@ -345,7 +369,7 @@ function onMessagesLoad(userPageDto) {
                 imageDivEl.id = lastMessageForDisplay.senderUser.name;
                 imageDivEl.addEventListener('click', onProfileLoad);
 
-                const imgSrc = decodeBase64(lastMessageForDisplay.senderUser.profilePic);
+                const imgSrc = decodeBase64(lastMessageForDisplay.senderUser.pic);
 
                 const usrImg = document.createElement("img");
                 usrImg.src = 'data:image/jpg;base64,' + imgSrc;
@@ -366,7 +390,7 @@ function onMessagesLoad(userPageDto) {
                 imageDivEl.id = lastMessageForDisplay.receiverUser.name;
                 imageDivEl.addEventListener('click', onProfileLoad);
 
-                const imgSrc = decodeBase64(lastMessageForDisplay.receiverUser.profilePic);
+                const imgSrc = decodeBase64(lastMessageForDisplay.receiverUser.pic);
 
                 const usrImg = document.createElement("img");
                 usrImg.src = 'data:image/jpg;base64,' + imgSrc;
@@ -389,7 +413,7 @@ function onMessagesLoad(userPageDto) {
             const h3TitleEl = document.createElement("h3");
             h3TitleEl.textContent = lastMessageForDisplay.stringDate + "     " + lastMessageForDisplay.title;
             h3TitleEl.classList.add("link");
-            h3TitleEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i])});
+            h3TitleEl.addEventListener('click', function (){onLoadConversation(userPageDto.messageBatches[i],  userPageDto.user.name, receiverName)});
 
             const pPreviewEl = document.createElement("p");
             pPreviewEl.classList.add("message-preview");
@@ -454,7 +478,15 @@ function onReservationsLoad(userPageDto) {
         const listOfReservations = userPageDto.allUpcomingReservation;
         for (let i = 0; i < listOfReservations.length; i++) {
             const reservationObject = listOfReservations[i];
-            sentReservationContainer.appendChild(createReservationBox(reservationObject, ""));
+            const reservationBoxEl = createReservationBox(reservationObject, "upcoming-reservation");
+            const deleteReservationButton = document.createElement("button");
+            deleteReservationButton.classList.add("link");
+            deleteReservationButton.classList.add("comment-buttons");
+            deleteReservationButton.textContent = "Delete";
+            deleteReservationButton.id = reservationObject.id;
+            deleteReservationButton.addEventListener('click', onDeleteReservationButtonClicked);
+            reservationBoxEl.appendChild(deleteReservationButton);
+            sentReservationContainer.appendChild(reservationBoxEl);
         }
     }
 
@@ -651,9 +683,7 @@ function onOwnedRealEstateLoads(userPageDto) {
 
 }
 
-function sendPrivateMessageToUser() {
-    /*loads the message sending page, sender set to logged in user, receiver set to profile owner*/
-}
+
 
 
 

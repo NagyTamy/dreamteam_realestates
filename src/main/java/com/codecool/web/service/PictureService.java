@@ -5,7 +5,6 @@ import com.codecool.web.model.Picture;
 import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoSuchPictureException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -52,7 +51,7 @@ public class PictureService {
 
     public List<AbstractUser> setMainForUserList(List<AbstractUser> list) throws SQLException, NoSuchPictureException{
         for (AbstractUser user : list){
-            user.setProfilePic(findMainForUser(user.getName()).getImage());
+            user.setPic(findMainForUser(user.getName()).getImage());
         } return list;
     }
 

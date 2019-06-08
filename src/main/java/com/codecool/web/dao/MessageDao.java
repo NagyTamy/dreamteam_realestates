@@ -28,11 +28,15 @@ public interface MessageDao {
 
     List<SystemMessages> filterSystemRequestByType(String messageTitle) throws SQLException;
 
-    void addNewPrivateMessage(String currentUser, String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException;
+    void addNewPrivateMessageWRealEstate(String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException;
 
-    void addNewSystemMessage(String currentUser, String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException;
+    void addNewPrivateMessage(String sender, String receiver, String title, String content) throws SQLException;
 
-    void removeMessage(String currentUser, int messageId) throws SQLException;
+    void addNewPrivateAnswer(String sender, String receiver, int previousMessageId, String title, String content) throws SQLException;
+
+    void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException;
+
+    void removeMessage(int messageId) throws SQLException;
 
     List<PrivateMessages> getAllPrivateMessageByUser(String currentUser) throws SQLException;
 

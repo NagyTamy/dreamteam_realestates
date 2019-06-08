@@ -55,16 +55,25 @@ public class MessageService {
         return messageDao.filterSystemRequestByType(messageTitle);
     }
 
-    public void addNewPrivateMessage(String currentUser, String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException{
-        messageDao.addNewPrivateMessage(currentUser, sender, receiver, realEstate, previousMessageId, title, content);
+    public void addNewPrivateMessageWRealEstate(String sender, String receiver, int realEstate, int previousMessageId, String title, String content) throws SQLException{
+        messageDao.addNewPrivateMessageWRealEstate(sender, receiver, realEstate, previousMessageId, title, content);
     }
 
-    public void addNewSystemMessage(String currentUser, String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException{
-        messageDao.addNewSystemMessage(currentUser, sender, previousMessageId, title, content, realEstate);
+    public void addNewPrivateMessage(String sender, String receiver, String title, String content) throws SQLException{
+        messageDao.addNewPrivateMessage(sender, receiver, title, content);
     }
 
-    public void removeMessage(String currentUser, int messageId) throws SQLException{
-        messageDao.removeMessage(currentUser, messageId);
+    public void addNewPrivateAnswer(String sender, String receiver, int previousMessageId, String title, String content) throws SQLException{
+        messageDao.addNewPrivateAnswer(sender, receiver, previousMessageId, title, content);
+    }
+
+
+    public void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException{
+        messageDao.addNewSystemMessage(sender, previousMessageId, title, content, realEstate);
+    }
+
+    public void removeMessage(int messageId) throws SQLException{
+        messageDao.removeMessage(messageId);
     }
 
     private boolean hasNextMessage(int messageId) throws SQLException{

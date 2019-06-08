@@ -22,11 +22,11 @@ public interface UserDao {
 
     void addUser(String userName, String eMail, String password) throws SQLException;
 
-    void updateUserData(String currentUser, String userName, String eMail, String password, String theme) throws SQLException;
+    void updateUserData(String userName, String eMail, String password, String theme) throws SQLException;
 
-    void updateUserRole(String currentUser, String userName, String role) throws SQLException;
+    void updateUserRole(String userName, String role) throws SQLException;
 
-    void removeUser(String currentUser, String userName) throws SQLException;
+    void removeUser(String userName) throws SQLException;
 
     AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException;
 

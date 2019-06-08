@@ -126,7 +126,6 @@ CREATE TABLE reviews(
    date TIMESTAMP WITH TIME ZONE DEFAULT now(),
    real_estate_id int,
    user_name varchar(40),
-   reservation_id int NOT NULL,
    reviewer_name varchar(40) NOT NULL,
    review text DEFAULT NULL,
    rating_user int,
@@ -134,7 +133,6 @@ CREATE TABLE reviews(
    is_flagged boolean DEFAULT false,
    FOREIGN KEY (reviewer_name) REFERENCES users(user_name),
    FOREIGN KEY (real_estate_id) REFERENCES real_estates(real_estate_id),
-   FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id),
    FOREIGN KEY (user_name) REFERENCES users(user_name),
    CONSTRAINT rating_limit CHECK ( rating_user BETWEEN 1 AND 5),
    CONSTRAINT rating_limit2 CHECK ( rating_real_estate BETWEEN 1 AND 5),
@@ -417,11 +415,6 @@ BEGIN
 end; '
     LANGUAGE plpgsql;
 
-CREATE TRIGGER validate_comment
-    BEFORE INSERT
-    ON reviews
-    FOR EACH ROW
-EXECUTE PROCEDURE check_if_comment_valid();
 
 CREATE OR REPLACE FUNCTION check_if_comment_allowed() RETURNS TRIGGER AS '
 BEGIN
@@ -432,11 +425,6 @@ BEGIN
 end; '
     LANGUAGE plpgsql;
 
-CREATE TRIGGER check_comment
-    BEFORE INSERT
-    ON reviews
-    FOR EACH ROW
-EXECUTE PROCEDURE check_if_comment_allowed();
 
 CREATE OR REPLACE FUNCTION switch_message_to_answered() RETURNS TRIGGER AS '
 BEGIN
@@ -673,11 +661,10 @@ INSERT INTO real_estates(user_name, real_estate_name, country, city, address, be
 
 INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (1, 'test', '2019/01/01', '2019/01/06');
 INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (1, 'test', '2019/02/01', '2019/02/06');
-INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (1, 'test', '2019/03/01', '2019/03/06');
-INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (2, 'test', '2019/01/01', '2019/01/06');
-INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (3, 'test', '2019/01/01', '2019/01/06');
-INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (4, 'test', '2019/01/01', '2019/01/06');
-INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (5, 'test', '2019/01/01', '2019/01/06');
+INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (1, 'test', '2019/06/01', '2019/06/19');
+INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (2, 'test', '2019/09/01', '2019/09/11');
+INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (3, 'test', '2019/10/04', '2019/10/06');
+INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (4, 'test', '2019/03/01', '2019/03/06');
 
 INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
 INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test1', 'test', '2019/01/07 02:33', 'Bla', 'Blablabla', 1);
@@ -694,13 +681,13 @@ INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, conte
 INSERT INTO messages(sender_name, date, title, content) VALUES ('test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
 
 
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (1, 'system', 1, 'test', 3);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (1, 'system', 2, 'test', 5);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (1, 'system', 3, 'test', 5);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (2, 'system', 4, 'test', 3);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (3, 'system', 5, 'test', 4);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (4, 'system', 6, 'test', 5);
-INSERT INTO reviews(real_estate_id, user_name, reservation_id, reviewer_name, rating_real_estate) VALUES (5, 'system', 7, 'test', 1);
+INSERT INTO reviews(user_name, reviewer_name, rating_real_estate) VALUES ('system', 'test', 3);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (1, 'system', 'test', 5);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (1, 'system', 'test', 5);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (2, 'system', 'test', 3);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (3, 'system', 'test', 4);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (4, 'system', 'test', 5);
+INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (5, 'system', 'test', 1);
 
 
 

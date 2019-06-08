@@ -9,7 +9,7 @@ function onLogOutLoad(){
 function onLogOutPageLoad(){
     clearMessages();
     if (this.status === OK) {
-        setDelay(JSON.parse(this.responseText));
+        setDelay(JSON.parse(this.responseText), onLoad(), 5000);
         showContents(['container']);
     } else {
         onOtherResponse(containerContentDivEl, this);
@@ -17,11 +17,10 @@ function onLogOutPageLoad(){
 }
 
 
-function setDelay(message) {
+function setDelay(message, callbackFunction, timeout) {
     markedNav("Log out");
     removeAllChildren(containerContentDivEl);
     newMessage(containerContentDivEl, "message", message);
 
-    let timeOut = 5000;
-    setTimeout(onLoad, timeOut);
+    setTimeout(callbackFunction, timeout);
 }

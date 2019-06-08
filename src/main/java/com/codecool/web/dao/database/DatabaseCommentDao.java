@@ -48,7 +48,7 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     @Override
     public List<Comment> getAllAboutUser(String userName) throws SQLException, NoInstanceException {
         List<Comment> allCommentAboutUser = new ArrayList<>();
-        String sql ="SELECT * FROM reviews WHERE user_name=? ORDER BY date DESC";
+        String sql ="SELECT * FROM reviews WHERE user_name=? AND real_estate_id IS NULL ORDER BY date DESC";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, userName);
             try(ResultSet resultSet = statement.executeQuery()){
@@ -123,32 +123,28 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
     }
 
     @Override
-    public void addUserComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException {
-        String sql ="INSERT INTO reviews(user_name, reservation_id, reviewer_name, review, rating_user) VALUES(?, ?, ?, ?, ?)";
+    public void addUserComment(String reviewerName, String review, LocalDateTime timestamp, int userRating, String reviewedUser) throws SQLException {
+        String sql ="INSERT INTO reviews(user_name, reviewer_name, review, rating_user) VALUES(?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             statement.setString(1, reviewedUser);
-            statement.setInt(2, reservationId);
-            statement.setString(3, reviewerName);
-            statement.setString(4, review);
-            statement.setInt(5, userRating);
+            statement.setString(2, reviewerName);
+            statement.setString(3, review);
+            statement.setInt(4, userRating);
             executeInsert(statement);
             int id = fetchGeneratedId(statement);
-            Comment comment = new UserComment(id, reservationId, reviewerName, review, timestamp, userRating, reviewedUser);
+            Comment comment = new UserComment(id, reviewerName, review, timestamp, userRating, reviewedUser);
         }
     }
 
     @Override
-    public void addRealEstateComment(int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException {
-        String sql ="INSERT INTO reviews(real_estate_id, reservation_id, reviewer_name, review, rating_real_estate) VALUES(?, ?, ?, ?, ?)";
+    public void addRealEstateComment(String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) throws SQLException {
+        String sql ="INSERT INTO reviews(real_estate_id, reviewer_name, review, rating_real_estate) VALUES(?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             statement.setInt(1, reviewedRealEstate);
-            statement.setInt(2, reservationId);
-            statement.setString(3, reviewerName);
-            statement.setString(4, review);
-            statement.setInt(5, realEstateRating);
+            statement.setString(2, reviewerName);
+            statement.setString(3, review);
+            statement.setInt(4, realEstateRating);
             executeInsert(statement);
-            int id = fetchGeneratedId(statement);
-            Comment comment = new RealEstateComment(id, reservationId, reviewerName, review, timestamp, realEstateRating, reviewedRealEstate);
         }
     }
 
@@ -193,7 +189,6 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
 
     private Comment fetchComment(ResultSet resultSet) throws SQLException, NoInstanceException {
         int id = resultSet.getInt("id");
-        int reservationId = resultSet.getInt("reservation_id");
         String reviewername = resultSet.getString("reviewer_name");
         String review = resultSet.getString("review");
         int userRating =  resultSet.getInt("rating_user");
@@ -203,12 +198,12 @@ public class DatabaseCommentDao extends AbstractDao implements CommentDao {
         Comment comment;
 
         if(resultSet.getInt("real_estate_id") != 0){
-            comment = new RealEstateComment(id, reservationId, reviewername, review, time, realEstateRating, resultSet.getInt("real_estate_id"));
+            comment = new RealEstateComment(id, reviewername, review, time, realEstateRating, resultSet.getInt("real_estate_id"));
             if(resultSet.getBoolean("is_flagged")){
                 comment.setFlagged(true);
             } return comment;
         } else {
-            comment = new UserComment(id, reservationId, reviewername, review, time, userRating, resultSet.getString("user_name"));
+            comment = new UserComment(id, reviewername, review, time, userRating, resultSet.getString("user_name"));
             if(resultSet.getBoolean("is_flagged")){
                 comment.setFlagged(true);
             } return comment;

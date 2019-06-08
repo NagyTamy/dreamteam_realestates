@@ -18,7 +18,7 @@ public abstract class AbstractUser {
     private String theme;
     private LocalDateTime regDate;
     private String stringRegDate;
-    private byte[] profilePic;
+    private byte[] pic;
     private List<RealEstate> favourites;
     private List<PrivateMessages> messages;
     private List<Reservation> reservations;
@@ -65,12 +65,12 @@ public abstract class AbstractUser {
         this.regDate = regDate;
     }
 
-    public byte[] getProfilePic() {
-        return profilePic;
+    public byte[] getPic() {
+        return pic;
     }
 
-    public void setProfilePic(byte[] profilePic) {
-        this.profilePic = profilePic;
+    public void setPic(byte[] pic) {
+        this.pic = pic;
     }
 
     public List<RealEstate> getFavourites() {

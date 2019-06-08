@@ -12,8 +12,8 @@ public class RealEstateComment extends Comment {
     private RealEstate realEstate;
 
 
-    public RealEstateComment(int id, int reservationId, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) {
-        super(id, reservationId, reviewerName, review, timestamp);
+    public RealEstateComment(int id, String reviewerName, String review, LocalDateTime timestamp, int realEstateRating, int reviewedRealEstate) {
+        super(id, reviewerName, review, timestamp);
         this.realEstateRating = realEstateRating;
         this.reviewedRealEstate = reviewedRealEstate;
         setHasRealEstate(true);
@@ -35,5 +35,7 @@ public class RealEstateComment extends Comment {
         return realEstate;
     }
 
-
+    public void setRealEstateRating(int realEstateRating) {
+        this.realEstateRating = realEstateRating;
+    }
 }

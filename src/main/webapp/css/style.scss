@@ -558,7 +558,7 @@ input[type=text], input[type=password]{
 
 }
 
-#log-in-form input[type=text], #log-in-form input[type=password], #registration-form input[type=text], #registration-form input[type=password]{
+#log-in-form input[type=text], #log-in-form input[type=password], #registration-form input[type=text], #registration-form input[type=password], #convo input[type=text]{
     font-size: 1em;
     line-height: 2em;
     margin-bottom: 40px;
@@ -698,9 +698,6 @@ aside nav li:before{
     background-image: url("../img/light-angled-ring.svg");
 }
 
-.marked-aside{
-    background-color: var(--transparent-dark-red);
-}
 
 #header-form{
     position: absolute;
@@ -840,6 +837,7 @@ aside{
     width: 20px;
     height: 20px;
     float: right;
+    cursor: pointer;
 }
 
 .tooltip{
@@ -864,6 +862,8 @@ aside{
 .current-reservation{
     background: darkorange;
 }
+
+.upcoming-reservation{}
 
 .tooltip-incoming, .tooltip-outgoing{
     display: none;
@@ -930,6 +930,12 @@ td{
 
 .center-text{
     text-align: center;
+}
+
+.comment-buttons{
+    width: 30%;
+    margin: 10px;
+    float: right;
 }
 
 
