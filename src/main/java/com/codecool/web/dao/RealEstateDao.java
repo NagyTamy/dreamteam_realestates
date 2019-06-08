@@ -33,4 +33,8 @@ public interface RealEstateDao {
     int getNumberOfRealEstates() throws SQLException;
 
     List<RealEstate> findFavouritesForUser(String userName) throws SQLException;
+
+    void removeFromFavourites(String userName, int realEstateId) throws SQLException;
+
+    void addToFavourites(String userName, int realEstateId) throws SQLException;
 }

@@ -41,4 +41,51 @@ public class FavouritesServlet extends AbstractServlet {
             throw new ServletException(ex);
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try(Connection connection = getConnection(req.getServletContext())){
+            RealEstateDao realEstateDao = new DatabaseRealEstatetDao(connection);
+            PictureDao pictureDao = new DatabasePictureDao(connection);
+            RealEstateService realEstateService = new RealEstateService(realEstateDao, pictureDao);
+
+            AbstractUser sessionUser = getSessionUser(req);
+            String userName = sessionUser.getName();
+            setSessionUser(req, sessionUser);
+
+            int id = Integer.parseInt(req.getParameter("id"));
+
+
+            realEstateService.addToFavourites(userName, id);
+            sendMessage(resp, HttpServletResponse.SC_OK, "Added to favourites. Redirecting to Favs page in 5 sec.");
+
+        } catch (SQLException ex) {
+            handleSqlError(resp, ex);
+        } catch (Throwable ex){
+            throw new ServletException(ex);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try(Connection connection = getConnection(req.getServletContext())){
+            RealEstateDao realEstateDao = new DatabaseRealEstatetDao(connection);
+            PictureDao pictureDao = new DatabasePictureDao(connection);
+            RealEstateService realEstateService = new RealEstateService(realEstateDao, pictureDao);
+
+            AbstractUser sessionUser = getSessionUser(req);
+            String userName = sessionUser.getName();
+            setSessionUser(req, sessionUser);
+
+            int id = Integer.parseInt(req.getParameter("id"));
+
+            realEstateService.removeFromFavourites(userName, id);
+            sendMessage(resp, HttpServletResponse.SC_OK, "Removed from favourites. Redirecting to Favs page in 5 sec.");
+
+        } catch (SQLException ex) {
+            handleSqlError(resp, ex);
+        } catch (Throwable ex){
+            throw new ServletException(ex);
+        }
+    }
 }

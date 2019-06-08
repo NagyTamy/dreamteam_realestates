@@ -689,6 +689,10 @@ INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate
 INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (4, 'system', 'test', 5);
 INSERT INTO reviews(real_estate_id, user_name, reviewer_name, rating_real_estate) VALUES (5, 'system', 'test', 1);
 
+INSERT INTO favourites(user_name, real_estate_id) VALUES ('test', 1);
+INSERT INTO favourites(user_name, real_estate_id) VALUES ('test', 2);
+INSERT INTO favourites(user_name, real_estate_id) VALUES ('test', 3);
+
 
 
 

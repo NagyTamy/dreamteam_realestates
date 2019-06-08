@@ -185,6 +185,26 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         } return findFavouritesForUser;
     }
 
+    @Override
+    public void removeFromFavourites(String userName, int realEstateId) throws SQLException {
+        String sql="DELETE FROM favourites WHERE user_name=? AND real_estate_id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            statement.setInt(2, realEstateId);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void addToFavourites(String userName, int realEstateId) throws SQLException {
+        String sql="INSERT INTO favourites(user_name, real_estate_id) VALUES (?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            statement.setInt(2, realEstateId);
+            executeInsert(statement);
+        }
+    }
+
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("real_estate_id");
         String name = resultSet.getString("real_estate_name");

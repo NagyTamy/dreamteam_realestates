@@ -100,4 +100,12 @@ public class RealEstateService {
         return findFavouritesForUser;
     }
 
+    public void removeFromFavourites(String userName, int realEstateId) throws SQLException{
+        realEstateDao.removeFromFavourites(userName, realEstateId);
+    }
+
+    public void addToFavourites(String userName, int realEstateId) throws SQLException{
+        realEstateDao.addToFavourites(userName, realEstateId);
+    }
+
 }

@@ -10,7 +10,6 @@ function onFavsLoad() {
 function onFavRealEstatesLoad() {
     clearMessages();
     if (this.status === OK) {
-        console.log(JSON.parse(this.responseText));
         onloadFavList(JSON.parse(this.responseText));
         showContents(['container']);
     } else {
@@ -51,6 +50,11 @@ function onloadFavList(favourites) {
 
             const buttonEl = document.createElement("button");
             buttonEl.textContent = "More";
+            
+            const iconEl = document.createElement("div");
+            iconEl.classList.add("filled-heart");
+            iconEl.id = favourites[j].id;
+            iconEl.addEventListener("click", onUnlikeClicked);
 
             const realEstateIdAttr = document.createAttribute('real-estate-id');
             realEstateIdAttr.value = favourites[j].id;
@@ -62,6 +66,7 @@ function onloadFavList(favourites) {
             oneFourthDivEl.appendChild(pEl);
             oneFourthDivEl.appendChild(descEl);
             oneFourthDivEl.appendChild(buttonEl);
+            oneFourthDivEl.appendChild(iconEl);
             oneFourthDivEl.addEventListener('click', onTileClick);
 
             rowEl.appendChild(oneFourthDivEl);
@@ -71,3 +76,32 @@ function onloadFavList(favourites) {
         newMessage(containerContentDivEl,"message","You did not mark any real estates as favourite yet.")
     }
 }
+
+function onLikeClicked() {
+    const element = this;
+    const id = element.getAttribute("id");
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onFavsLoad);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('POST', 'favs?' + params.toString());
+    xhr.send();
+}
+
+function onUnlikeClicked(){
+    const element = this;
+    const id = element.getAttribute("id");
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onFavsLoad);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('DELETE', 'favs?' + params.toString());
+    xhr.send();
+}
+

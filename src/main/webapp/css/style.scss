@@ -840,6 +840,24 @@ aside{
     cursor: pointer;
 }
 
+.empty-heart{
+    background-image: url('../img/empty-heart.svg');
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    float: right;
+    cursor: pointer;
+}
+
+.filled-heart{
+    background-image: url('../img/filled-heart.svg');
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    float: right;
+    cursor: pointer;
+}
+
 .tooltip{
     visibility: hidden;
     background-color: var(--transparent-dark-red);
