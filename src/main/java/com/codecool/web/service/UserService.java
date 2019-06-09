@@ -57,4 +57,8 @@ public class UserService {
         return userDao.getUserByCommentId(commentId);
     }
 
+    public List<AbstractUser> searchByUserName(String userName) throws SQLException, NoInstanceException{
+        return userDao.searchByUserName(userName);
+    }
+
 }

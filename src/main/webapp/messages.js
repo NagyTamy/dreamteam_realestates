@@ -6,6 +6,7 @@ function onLoadConversation(listOfMessages, senderName, receiverName) {
 
     const messageHistoryDivEl = document.createElement("div");
     messageHistoryDivEl.id = "message-history";
+    messageHistoryDivEl.scrollTop = messageHistoryDivEl.scrollHeight - messageHistoryDivEl.clientHeight;
 
     const dividerSpanEl = insertDivider(receiverName, "divider");
     dividerSpanEl.classList.add("realestatedivider");
@@ -49,8 +50,11 @@ function onLoadConversation(listOfMessages, senderName, receiverName) {
             incomingMessageDiv.appendChild(contentPEl);
             incomingMessageDiv.appendChild(tooltipTimeEl);
             messageHistoryDivEl.appendChild(incomingMessageDiv);
+
         }
+
     }
+
 
     const messageSenderForm = document.createElement("form");
     messageSenderForm.id = "new-message";
@@ -209,3 +213,5 @@ function onSendNewMessage() {
     xhr.open('POST', 'message');
     xhr.send(params);
 }
+
+

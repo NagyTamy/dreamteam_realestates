@@ -108,4 +108,12 @@ public class RealEstateService {
         realEstateDao.addToFavourites(userName, realEstateId);
     }
 
+    public List<RealEstate> searchByRealEstateName(String realEstateName) throws SQLException{
+        return realEstateDao.searchByRealEstateName(realEstateName);
+    }
+
+    public List<RealEstate> doSimpleSearch(String searchKey) throws SQLException{
+        return realEstateDao.doSimpleSearch(searchKey);
+    }
+
 }

@@ -1,4 +1,3 @@
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -6,7 +5,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-/*For testing purposes, session.osuser will pass the logged in user from the current session to the sql script from java dao*/
+
 SET session.osuser to 'test2';
 
 SET default_tablespace = '';
@@ -244,7 +243,7 @@ BEGIN
 END; '
     LANGUAGE plpgsql;
 
-CREATE TRIGGER logger_for_users_table_insert
+/*CREATE TRIGGER logger_for_users_table_insert
     AFTER INSERT
     ON users
     FOR EACH ROW
@@ -260,7 +259,7 @@ CREATE TRIGGER logger_for_users_table_delete
     AFTER DELETE
     ON users
     FOR EACH ROW
-EXECUTE PROCEDURE logger_for_users_table_delete();
+EXECUTE PROCEDURE logger_for_users_table_delete();*/
 
 
 CREATE OR REPLACE FUNCTION logger_for_real_estate_table()
@@ -297,7 +296,7 @@ END; '
     LANGUAGE plpgsql;
 
 
-CREATE TRIGGER logger_for_real_estate_table_insert
+/*CREATE TRIGGER logger_for_real_estate_table_insert
     AFTER INSERT
     ON real_estates
     FOR EACH ROW
@@ -313,7 +312,7 @@ CREATE TRIGGER logger_for_real_estate_table_delete
     AFTER DELETE
     ON real_estates
     FOR EACH ROW
-EXECUTE PROCEDURE logger_for_real_estate_table_delete();
+EXECUTE PROCEDURE logger_for_real_estate_table_delete();*/
 
 /*Checks history of outgoing admin message, if previous message is user request (a.k.a. it doesnt have a receiver in users_messages table it logs the */
 
@@ -474,7 +473,7 @@ end; '
 CREATE OR REPLACE FUNCTION profanity_filter4() RETURNS TRIGGER AS '
 BEGIN
     IF EXISTS(SELECT * FROM blacklist WHERE bad_word = lower(text(NEW.review)) OR bad_word SIMILAR TO lower(''%''||NEW.review) OR bad_word SIMILAR TO lower(''%''||NEW.review||''%'') OR bad_word SIMILAR TO lower(NEW.review||''%'')) THEN
-        RAISE EXCEPTION ''You can not use vulgar expressions in reviewa on this website!'';
+        RAISE EXCEPTION ''You can not use vulgar expressions in reviews on this website!'';
     end if;
     RETURN NEW;
 end; '
@@ -489,7 +488,7 @@ BEGIN
 end; '
     LANGUAGE plpgsql;
 
-/*CREATE TRIGGER profanity_filter1
+CREATE TRIGGER profanity_filter1
     BEFORE INSERT
     ON users
     FOR EACH ROW
@@ -517,7 +516,7 @@ CREATE TRIGGER profanity_filter5
     BEFORE INSERT
     ON pictures
     FOR EACH ROW
-EXECUTE PROCEDURE profanity_filter5();*/
+EXECUTE PROCEDURE profanity_filter5();
 
 CREATE OR REPLACE FUNCTION message_answered() RETURNS TRIGGER AS '
 BEGIN
@@ -666,19 +665,19 @@ INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (2, '
 INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (3, 'test', '2019/10/04', '2019/10/06');
 INSERT INTO reservations(real_estate_id, tenant_name, begins, ends) VALUES (4, 'test', '2019/03/01', '2019/03/06');
 
-INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test1', 'test', '2019/01/07 02:33', 'Bla', 'Blablabla', 1);
-INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test', 'test1', '2019/01/08 02:33', 'Bla', 'Blablabla', 2);
-INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test1', 'test', '2019/01/09 02:33', 'Bla', 'Blablabla', 3);
-INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test', 'test1', '2019/01/10 02:33', 'Bla', 'Blablabla', 4);
+INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test1', '2019/01/06 02:33', 'test', 'test');
+INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test1', 'test', '2019/01/07 02:33', 'test', 'test', 1);
+INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test', 'test1', '2019/01/08 02:33', 'test', 'test', 2);
+INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test1', 'test', '2019/01/09 02:33', 'test', 'test', 3);
+INSERT INTO messages(sender_name, receiver_name, date, title, content, history) VALUES ('test', 'test1', '2019/01/10 02:33', 'test', 'test', 4);
 
 
-INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test2', '2019/02/10 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test3', 'test', '2019/03/10 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test', 'test2', '2019/02/10 02:33', 'test', 'test');
+INSERT INTO messages(sender_name, receiver_name, date, title, content) VALUES ('test3', 'test', '2019/03/10 02:33', 'test', 'test');
 
-INSERT INTO messages(sender_name, real_estate, date, title, content) VALUES ('test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, content) VALUES ('test2', 'test1', 1, '2019/01/06 02:33', 'Bla', 'Blablabla');
-INSERT INTO messages(sender_name, date, title, content) VALUES ('test1', '2019/01/06 02:33', 'Bla', 'Blablabla');
+INSERT INTO messages(sender_name, real_estate, date, title, content) VALUES ('test1', 1, '2019/01/06 02:33', 'test', 'test');
+INSERT INTO messages(sender_name, receiver_name, real_estate, date, title, content) VALUES ('test2', 'test1', 1, '2019/01/06 02:33', 'test', 'test');
+INSERT INTO messages(sender_name, date, title, content) VALUES ('test1', '2019/01/06 02:33', 'test', 'test');
 
 
 INSERT INTO reviews(user_name, reviewer_name, rating_real_estate) VALUES ('system', 'test', 3);

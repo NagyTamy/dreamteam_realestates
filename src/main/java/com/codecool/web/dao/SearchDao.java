@@ -1,7 +1,9 @@
 package com.codecool.web.dao;
 
+import com.codecool.web.model.RealEstate;
 import com.codecool.web.model.search.FilteredSearch;
 import com.codecool.web.model.search.SimpleSearch;
+import com.codecool.web.model.user.AbstractUser;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -25,4 +27,5 @@ public interface SearchDao {
     void updateSavedSearch(FilteredSearch search) throws SQLException;
 
     void removeSearch(int searchId) throws SQLException;
+
 }

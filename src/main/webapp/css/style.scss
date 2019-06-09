@@ -447,6 +447,11 @@ textarea{
     background-color: var(--light-pink);
 }
 
+
+#Datepickk .d-table input:disabled + label::after {
+    background-color: var(--dark-red);
+}
+
 .calendar__date {
     padding: 0 20px 20px 20px;
     display: grid;

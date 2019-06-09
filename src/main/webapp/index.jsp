@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="datepickk.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.scss">
+    <script src="search.js"></script>
     <script src="datepickk.min.js"></script>
     <script src="index.js"></script>
     <script src="home-page.js"></script>
@@ -21,7 +22,6 @@
     <script src="messages.js"></script>
     <script src="admin.js"></script>
     <script src="register.js"></script>
-    <script src="search.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>
@@ -46,10 +46,10 @@
 <!-- NAV -->
         <nav id="menu">
         </nav>
-        <form id="header-form">
+        <form id="header-form" onsubmit="return false;">
             <input type="text" name="seach-key" placeholder="Comma separated list of expressions...">
-            <button id="search-button">Search</button>
-            <button onclick="loadFilters()">Filters</button>
+            <button id="search-button" onclick="doSimpleSearch()">Search</button>
+            <button onclick="loadFilters()" class="hidden content">Filters</button>
         </form>
     </header>
 <!-- CONTAINER FOR MAIN CONTENT -->

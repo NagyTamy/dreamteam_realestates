@@ -1,9 +1,11 @@
 package com.codecool.web.dao.database;
 
 import com.codecool.web.dao.SearchDao;
+import com.codecool.web.model.RealEstate;
 import com.codecool.web.model.search.FilteredSearch;
 import com.codecool.web.model.search.Search;
 import com.codecool.web.model.search.SimpleSearch;
+import com.codecool.web.model.user.AbstractUser;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -121,6 +123,7 @@ public class DatabaseSearchDao extends AbstractDao implements SearchDao {
         }
     }
 
+
     private Search fetchSearch(ResultSet resultSet) throws SQLException {
         Search newSearch;
         int id = resultSet.getInt("search_id");
@@ -143,6 +146,8 @@ public class DatabaseSearchDao extends AbstractDao implements SearchDao {
         }
         return newSearch;
     }
+
+
 
 
         /*    search_id SERIAL PRIMARY KEY,

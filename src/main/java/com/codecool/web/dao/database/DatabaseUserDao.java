@@ -86,10 +86,10 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
     }
 
     @Override
-    public void addUser(String currentUser, String eMail, String password) throws SQLException{
+    public void addUser(String newUser, String eMail, String password) throws SQLException{
         String sql = "INSERT INTO users(user_name, email, password) VALUES(?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, currentUser);
+            statement.setString(1, newUser);
             statement.setString(2, eMail);
             statement.setString(3, password);
             executeInsert(statement);
@@ -138,6 +138,22 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
                 }
             }
         } throw new NoSuchCommentException();
+    }
+
+
+    @Override
+    public List<AbstractUser> searchByUserName(String userName) throws SQLException, NoInstanceException {
+        List<AbstractUser> findUsers = new ArrayList<>();
+        String sql = "SELECT * FROM users LEFT JOIN admins a on users.user_name = a.user_name WHERE a.user_name=lower(?) OR a.user_name SIMILAR TO lower('%'||?) OR a.user_name SIMILAR TO lower('%'||?||'%') OR a.user_name SIMILAR TO lower(?||'%')";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, userName);
+            statement.setString(2, userName);
+            statement.setString(3, userName);
+            statement.setString(4, userName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                findUsers.add(fetchUser(resultSet));
+            }
+        } return findUsers;
     }
 
     private AbstractUser fetchUser(ResultSet resultSet) throws SQLException, NoInstanceException {

@@ -90,11 +90,28 @@ function createRealEstateAsideEl(realEstatePageDto) {
         const calendarDivEl = document.createElement("div");
         calendarDivEl.classList.add("calendar");
 
+        let listOfDays = [];
+
+
+        for(let i = 0; i < realEstatePageDto.availability.length; i++){
+            const reservation = realEstatePageDto.availability[i];
+            const begins = new Date(reservation.stringBegins);
+            const ends = new Date(reservation.stringEnds);
+            const tempList = getDates(begins, ends);
+            console.log(tempList);
+            for (let j = 0; j < tempList.length; j++){
+                listOfDays.push(tempList[j]);
+            }
+        }
+
         const datepicker = new Datepickk();
         datepicker.container = calendarDivEl;
         datepicker.show();
         datepicker.range = true;
         datepicker.maxSelections = 1;
+        datepicker.disabledDates = listOfDays;
+
+        console.log(listOfDays);
 
         reservCalDivEl.appendChild(calendarDivEl);
 
@@ -209,4 +226,20 @@ function onReviewsLoad(realEstatePageDto) {
         reviewContainerDivEl.appendChild(createReviewForm(realEstatePageDto.realEstateId));
     }
     return reviewContainerDivEl;
+}
+
+
+function getDates(startDate, endDate) {
+    let dates = [],
+        currentDate = startDate,
+        addDays = function(days) {
+            let date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        };
+    while (currentDate <= endDate) {
+        dates.push(currentDate);
+        currentDate = addDays.call(currentDate, 1);
+    }
+    return dates;
 }

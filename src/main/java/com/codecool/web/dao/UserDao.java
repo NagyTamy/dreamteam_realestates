@@ -30,4 +30,6 @@ public interface UserDao {
 
     AbstractUser getUserByCommentId(int commentId) throws SQLException, NoInstanceException, NoSuchCommentException;
 
+    List<AbstractUser> searchByUserName(String userName) throws SQLException, NoInstanceException;
+
 }

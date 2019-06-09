@@ -13,6 +13,7 @@ import com.codecool.web.service.*;
 import com.codecool.web.service.exception.*;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,7 +70,9 @@ public class UserProfileDto {
         this.hasRealEstates = hasRealEstates();
         this.hasPrivateMessages = checkPrivateMessages(userName);
         if(hasPrivateMessages){
-            this.messageBatches = setMessageBatchForUser(userName);
+            List<LinkedList<PrivateMessages>> messageBatches =  setMessageBatchForUser(userName);
+            messageBatches.sort(new MessageComparator().reversed());
+            this.messageBatches = messageBatches;
         }
         this.hasReviews = hasReviews();
     }

@@ -2,6 +2,7 @@ package com.codecool.web.dao.database;
 
 import com.codecool.web.dao.RealEstateDao;
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoSuchRealEstateException;
 
 import java.sql.*;
@@ -204,6 +205,48 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
             executeInsert(statement);
         }
     }
+
+    @Override
+    public List<RealEstate> doSimpleSearch(String searchKey) throws SQLException {
+        List<RealEstate> findRealEstates = new ArrayList<>();
+        String[] listOfSerchKeys = searchKey.replaceAll(", ",",").split(",");
+        for(String word : listOfSerchKeys) {
+            String sql = "SELECT * FROM real_estates WHERE is_public='true' AND real_estate_name=lower(?) OR real_estate_name SIMILAR TO lower('%'||?) OR real_estate_name SIMILAR TO lower('%'||?||'%') OR real_estate_name SIMILAR TO lower(?||'%')" +
+                    "OR country=lower(?) OR country SIMILAR TO lower('%'||?) OR country SIMILAR TO lower('%'||?||'%') OR country SIMILAR TO lower(?||'%')" +
+                    "OR city=lower(?) OR city SIMILAR TO lower('%'||?) OR city SIMILAR TO lower('%'||?||'%') OR city SIMILAR TO lower(?||'%')" +
+                    "OR description=lower(?) OR description SIMILAR TO lower('%'||?) OR description SIMILAR TO lower('%'||?||'%') OR description SIMILAR TO lower(?||'%')" +
+                    "OR extras=lower(?) OR extras SIMILAR TO lower('%'||?) OR extras SIMILAR TO lower('%'||?||'%') OR extras SIMILAR TO lower(?||'%')";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                for (int i = 1; i <= 20; i++){
+                    statement.setString(i, word);
+                }try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        findRealEstates.add(fetchRealEstate(resultSet));
+                    }
+                }
+            }
+        }return findRealEstates;
+    }
+
+
+    @Override
+    public List<RealEstate> searchByRealEstateName(String realEstateName) throws SQLException {
+        List<RealEstate> findRealEstates = new ArrayList<>();
+        String sql = "SELECT * FROM real_estates WHERE real_estate_name=lower(?) OR real_estate_name SIMILAR TO lower('%'||?) OR real_estate_name SIMILAR TO lower('%'||?||'%') OR real_estate_name SIMILAR TO lower(?||'%')";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, realEstateName);
+            statement.setString(2, realEstateName);
+            statement.setString(3, realEstateName);
+            statement.setString(4, realEstateName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                while(resultSet.next()){
+                    findRealEstates.add(fetchRealEstate(resultSet));
+                }
+            }
+
+        } return findRealEstates;
+    }
+
 
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("real_estate_id");
