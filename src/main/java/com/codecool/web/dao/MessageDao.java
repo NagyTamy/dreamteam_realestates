@@ -6,6 +6,7 @@ import com.codecool.web.model.messages.SystemMessages;
 import com.codecool.web.service.exception.NoSuchMessageException;
 
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,12 @@ public interface MessageDao {
 
     void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException;
 
+    void addNewSystemMessage(String sender, String title, String content, int realEstate) throws SQLException;
+
+    void addNewSystemMessage(String sender, String title, String content) throws SQLException;
+
+    void createNewAlertMessage(String receiver, String title, String content) throws SQLException;
+
     void removeMessage(int messageId) throws SQLException;
 
     List<PrivateMessages> getAllPrivateMessageByUser(String currentUser) throws SQLException;
@@ -43,4 +50,8 @@ public interface MessageDao {
     PrivateMessages findMessageByHistoryId(int previousMessageId) throws SQLException, NoSuchMessageException;
 
     boolean hasNextMessage (int messageId) throws SQLException;
+
+    void executeInsertStrings(String preparedSql) throws SQLException;
+
+    void createNewAlertMessage(String receiver, String title, String content, int history) throws SQLException;
 }

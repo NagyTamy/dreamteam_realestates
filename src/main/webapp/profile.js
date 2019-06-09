@@ -366,7 +366,9 @@ function onMessagesLoad(userPageDto) {
             if(lastMessageForDisplay.iAmReceiver){
                 const imageDivEl = document.createElement("div");
                 imageDivEl.classList.add("image-for-message");
-                imageDivEl.id = lastMessageForDisplay.senderUser.name;
+                if(lastMessageForDisplay.senderUser.name != 'system') {
+                    imageDivEl.id = lastMessageForDisplay.senderUser.name;
+                }
                 imageDivEl.addEventListener('click', onProfileLoad);
 
                 const imgSrc = decodeBase64(lastMessageForDisplay.senderUser.pic);

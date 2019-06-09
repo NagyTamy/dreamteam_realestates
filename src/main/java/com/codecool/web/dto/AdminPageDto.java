@@ -2,11 +2,11 @@ package com.codecool.web.dto;
 
 import com.codecool.web.model.Log;
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.comment.Comment;
 import com.codecool.web.model.messages.SystemMessages;
+import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.*;
-import com.codecool.web.service.exception.NoSuchPictureException;
-import com.codecool.web.service.exception.NoSuchRealEstateException;
-import com.codecool.web.service.exception.NoSuchUserException;
+import com.codecool.web.service.exception.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,16 +20,22 @@ public class AdminPageDto {
     private boolean hasPendingRequest;
     private List<SystemMessages> allPendingUserRequest;
     private List<Log> allLogs;
-    private List<String> asideMenu = new ArrayList<>(){{add("Requests"); add("Logs"); add("System real estates");}};
+    private List<String> asideMenu = new ArrayList<>();
+    private boolean hasReportedReview;
+    private List<Comment> reportedReviews;
 
-    public AdminPageDto(RealEstateService realEstateService, MessageService messageService, LogService logService)
-            throws SQLException, NoSuchRealEstateException, NoSuchPictureException, NoSuchUserException {
+
+    public AdminPageDto(RealEstateService realEstateService, MessageService messageService, LogService logService, CommentService commentService)
+            throws SQLException, NoSuchRealEstateException, NoSuchPictureException, NoSuchUserException, NoInstanceException {
         this.randomOffer = realEstateService.getRandomRealEstate();
         this.ownRealEstates = realEstateService.addMainPictures(realEstateService.findRealEstatesByUser("system"));
         this.hasRealEstates = setHasRealEstate();
         this.allPendingUserRequest = messageService.getAllPendingSystemRequest();
         this.hasPendingRequest = setHasPendingRequest();
         this.allLogs = logService.getLogs();
+        this.reportedReviews = commentService.getAllFlagged();
+        this.hasReportedReview = hasReportedReview();
+        initAsideMenu();
     }
 
     public RealEstate getRandomOffer() {
@@ -60,6 +66,10 @@ public class AdminPageDto {
         } return hasPendingRequest;
     }
 
+    private boolean hasReportedReview(){
+        return reportedReviews.size() > 0;
+    }
+
     public boolean isHasPendingRequest() {
         return hasPendingRequest;
     }
@@ -75,4 +85,25 @@ public class AdminPageDto {
     public List<String> getAsideMenu() {
         return asideMenu;
     }
+
+    private List<String> initAsideMenu(){
+        asideMenu.add("Logs");
+        asideMenu.add("System real estates");
+        if(hasPendingRequest) {
+            asideMenu.add("Requests");
+        }
+        if(hasReportedReview){
+            asideMenu.add("Flagged comments");
+        }
+        return asideMenu;
+    }
+
+    public boolean isHasReportedReview() {
+        return hasReportedReview;
+    }
+
+    public List<Comment> getReportedReviews() {
+        return reportedReviews;
+    }
+
 }

@@ -167,14 +167,60 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
     }
 
     @Override
-    public void addNewSystemMessage(String sender, int previousMessageId, String title, String content, int realEstate) throws SQLException {
-        String sql = "INSERT INTO messages(sender_name, history, title, content, real_estate) VALUES(?, ?, ?, ?, ?)";
+    public void addNewSystemMessage(String receiver, int previousMessageId, String title, String content, int realEstate) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, receiver_name, history, title, content, real_estate) VALUES('system', ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, sender);
+            statement.setString(1, receiver);
             statement.setInt(2, previousMessageId);
             statement.setString(3, title);
             statement.setString(4, content);
             statement.setInt(5, realEstate);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void addNewSystemMessage(String sender, String title, String content, int realEstate) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, title, content, real_estate) VALUES(?, ?, ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, sender);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            statement.setInt(4, realEstate);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void addNewSystemMessage(String sender, String title, String content) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, title, content) VALUES(?, ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, sender);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void createNewAlertMessage(String receiver, String title, String content) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, receiver_name, title, content, is_answered) VALUES('system', ?, ?, ?, 'true')";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, receiver);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            executeInsert(statement);
+        }
+    }
+
+    @Override
+    public void createNewAlertMessage(String receiver, String title, String content, int history) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, receiver_name, title, content, is_answered, history) VALUES('system', ?, ?, ?, 'true', ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, receiver);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            statement.setInt(4, history);
             executeInsert(statement);
         }
     }
@@ -229,6 +275,13 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
                 }
             }
         } return false;
+    }
+
+    @Override
+    public void executeInsertStrings(String preparedSql) throws SQLException {
+        try(Statement statement = connection.createStatement()){
+            statement.execute(preparedSql);
+        }
     }
 
 

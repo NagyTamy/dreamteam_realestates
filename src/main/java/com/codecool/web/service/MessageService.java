@@ -72,6 +72,14 @@ public class MessageService {
         messageDao.addNewSystemMessage(sender, previousMessageId, title, content, realEstate);
     }
 
+    public void addNewSystemMessage(String sender, String title, String content, int realEstate) throws SQLException{
+        messageDao.addNewSystemMessage(sender, title, content, realEstate);
+    }
+
+    public void addNewSystemMessage(String sender, String title, String content) throws SQLException{
+        messageDao.addNewSystemMessage(sender, title, content);
+    }
+
     public void removeMessage(int messageId) throws SQLException{
         messageDao.removeMessage(messageId);
     }
@@ -86,6 +94,10 @@ public class MessageService {
 
     public boolean hasPrivateMessages(String currentUser) throws SQLException{
         return messageDao.getAllPrivateMessageByUser(currentUser).size() > 0;
+    }
+
+    public void createNewAlertMessage(String receiver, String title, String content) throws SQLException{
+        messageDao.createNewAlertMessage(receiver, title, content);
     }
 
 
@@ -133,5 +145,14 @@ public class MessageService {
                 }
             }
         } return getMesageBatches;
+    }
+
+    public void createNewAlertMessage(String receiver, String title, String content, int history) throws SQLException{
+        messageDao.createNewAlertMessage(receiver, title, content, history);
+    }
+
+
+    public void executeInsertStrings(String preparedSql) throws SQLException{
+        messageDao.executeInsertStrings(preparedSql);
     }
 }

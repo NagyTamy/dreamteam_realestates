@@ -41,4 +41,7 @@ public interface RealEstateDao {
     List<RealEstate> doSimpleSearch(String searchKey) throws SQLException;
 
     List<RealEstate> searchByRealEstateName(String realEstateName) throws SQLException;
+
+    boolean isOwner(int realEstate, String userName) throws SQLException;
+
 }

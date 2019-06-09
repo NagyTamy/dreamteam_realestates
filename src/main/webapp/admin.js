@@ -105,6 +105,8 @@ function createContainerForAdmin(adminPageDto, navId) {
         adminContainerDivEl.appendChild(onLogLoad(adminPageDto));
     } else if(navId === "System real estates"){
         adminContainerDivEl.appendChild(onCompanyRealEstateLoad(adminPageDto));
+    } else if(navId === "Flagged comments"){
+        adminContainerDivEl.appendChild(onFlaggedCommentsClick(adminPageDto));
     } else {
         removeAllChildren(adminContainerDivEl);
         newError(adminContainerDivEl, "Ooops, something went wrong. Please chose an option from the menu!");
@@ -176,7 +178,8 @@ function onPendingRequestsLoad(adminPageDto) {
         const buttonOne = document.createElement("button");
         buttonOne.textContent = "Permit";
         buttonOne.classList.add("link");
-        buttonOne.addEventListener('click', onPermitPendingRequest)
+        buttonOne.id = item.id;
+        buttonOne.addEventListener('click', function (){onAnswerPendingRequest("accept", item.id)});
         buttonOneTdEl.appendChild(buttonOne);
         tableRow.appendChild(buttonOneTdEl);
 
@@ -184,7 +187,8 @@ function onPendingRequestsLoad(adminPageDto) {
         const buttonTwo = document.createElement("button");
         buttonTwo.textContent = "Refuse";
         buttonTwo.classList.add("link");
-        buttonTwo.addEventListener('click', onRefusePendingRequest);
+        buttonTwo.id = item.id;
+        buttonTwo.addEventListener('click', function (){onAnswerPendingRequest("deny", item.id)});
         buttonTwoTdEl.appendChild(buttonTwo);
         tableRow.appendChild(buttonTwoTdEl);
 
@@ -309,4 +313,62 @@ function onCompanyRealEstateLoad(adminPageDto) {
         newMessage(companyRealEstatesContEl, "message", "No system real estates available.")
     }
     return companyRealEstatesContEl;
+}
+
+
+function onFlaggedCommentsClick(adminPageDto){
+    const reviewContainerDivEl = document.createElement("div");
+    reviewContainerDivEl.id = "reviews";
+
+    const dividerSpanEl = insertDivider("Reported reviews", "divider");
+    dividerSpanEl.classList.add("realestatedivider");
+    reviewContainerDivEl.appendChild(dividerSpanEl);
+
+    for(let i = 0; i < adminPageDto.reportedReviews.length; i++){
+
+        const review = adminPageDto.reportedReviews[i]
+
+        const commentDivEl = document.createElement("div");
+        commentDivEl.id = "comment";
+
+        const commentTextDivEl = document.createElement("div");
+        commentTextDivEl.id = "comment-text";
+
+        const pEl = document.createElement("p");
+        pEl.classList.add("datas");
+        if(review.hasRealEstate){
+            pEl.textContent = review.timeStampString + "   Rate: " + review.userRating;
+
+        } else {
+            pEl.textContent = review.timeStampString + "   Rate: " + review.realEstateRating;
+        }
+
+        const pTextEl = document.createElement("p");
+        pTextEl.textContent = review.review;
+
+        commentTextDivEl.appendChild(pEl);
+        commentTextDivEl.appendChild(pTextEl);
+
+        commentDivEl.appendChild(commentTextDivEl);
+
+        const refuseButton = document.createElement("button");
+        refuseButton.id = review.id;
+        refuseButton.classList.add("comment-button");
+        refuseButton.classList.add("link");
+        refuseButton.textContent = "Refuse";
+        refuseButton.addEventListener('click', onFlagReviewClicked);
+
+        const acceptButton = document.createElement("button");
+        acceptButton.id = review.id;
+        acceptButton.classList.add("comment-button");
+        acceptButton.classList.add("link");
+        acceptButton.textContent = "Accept";
+        acceptButton.addEventListener('click', onRemoveReportedCommentClick);
+
+        reviewContainerDivEl.appendChild(commentDivEl);
+        reviewContainerDivEl.appendChild(refuseButton);
+        reviewContainerDivEl.appendChild(acceptButton);
+
+        return reviewContainerDivEl;
+    }
 }

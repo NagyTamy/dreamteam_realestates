@@ -83,41 +83,42 @@ function toggleBigPicture() {
 }
 
 function createRealEstateAsideEl(realEstatePageDto) {
-    if(!realEstatePageDto.isOwn) {
-        const reservCalDivEl = document.createElement("div");
-        reservCalDivEl.id = "reservation-calendar";
+    const reservCalDivEl = document.createElement("div");
+    reservCalDivEl.id = "reservation-calendar";
 
-        const calendarDivEl = document.createElement("div");
-        calendarDivEl.classList.add("calendar");
+    const calendarDivEl = document.createElement("div");
+    calendarDivEl.classList.add("calendar");
 
-        let listOfDays = [];
+    let listOfDays = [];
 
 
-        for(let i = 0; i < realEstatePageDto.availability.length; i++){
-            const reservation = realEstatePageDto.availability[i];
-            const begins = new Date(reservation.stringBegins);
-            const ends = new Date(reservation.stringEnds);
-            const tempList = getDates(begins, ends);
-            console.log(tempList);
-            for (let j = 0; j < tempList.length; j++){
-                listOfDays.push(tempList[j]);
-            }
+    for(let i = 0; i < realEstatePageDto.availability.length; i++){
+        const reservation = realEstatePageDto.availability[i];
+        const begins = new Date(reservation.stringBegins);
+        const ends = new Date(reservation.stringEnds);
+        const tempList = getDates(begins, ends);
+        console.log(tempList);
+        for (let j = 0; j < tempList.length; j++){
+            listOfDays.push(tempList[j]);
         }
+    }
 
-        const datepicker = new Datepickk();
-        datepicker.container = calendarDivEl;
-        datepicker.show();
-        datepicker.range = true;
-        datepicker.maxSelections = 1;
-        datepicker.disabledDates = listOfDays;
+    const datepicker = new Datepickk();
+    datepicker.container = calendarDivEl;
+    datepicker.show();
+    datepicker.range = true;
+    datepicker.maxSelections = 1;
+    datepicker.disabledDates = listOfDays;
 
-        console.log(listOfDays);
+    console.log(listOfDays);
 
-        reservCalDivEl.appendChild(calendarDivEl);
+    reservCalDivEl.appendChild(calendarDivEl);
 
+    if(!realEstatePageDto.own) {
         if (realEstatePageDto.isLoggedIn) {
             const reservationButton = document.createElement("button");
             reservationButton.textContent = "Reserve";
+            reservationButton.classList.add("full-width-button");
             reservationButton.id = realEstatePageDto.realEstate.id;
             reservationButton.addEventListener('click', onReservationButtonClicked);
             reservCalDivEl.appendChild(reservationButton);
@@ -128,8 +129,41 @@ function createRealEstateAsideEl(realEstatePageDto) {
             messagePEl.addEventListener('click', onLogInClicked);
             reservCalDivEl.appendChild(messagePEl);
         }
-        containerContentDivEl.appendChild(reservCalDivEl);
-    }
+    } else {
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.classList.add("full-width-button");
+        editButton.addEventListener('click', function (){onEditRealEstateClicked(realEstatePageDto)});
+        reservCalDivEl.appendChild(editButton);
+
+        if(realEstatePageDto.realEstate.public){
+            const unpublisButton = document.createElement("button");
+            unpublisButton.textContent = "Unpublish";
+            unpublisButton.classList.add("full-width-button");
+            unpublisButton.id = realEstatePageDto.realEstate.id;
+            unpublisButton.addEventListener('click', onPublishButtonClick);
+            reservCalDivEl.appendChild(unpublisButton);
+        } else {
+            const publisButton = document.createElement("button");
+            publisButton.textContent = "Publish";
+            publisButton.classList.add("full-width-button");
+            publisButton.id = realEstatePageDto.realEstate.id;
+            publisButton.addEventListener('click', onPublishButtonClick);
+            reservCalDivEl.appendChild(publisButton);
+        }
+        const checkReservationsButton = document.createElement("button");
+        checkReservationsButton.textContent = "Reservations";
+        checkReservationsButton.classList.add("full-width-button");
+        reservCalDivEl.appendChild(checkReservationsButton);
+
+        const deleteRealEstate = document.createElement("button");
+        deleteRealEstate.textContent = "Delete";
+        deleteRealEstate.classList.add("full-width-button");
+        publisButton.id = realEstatePageDto.realEstate.id;
+        publisButton.addEventListener('click', onDeleteRealEstateClick);
+        reservCalDivEl.appendChild(deleteRealEstate);
+
+    } containerContentDivEl.appendChild(reservCalDivEl);
 }
 
 function onReviewsLoad(realEstatePageDto) {
@@ -222,7 +256,6 @@ function onReviewsLoad(realEstatePageDto) {
     }
 
     if(realEstatePageDto.isLoggedIn && !realEstatePageDto.isOwn){
-
         reviewContainerDivEl.appendChild(createReviewForm(realEstatePageDto.realEstateId));
     }
     return reviewContainerDivEl;
@@ -243,3 +276,48 @@ function getDates(startDate, endDate) {
     }
     return dates;
 }
+
+
+function onEditRealEstateClicked() {
+    
+}
+
+
+function onPublishButtonClick() {
+    const element = this;
+    const id = element.getAttribute("id");
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onPublishResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('PUT', 'real-estate-handler?' + params.toString());
+    xhr.send();
+}
+
+function onPublishResponse() {
+    clearMessages();
+    if (this.status === OK) {
+        removeAllChildren(containerContentDivEl);
+        setDelay(JSON.parse(this.responseText), onLoad(), 5000);
+    } else {
+        onOtherResponse(containerContentDivEl, this);
+    }
+}
+
+function onDeleteRealEstateClick() {
+    const element = this;
+    const id = element.getAttribute("id");
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onPublishResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('DELETE', 'real-estate-handler?' + params.toString());
+    xhr.send();
+}
+

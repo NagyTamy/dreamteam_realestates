@@ -91,7 +91,7 @@ public class RealEstateService {
     }
 
     public boolean isOwner(int realEstateId, String user) throws SQLException, NoSuchRealEstateException{
-        return realEstateDao.findRealEstatesByUser(user).contains(findRealEstateById(realEstateId));
+        return realEstateDao.isOwner(realEstateId, user);
     }
 
     public List<RealEstate> findFavouritesForUser(String userName) throws SQLException, NoSuchPictureException{

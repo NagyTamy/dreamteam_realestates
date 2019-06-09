@@ -12,13 +12,18 @@ function onDeleteRequestClick() {
     xhr.send();
 }
 
-function onPermitPendingRequest(){
+function onAnswerPendingRequest(answer, id){
+    const params = new URLSearchParams();
+    params.append('id', id);
+    params.append('answer', answer);
 
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onSentRequestResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('PUT', 'request?' + params.toString());
+    xhr.send();
 }
 
-function onRefusePendingRequest() {
-    
-}
 
 function onSentRequestResponse() {
     clearMessages();

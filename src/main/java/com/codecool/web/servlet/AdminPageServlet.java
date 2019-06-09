@@ -1,16 +1,11 @@
 package com.codecool.web.servlet;
 
-import com.codecool.web.dao.LogDao;
-import com.codecool.web.dao.MessageDao;
-import com.codecool.web.dao.PictureDao;
-import com.codecool.web.dao.RealEstateDao;
-import com.codecool.web.dao.database.DatabaseLogDao;
-import com.codecool.web.dao.database.DatabaseMessageDao;
-import com.codecool.web.dao.database.DatabasePictureDao;
-import com.codecool.web.dao.database.DatabaseRealEstatetDao;
+import com.codecool.web.dao.*;
+import com.codecool.web.dao.database.*;
 import com.codecool.web.dto.AdminPageDto;
 import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.model.user.Admin;
+import com.codecool.web.service.CommentService;
 import com.codecool.web.service.LogService;
 import com.codecool.web.service.MessageService;
 import com.codecool.web.service.RealEstateService;
@@ -36,8 +31,10 @@ public class AdminPageServlet extends AbstractServlet {
             MessageService messageService = new MessageService(messageDao);
             LogDao logDao = new DatabaseLogDao(connection);
             LogService logService = new LogService(logDao);
+            CommentDao commentDao = new DatabaseCommentDao(connection);
+            CommentService commentService = new CommentService(commentDao);
 
-            AdminPageDto adminPageDto = new AdminPageDto(realEstateService, messageService, logService);
+            AdminPageDto adminPageDto = new AdminPageDto(realEstateService, messageService, logService, commentService);
             AbstractUser user = getSessionUser(req);
             setSessionUser(req, user);
 

@@ -247,6 +247,24 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         } return findRealEstates;
     }
 
+    @Override
+    public boolean isOwner(int realEstate, String userName) throws SQLException {
+        List<RealEstate> getNewest = new ArrayList<>();
+        String sql = "SELECT * FROM real_estates WHERE real_estate_id=?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, realEstate);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    if(resultSet.getString("user_name").equals(userName)){
+                        return true;
+                    }
+                }
+            }
+
+        } return false;
+    }
+
+
 
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("real_estate_id");

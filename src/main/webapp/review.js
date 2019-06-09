@@ -68,7 +68,27 @@ function onSentReviewResponse() {
     }
 }
 function onFlagReviewClicked() {
+    const element = this;
+    const id = element.getAttribute('id');
 
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onReviewFlaggedResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('PUT', 'report-review?' + params.toString());
+    xhr.send();
+}
+
+function onReviewFlaggedResponse() {
+    clearMessages();
+    if (this.status === OK) {
+        removeAllChildren(containerContentDivEl);
+        setDelay(JSON.parse(this.responseText), onLoad(), 5000);
+    } else {
+        onOtherResponse(containerContentDivEl, this);
+    }
 }
 
 function onReviewUpdateClicked(){
@@ -165,4 +185,20 @@ function onReviewDeleteClicked() {
     xhr.addEventListener('error', onNetworkError);
     xhr.open('DELETE', 'review?' + params.toString());
     xhr.send();
+}
+
+
+function onRemoveReportedCommentClick(){
+    const element = this;
+    const id = element.getAttribute("id");
+
+    const params = new URLSearchParams();
+    params.append('id', id);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onReviewFlaggedResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('DELETE', 'report-review?' + params.toString());
+    xhr.send();
+
 }

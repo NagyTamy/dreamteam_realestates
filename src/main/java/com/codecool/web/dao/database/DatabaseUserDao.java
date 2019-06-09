@@ -178,4 +178,5 @@ public class DatabaseUserDao extends AbstractDao implements UserDao {
         return user;
     }
 
+
 }
