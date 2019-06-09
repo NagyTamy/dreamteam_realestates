@@ -159,8 +159,8 @@ function createRealEstateAsideEl(realEstatePageDto) {
         const deleteRealEstate = document.createElement("button");
         deleteRealEstate.textContent = "Delete";
         deleteRealEstate.classList.add("full-width-button");
-        publisButton.id = realEstatePageDto.realEstate.id;
-        publisButton.addEventListener('click', onDeleteRealEstateClick);
+        deleteRealEstate.id = realEstatePageDto.realEstate.id;
+        deleteRealEstate.addEventListener('click', onDeleteRealEstateClick);
         reservCalDivEl.appendChild(deleteRealEstate);
 
     } containerContentDivEl.appendChild(reservCalDivEl);
