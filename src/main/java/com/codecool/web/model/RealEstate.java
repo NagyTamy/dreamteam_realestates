@@ -1,5 +1,8 @@
 package com.codecool.web.model;
 
+import com.codecool.web.model.messages.AbstractMessage;
+import com.codecool.web.model.user.AbstractUser;
+
 import java.time.LocalDateTime;
 
 
@@ -12,6 +15,7 @@ public class RealEstate extends AbstractModel {
     private String address;
     private int bedCount;
     private int price;
+    private boolean isMyFav = false;
 
     private String description;
     private String extras;
@@ -102,5 +106,13 @@ public class RealEstate extends AbstractModel {
 
     public void setPic(byte[] pic) {
         this.pic = pic;
+    }
+
+    public void setMyFav(boolean myFav) {
+        isMyFav = myFav;
+    }
+
+    public boolean isMyFav() {
+        return isMyFav;
     }
 }

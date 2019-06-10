@@ -86,6 +86,18 @@ function createRealEstateAsideEl(realEstatePageDto) {
     const reservCalDivEl = document.createElement("div");
     reservCalDivEl.id = "reservation-calendar";
 
+    const favIcon = document.createElement("div");
+    favIcon.id = realEstatePageDto.realEstate.id;
+    if(realEstatePageDto.realEstate.myFav) {
+        favIcon.classList.add("filled-heart-big");
+        favIcon.addEventListener('click', onUnlikeClicked);
+    } else {
+        favIcon.classList.add("empty-heart-big");
+        favIcon.addEventListener('click', onLikeClicked);
+    }
+
+    reservCalDivEl.appendChild(favIcon);
+
     const calendarDivEl = document.createElement("div");
     calendarDivEl.classList.add("calendar");
 
@@ -321,3 +333,121 @@ function onDeleteRealEstateClick() {
     xhr.send();
 }
 
+function onAddRealEstateClicked() {
+    removeAllChildren(containerContentDivEl);
+    markedNav("Profile");
+
+    const newRealEstateFormDivEl = document.createElement("div");
+    newRealEstateFormDivEl.id = "real-estate-form";
+
+    const formDiv = document.createElement("form");
+    formDiv.setAttribute('onsubmit', "return false;");
+    formDiv.enctype = "multipart/form-data";
+
+
+    const realEstateNameInputEl = document.createElement("input");
+    realEstateNameInputEl.type = "text";
+    realEstateNameInputEl.name = "name";
+    realEstateNameInputEl.placeholder = "Real estate name - pick a unique, creative name! :)";
+    formDiv.appendChild(realEstateNameInputEl);
+
+    const countryInputEl = document.createElement("input");
+    countryInputEl.type = "text";
+    countryInputEl.name = "country";
+    countryInputEl.placeholder = "Country";
+    formDiv.appendChild(countryInputEl);
+
+    const cityInputEl = document.createElement("input");
+    cityInputEl.type = "text";
+    cityInputEl.name = "city";
+    cityInputEl.placeholder = "City";
+    formDiv.appendChild(cityInputEl);
+
+    const adressInputEl = document.createElement("input");
+    adressInputEl.type = "text";
+    adressInputEl.name = "address";
+    adressInputEl.placeholder = "Address";
+    formDiv.appendChild(adressInputEl);
+
+    const bedCountInputEl = document.createElement("input");
+    bedCountInputEl.type = "number";
+    bedCountInputEl.name = "bedCount";
+    bedCountInputEl.min = "1";
+    bedCountInputEl.max = "16+";
+    bedCountInputEl.value ="1";
+    formDiv.appendChild(bedCountInputEl);
+
+    const priceInputEl = document.createElement("input");
+    priceInputEl.type = "number";
+    priceInputEl.name = "price";
+    priceInputEl.value ="10 000";
+    formDiv.appendChild(priceInputEl);
+
+    const desciptionInputEl = document.createElement("textarea");
+    desciptionInputEl.rows = 5;
+    desciptionInputEl.name = "description";
+    desciptionInputEl.placeholder = "Write a short description for your future tenants :)";
+    formDiv.appendChild(desciptionInputEl);
+
+    const extrasInputEl = document.createElement("textarea");
+    extrasInputEl.rows = 5;
+    extrasInputEl.name = "extras";
+    extrasInputEl.placeholder = "Here you can add extras, like wi-fi, jacuzzi etc. Please separate them with a comma, so users can find it easily.";
+    formDiv.appendChild(extrasInputEl);
+
+    const addNewButton = document.createElement("button");
+    addNewButton.textContent = "Upload";
+    addNewButton.classList.add("button-right");
+    addNewButton.addEventListener('click', doCreateNewRealEstate);
+    formDiv.appendChild(addNewButton);
+
+    newRealEstateFormDivEl.appendChild(formDiv);
+    containerContentDivEl.appendChild(newRealEstateFormDivEl);
+}
+
+function doCreateNewRealEstate() {
+    const realEstateNameInputEl = document.querySelector('input[name="name"]');
+    const countryInputEl = document.querySelector('input[name="country"]');
+    const cityInputEl = document.querySelector('input[name="city"]');
+    const addressInputEl = document.querySelector('input[name="address"]');
+    const bedCountInputEl = document.querySelector('input[name="bedCount"]');
+    const priceInputEl = document.querySelector('input[name="price"]');
+    const descriptionInputEl = document.querySelector('textarea[name="description"]');
+    const extrasInputEl = document.querySelector('textarea[name="extras"]');
+
+    const name = realEstateNameInputEl.value;
+    const country = countryInputEl.value;
+    const city = cityInputEl.value;
+    const address = addressInputEl.value;
+    const bedCount = bedCountInputEl.value;
+    const price = priceInputEl.value;
+    const description = descriptionInputEl.value;
+    const extras = extrasInputEl.value;
+
+
+    const params = new URLSearchParams();
+    params.append('name', name);
+    params.append('country', country);
+    params.append('city', city);
+    params.append('address', address);
+    params.append('bedCount', bedCount);
+    params.append('price', price);
+    params.append('description', description);
+    params.append('extras', extras);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', onNewRealEstateResponse);
+    xhr.addEventListener('error', onNetworkError);
+    xhr.open('POST', 'real-estate-profile');
+    xhr.send(params);
+}
+
+function onNewRealEstateResponse(){
+    clearMessages();
+    if (this.status === OK) {
+        removeAllChildren(containerContentDivEl);
+        setDelay(JSON.parse(this.responseText), onLoad(), 5000);
+    } else {
+        onOtherResponse(containerContentDivEl, this);
+    }
+}

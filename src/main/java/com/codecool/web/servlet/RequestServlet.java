@@ -38,9 +38,9 @@ public class RequestServlet extends AbstractServlet {
 
             if(answer.equals("accept")) {
                 messageService.executeInsertStrings(message.getMessage());
-                messageService.addNewSystemMessage(message.getSender(), message.getTitle(), "Request accepted!", message.getRealEstateId());
+                messageService.createNewAlertMessage(message.getSender(), message.getTitle() + " Request accepted!", "", message.getId());
             } else {
-                messageService.createNewAlertMessage(message.getSender(), message.getTitle(), "Request denied!", message.getRealEstateId());
+                messageService.createNewAlertMessage(message.getSender(), message.getTitle() + " Request denied!", "", message.getId());
             }
 
             sendMessage(resp, HttpServletResponse.SC_OK, "Request cancelled. Redirecting to homepage in 5 sec.");

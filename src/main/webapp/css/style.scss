@@ -563,18 +563,19 @@ input[type=text], input[type=password]{
 
 }
 
-#log-in-form input[type=text], #log-in-form input[type=password], #registration-form input[type=text], #registration-form input[type=password], #convo input[type=text]{
+#log-in-form input[type=text], #log-in-form input[type=password], #registration-form input[type=text], #registration-form input[type=password],
+#convo input[type=text], #real-estate-form input[type=text], #real-estate-form textarea, #real-estate-form input[type=number]{
     font-size: 1em;
     line-height: 2em;
     margin-bottom: 40px;
     width: 100%;
 }
 
-#log-in-form button, #registration-form button{
+#log-in-form button, #registration-form button, #real-estate-form button{
     width: 49%;
 }
 
-#registration-form button{
+#registration-form button, #real-estate-form button{
     margin: 0 auto;
 }
 
@@ -786,11 +787,15 @@ footer img:nth-child(2){
 
 aside{
     width: 21.785%;
-    height: var(--aside-height);
     position: relative;
     float: right;
     margin: 30px 0 0 30px;
     line-height: 1.5em;
+    overflow: hidden;
+}
+
+aside nav{
+    height: var(--aside-height);
     border: solid 2px var(--dark-red);
 }
 
@@ -845,18 +850,33 @@ aside{
     cursor: pointer;
 }
 
-.full-width-button{
+.full-width-button, .full-width-button-red{
     width: 100%;
     margin-top: 10px;
 }
 
-.empty-heart{
+.full-width-button-red{
+    background: red;
+}
+
+.empty-heart-big{
     background-image: url('../img/empty-heart.svg');
     background-repeat: no-repeat;
-    width: 20px;
-    height: 20px;
+    width: 80px;
+    height: 80px;
     float: right;
     cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.filled-heart-big{
+    background-image: url('../img/filled-heart.svg');
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 80px;
+    float: right;
+    cursor: pointer;
+    margin-bottom: 20px;
 }
 
 .filled-heart{

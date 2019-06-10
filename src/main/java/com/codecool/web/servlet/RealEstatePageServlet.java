@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -51,20 +52,53 @@ public class RealEstatePageServlet extends AbstractServlet {
 
             boolean isOwner;
             boolean isLoggedIn;
+            boolean myFav = false;
 
             if(user != null){
                 isLoggedIn = true;
                 setSessionUser(req, user);
                 isOwner = realEstateService.isOwner(id, user.getName());
+                myFav = realEstateService.isMyFav(user.getName(), id);
             } else {
                 isOwner = false;
                 isLoggedIn = false;
             }
 
-
-            RealEstatePageDto realEstatePageDto = new RealEstatePageDto(id, commentService, userService, realEstateService, pictureService, reservationService, isLoggedIn, isOwner);
+            RealEstatePageDto realEstatePageDto = new RealEstatePageDto(id, commentService, userService, realEstateService, pictureService, reservationService, isLoggedIn, isOwner, myFav);
             sendMessage(resp, HttpServletResponse.SC_OK, realEstatePageDto);
 
+        } catch (SQLException ex) {
+            handleSqlError(resp, ex);
+        } catch (Throwable ex){
+            throw new ServletException(ex);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try (Connection connection = getConnection(req.getServletContext())) {
+            PictureDao pictureDao = new DatabasePictureDao(connection);
+            PictureService pictureService = new PictureService(pictureDao);
+
+            RealEstateDao realEstateDao = new DatabaseRealEstatetDao(connection);
+            RealEstateService realEstateService = new RealEstateService(realEstateDao, pictureDao);
+
+            AbstractUser user = getSessionUser(req);
+
+            String name = req.getParameter("name");
+            String country = req.getParameter("country");
+            String city = req.getParameter("city");
+            String address = req.getParameter("address");
+            int bedCount = Integer.parseInt(req.getParameter("bedCount"));
+            int price = Integer.parseInt(req.getParameter("price"));
+            String description = req.getParameter("description");
+            String extras = req.getParameter("extras");
+
+            realEstateService.addRealEstate(user.getName(), name, country, city, address, bedCount, price, description, extras);
+
+            setSessionUser(req, user);
+
+            sendMessage(resp, HttpServletResponse.SC_OK, "Real estate successfully added.");
         } catch (SQLException ex) {
             handleSqlError(resp, ex);
         } catch (Throwable ex){

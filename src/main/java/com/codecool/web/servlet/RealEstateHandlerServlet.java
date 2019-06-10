@@ -73,7 +73,7 @@ public class RealEstateHandlerServlet extends AbstractServlet {
 
             setSessionUser(req, user);
 
-            messageService.addNewSystemMessage(user.getName(), "Request for removing " + realEstate.getName(), "DELETE * FROM real_estates WHERE real_estate_id="+id+";", id);
+            messageService.addNewSystemMessage(user.getName(), "Request for removing " + realEstate.getName(), "DELETE FROM real_estates WHERE real_estate_id="+id+";", id);
 
             sendMessage(resp, HttpServletResponse.SC_OK, "Removing real estate request sent, please wait for our admin's reply. Redirecting to homepage in 5 sec.");
 

@@ -151,6 +151,10 @@ public class MessageService {
         messageDao.createNewAlertMessage(receiver, title, content, history);
     }
 
+    public void createNewAlertMessage(String receiver, String title, String content, int history, int realEstate) throws SQLException{
+        messageDao.createNewAlertMessage(receiver, title, content, history, realEstate);
+    }
+
 
     public void executeInsertStrings(String preparedSql) throws SQLException{
         messageDao.executeInsertStrings(preparedSql);

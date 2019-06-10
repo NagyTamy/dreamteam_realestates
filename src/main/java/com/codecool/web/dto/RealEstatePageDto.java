@@ -30,15 +30,15 @@ public class RealEstatePageDto {
     private List<Comment> allReview;
 
     public RealEstatePageDto(int realEstateId, CommentService commentService, UserService userService, RealEstateService realEstateService, PictureService pictureService,
-                             ReservationService reservationService, boolean isLoggedIn, boolean isOwn)
+                             ReservationService reservationService, boolean isLoggedIn, boolean isOwn, boolean myFav)
             throws NoInstanceException, SQLException, NoSuchCommentException, NoSuchRealEstateException, NoSuchPictureException {
 
         this.realEstateId = realEstateId;
         this.userService = userService;
         this.commentService = commentService;
         this.pictureService = pictureService;
-
         this.realEstate = realEstateService.findRealEstateById(realEstateId);
+        realEstate.setMyFav(myFav);
         this.pictureList = pictureService.getAllPictureForRealEstate(realEstateId);
         this.mainPic = pictureService.findMainForRealEstate(realEstateId);
         this.hasReviews = commentService.hasReviews(realEstateId);

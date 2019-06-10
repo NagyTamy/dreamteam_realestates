@@ -1,0 +1,7 @@
+function onEditProfileClick() {
+    
+}
+
+function onDeleteProfileClicked() {
+    
+}

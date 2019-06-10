@@ -70,17 +70,18 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
     }
 
     @Override
-    public void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException {
-        String sql = "INSERT INTO real_estates(real_estate_name, country, city, address, bed_count, price, description, extras) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    public void addRealEstate(String userName, String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException {
+        String sql = "INSERT INTO real_estates(user_name, real_estate_name, country, city, address, bed_count, price, description, extras) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, name);
-            statement.setString(2, country);
-            statement.setString(3, city);
-            statement.setString(4, address);
-            statement.setInt(5, bedCount);
-            statement.setInt(6, price);
-            statement.setString(7, description);
-            statement.setString(8, extras);
+            statement.setString(1, userName);
+            statement.setString(2, name);
+            statement.setString(3, country);
+            statement.setString(4, city);
+            statement.setString(5, address);
+            statement.setInt(6, bedCount);
+            statement.setInt(7, price);
+            statement.setString(8, description);
+            statement.setString(9, extras);
             executeInsert(statement);
         }
     }
@@ -264,6 +265,18 @@ public class DatabaseRealEstatetDao extends AbstractDao implements RealEstateDao
         } return false;
     }
 
+    @Override
+    public RealEstate findRealEstateByName(String realEstateName) throws SQLException, NoSuchRealEstateException {
+        String sql = "SELECT * FROM real_estates WHERE real_estate_name=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, realEstateName);
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.next()){
+                    return fetchRealEstate(resultSet);
+                }
+            }
+        } throw new NoSuchRealEstateException();
+    }
 
 
     private RealEstate fetchRealEstate(ResultSet resultSet) throws SQLException {

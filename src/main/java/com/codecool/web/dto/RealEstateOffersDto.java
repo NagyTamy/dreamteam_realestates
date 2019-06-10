@@ -1,7 +1,11 @@
 package com.codecool.web.dto;
 
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.service.RealEstateService;
+import com.codecool.web.service.exception.NoSuchPictureException;
+import com.codecool.web.service.exception.NoSuchRealEstateException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class RealEstateOffersDto {
@@ -12,25 +16,24 @@ public class RealEstateOffersDto {
     private List<String> menuList;
     private RealEstate randomOffer;
     private String userName;
+    private boolean isMyFav;
+    private RealEstateService realEstateService;
 
-    public RealEstateOffersDto(List<RealEstate> newest, List<RealEstate> bestRated, List<RealEstate> trending, List<String> menuList, RealEstate randomOffer, String userName){
-        this.newest = newest;
-        this.bestRated = bestRated;
-        this.trending = trending;
+    public RealEstateOffersDto(RealEstateService realEstateService, List<String> menuList, String userName) throws SQLException, NoSuchPictureException, NoSuchRealEstateException {
+        this.newest = realEstateService.isMyFav(userName, realEstateService.getNewest());
+        this.bestRated = realEstateService.isMyFav(userName, realEstateService.getBestRated());
+        this.trending = realEstateService.isMyFav(userName, realEstateService.getLastReserved());
         this.menuList = menuList;
-        this.randomOffer = randomOffer;
+        this.randomOffer = realEstateService.isMyFav(userName, realEstateService.getRandomRealEstate());
         this.userName = userName;
     }
 
-    public RealEstateOffersDto(List<RealEstate> newest, List<RealEstate> bestRated, List<RealEstate> trending, List<String> menuList, RealEstate randomOffer){
-        this.newest = newest;
-        this.bestRated = bestRated;
-        this.trending = trending;
+    public RealEstateOffersDto(RealEstateService realEstateService, List<String> menuList) throws SQLException, NoSuchPictureException, NoSuchRealEstateException {
+        this.newest = realEstateService.getNewest();
+        this.bestRated = realEstateService.getBestRated();
+        this.trending = realEstateService.getLastReserved();
         this.menuList = menuList;
-        this.randomOffer = randomOffer;
-
-
-
+        this.randomOffer = realEstateService.getRandomRealEstate();
     }
 
     public List<RealEstate> getBestRated() {

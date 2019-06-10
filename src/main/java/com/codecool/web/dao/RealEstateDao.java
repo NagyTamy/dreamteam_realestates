@@ -16,7 +16,7 @@ public interface RealEstateDao {
 
     RealEstate findByReservationId(int reservationId) throws SQLException, NoSuchRealEstateException;
 
-    void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException;
+    void addRealEstate(String userName, String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException;
 
     void updateRealEstate(int bedCount, int price, String description, String extras, int realEstateId) throws SQLException;
 
@@ -43,5 +43,7 @@ public interface RealEstateDao {
     List<RealEstate> searchByRealEstateName(String realEstateName) throws SQLException;
 
     boolean isOwner(int realEstate, String userName) throws SQLException;
+
+    RealEstate findRealEstateByName(String realEstateName) throws SQLException, NoSuchRealEstateException;
 
 }

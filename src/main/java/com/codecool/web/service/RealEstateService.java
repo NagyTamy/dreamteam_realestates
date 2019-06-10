@@ -4,8 +4,10 @@ import com.codecool.web.dao.PictureDao;
 import com.codecool.web.dao.RealEstateDao;
 import com.codecool.web.model.Picture;
 import com.codecool.web.model.RealEstate;
+import com.codecool.web.model.user.AbstractUser;
 import com.codecool.web.service.exception.NoSuchPictureException;
 import com.codecool.web.service.exception.NoSuchRealEstateException;
+import com.codecool.web.service.exception.NoSuchUserException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,8 +39,8 @@ public class RealEstateService {
         return realEstateDao.findByReservationId(reservationId);
     }
 
-    public void addRealEstate(String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException{
-        realEstateDao.addRealEstate(name, country, city, address, bedCount, price, description, extras);
+    public void addRealEstate(String userName, String name, String country, String city, String address, int bedCount, int price, String description, String extras) throws SQLException{
+        realEstateDao.addRealEstate(userName, name, country, city, address, bedCount, price, description, extras);
     }
 
     public void updateRealEstate(int bedCount, int price, String description, String extras, int realEstateId) throws SQLException{
@@ -114,6 +116,39 @@ public class RealEstateService {
 
     public List<RealEstate> doSimpleSearch(String searchKey) throws SQLException{
         return realEstateDao.doSimpleSearch(searchKey);
+    }
+
+    public RealEstate findRealEstateByName(String realEstateName) throws SQLException, NoSuchRealEstateException{
+        return realEstateDao.findRealEstateByName(realEstateName);
+    }
+
+    public List<RealEstate> isMyFav(String user, List<RealEstate> list) throws SQLException, NoSuchPictureException {
+        List<RealEstate> favsList = findFavouritesForUser(user);
+        for(RealEstate realEstate : list){
+            for(RealEstate myfavs : favsList){
+                if (myfavs.getId() == realEstate.getId()){
+                    realEstate.setMyFav(true);
+                }
+            }
+        } return list;
+    }
+
+    public RealEstate isMyFav(String user, RealEstate realEstate) throws SQLException, NoSuchPictureException {
+        List<RealEstate> favsList = findFavouritesForUser(user);
+        for (RealEstate myfavs : favsList) {
+            if (myfavs.getId() == realEstate.getId()) {
+                realEstate.setMyFav(true);
+            }
+        } return realEstate;
+    }
+
+    public boolean isMyFav(String user, int realEstateId) throws SQLException, NoSuchPictureException {
+        List<RealEstate> favsList = findFavouritesForUser(user);
+        for (RealEstate myfavs : favsList) {
+            if (myfavs.getId() == realEstateId) {
+                return true;
+            }
+        } return false;
     }
 
 }

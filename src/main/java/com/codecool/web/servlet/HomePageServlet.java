@@ -34,11 +34,7 @@ public class HomePageServlet extends AbstractServlet {
             RealEstateDao realEstateDao = new DatabaseRealEstatetDao(connection);
             PictureDao pictureDao = new DatabasePictureDao(connection);
             RealEstateService realEstateService = new RealEstateService(realEstateDao, pictureDao);
-            List<RealEstate> bestRated = realEstateService.getBestRated();
-            List<RealEstate> newest = realEstateService.getNewest();
-            List<RealEstate> trending = realEstateService.getLastReserved();
             List<String> menuList = new ArrayList<>();
-            RealEstate randomOffer = realEstateService.getRandomRealEstate();
 
             RealEstateOffersDto onLoadOffers;
 
@@ -52,11 +48,11 @@ public class HomePageServlet extends AbstractServlet {
                 if (user instanceof Admin){
                     menuList.add(2, "Admin");
                 }
-                onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer, user.getName());
+                onLoadOffers = new RealEstateOffersDto(realEstateService, menuList, user.getName());
             } else {
                 menuList.add("Log in");
                 menuList.add("Register");
-                onLoadOffers = new RealEstateOffersDto(newest, bestRated, trending, menuList, randomOffer);
+                onLoadOffers = new RealEstateOffersDto(realEstateService, menuList);
             }
 
 

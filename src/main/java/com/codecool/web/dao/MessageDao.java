@@ -54,4 +54,6 @@ public interface MessageDao {
     void executeInsertStrings(String preparedSql) throws SQLException;
 
     void createNewAlertMessage(String receiver, String title, String content, int history) throws SQLException;
+
+    void createNewAlertMessage(String receiver, String title, String content, int history, int realEstate) throws SQLException;
 }

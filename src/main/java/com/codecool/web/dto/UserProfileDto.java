@@ -145,7 +145,7 @@ public class UserProfileDto {
     }
 
     private boolean hasRealEstates(){
-        return ownRealEstates.size() > 1;
+        return ownRealEstates.size() > 0;
     }
 
     public boolean isHasRealEstates() {

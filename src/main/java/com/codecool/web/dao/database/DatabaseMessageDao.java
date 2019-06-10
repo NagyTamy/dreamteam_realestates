@@ -225,6 +225,20 @@ public class DatabaseMessageDao extends AbstractDao implements MessageDao {
         }
     }
 
+    @Override
+    public void createNewAlertMessage(String receiver, String title, String content, int history, int realEstate) throws SQLException {
+        String sql = "INSERT INTO messages(sender_name, receiver_name, title, content, is_answered, history, real_estate) VALUES('system', ?, ?, ?, 'true', ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, receiver);
+            statement.setString(2, title);
+            statement.setString(3, content);
+            statement.setInt(4, history);
+            statement.setInt(5, realEstate);
+            executeInsert(statement);
+        }
+    }
+
+
 
     @Override
     public void removeMessage(int messageId) throws SQLException {

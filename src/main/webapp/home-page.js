@@ -113,6 +113,7 @@ function createHeaderText(realEstate){
     const descriptionPEl = document.createElement("p");
     descriptionPEl.textContent = realEstate.description;
 
+
     headerTextEl.addEventListener('click', onTileClick);
     headerTextEl.setAttributeNode(realEstateIdAttr);
     headerTextEl.appendChild(h2TextEl);

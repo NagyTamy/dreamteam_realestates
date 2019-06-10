@@ -108,7 +108,7 @@ CREATE TABLE messages(
     FOREIGN KEY (sender_name) REFERENCES users(user_name),
     FOREIGN KEY (history) REFERENCES messages(message_id),
     FOREIGN KEY (receiver_name) REFERENCES users(user_name),
-    FOREIGN KEY (real_estate) REFERENCES real_estates(real_estate_id),
+    FOREIGN KEY (real_estate) REFERENCES real_estates(real_estate_id) ON DELETE SET DEFAULT,
     CONSTRAINT title_not_null CHECK ( title <> '' )
 );
 
@@ -488,7 +488,7 @@ BEGIN
 end; '
     LANGUAGE plpgsql;
 
-CREATE TRIGGER profanity_filter1
+/*CREATE TRIGGER profanity_filter1
     BEFORE INSERT
     ON users
     FOR EACH ROW
@@ -516,7 +516,7 @@ CREATE TRIGGER profanity_filter5
     BEFORE INSERT
     ON pictures
     FOR EACH ROW
-EXECUTE PROCEDURE profanity_filter5();
+EXECUTE PROCEDURE profanity_filter5();*/
 
 CREATE OR REPLACE FUNCTION message_answered() RETURNS TRIGGER AS '
 BEGIN

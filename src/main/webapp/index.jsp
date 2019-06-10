@@ -22,6 +22,7 @@
     <script src="messages.js"></script>
     <script src="admin.js"></script>
     <script src="register.js"></script>
+    <script src="handle-profile.js"></script>
     <title>DreamTeam Houses</title>
 </head>
 <body>
